@@ -10,16 +10,18 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.util.ArrayList;
 
 
 public class TcpServerOne {
+
 
 
     //Funciona como cliente RMI
     public static void main(String[] args) throws IOException, NotBoundException {
 
         //Dados Server TCP
-        int n_users = 0;
+        ArrayList <Connection> ClientConnections = new ArrayList <Connection>() ;
 
         //Socket de ligação ao Cliente
         ServerSocket listenSocket;
@@ -37,9 +39,8 @@ public class TcpServerOne {
             while(true)
             {
                 Socket clientSocket = listenSocket.accept();
-                n_users++;
-                new Connection(clientSocket,n_users);
-                System.out.println("Numero de users: "+ n_users);
+                Connection C = new Connection(clientSocket,ClientConnections);
+                System.out.println("Numero de users: "+ ClientConnections.size());
             }
 
         }catch (UnknownHostException e) {

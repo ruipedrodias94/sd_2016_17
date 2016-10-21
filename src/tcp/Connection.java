@@ -18,18 +18,20 @@ import java.util.*;
     DataInputStream in;
     DataOutputStream out;
     Socket clientSocket;
-    int threadNumber;
     RmiInterface rmi;
     RmiConnection rmiConnection;
+    ArrayList<Connection> clients = null;
 
-    public Connection(Socket clientSockt, int clientNumber)
+    public Connection(Socket clientSockt, ArrayList<Connection> clients)
     {
-        threadNumber = clientNumber;
+        this.clients = clients;
+        this.clients.add(this);
         try
         {
             clientSocket = clientSockt;
             in = new DataInputStream(clientSocket.getInputStream());
             out = new DataOutputStream(clientSocket.getOutputStream());
+
             out.writeUTF("Bem vindo ao iBEi\n");
             this.start();
 
@@ -62,7 +64,11 @@ import java.util.*;
                 }
             }
         } catch (EOFException e) {
+            this.clients.remove(this);
             System.out.println("Cliente Desligado");
+            System.out.println("Numero de users: "+ clients.size());
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
