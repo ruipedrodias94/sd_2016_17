@@ -45,42 +45,27 @@ import java.util.*;
     public void run()
     {
         rmiConnection = new RmiConnection(rmi);
+        while (true){
+
         try
         {
             while(true)
             {
                 in = new DataInputStream(clientSocket.getInputStream());
-                String data = in.readUTF();
-                System.out.println("Recebeu: "+data);
-                for (int i = 0; i<10000; i++){
+                    String data = in.readUTF();
+                    System.out.println("Recebeu: "+data);
+                    System.out.println("Foi invocada uma nova chamada ao servidor rmi");
                     rmi = rmiConnection.connectToRmi();
-                    int a = rmi.teste();
-                    System.out.println(a);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                    System.out.println(rmi.teste());
             }
         } catch (EOFException e) {
             this.clients.remove(this);
             System.out.println("Cliente Desligado");
             System.out.println("Numero de users: "+ clients.size());
 
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    public void teste(){
-        try {
-            int a = rmi.teste();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -1,14 +1,10 @@
 package rmi;
 
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-
 
 public class RmiConnection {
 
-    RmiInterface clienteRmi;
+    RmiInterface clienteRmi = null;
     int numTentativas = 0;
 
     public RmiConnection(RmiInterface clienteRmi){
@@ -16,24 +12,24 @@ public class RmiConnection {
     }
 
     public RmiInterface connectToRmi(){
-
-        while (numTentativas<=30)
+        numTentativas = 10;
+        while (numTentativas >= 0)
         {
             try {
-
                 clienteRmi = (RmiInterface) Naming.lookup("rmi://localhost:1099/rmi_server");
+                numTentativas = 10;
                 break;
             } catch (Exception e) {
-                System.out.println("Nao encontrou o servidor RMI tentando ligar em 30s");
+                System.out.println("Nao encontrou o servidor RMI tentando ligar em " + numTentativas + "s");
                 try {
-                    Thread.sleep(2000);
-                    numTentativas++;
+                    Thread.sleep(1000);
+                    numTentativas--;
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
-                e.printStackTrace();
             }
         }
+
         return clienteRmi;
     }
 }

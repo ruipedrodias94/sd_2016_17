@@ -36,7 +36,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
             } catch (RemoteException e) {
                 System.out.println("O resgisto está em uso. --> Servidor Secundário");
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
