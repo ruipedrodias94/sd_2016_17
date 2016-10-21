@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * Created by jorgearaujo on 19/10/16.
  */
- class Connection extends Thread {
+class Connection extends Thread {
 
     DataInputStream in;
     DataOutputStream out;
@@ -47,25 +47,27 @@ import java.util.*;
         rmiConnection = new RmiConnection(rmi);
         while (true){
 
-        try
-        {
-            while(true)
+            try
             {
-                in = new DataInputStream(clientSocket.getInputStream());
+                while(true)
+                {
+                    in = new DataInputStream(clientSocket.getInputStream());
                     String data = in.readUTF();
                     System.out.println("Recebeu: "+data);
                     System.out.println("Foi invocada uma nova chamada ao servidor rmi");
                     rmi = rmiConnection.connectToRmi();
                     System.out.println(rmi.teste());
+                }
+            } catch (EOFException e) {
+                this.clients.remove(this);
+                System.out.println("Cliente Desligado");
+                System.out.println("Numero de users: "+ clients.size());
+
+            } catch (IOException e) {
+                //e.printStackTrace();
+                System.out.println("RMI Desligado religue e digite novo comando");
             }
-        } catch (EOFException e) {
-            this.clients.remove(this);
-            System.out.println("Cliente Desligado");
-            System.out.println("Numero de users: "+ clients.size());
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-    }
 
+    }
 }

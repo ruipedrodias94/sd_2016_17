@@ -31,7 +31,7 @@ public class TcpServerOne {
         {
             //Estatico apenas para testes
             InetAddress hostAdress = InetAddress.getByName("localhost");
-            listenSocket = new ServerSocket(7000,500,hostAdress);
+            listenSocket = new ServerSocket(8000,500,hostAdress);
             System.out.println("[Ligacao TCP à escuta no host: localhost no porto 7000]");
 
             //Thread de ligação ao cliente TCP
