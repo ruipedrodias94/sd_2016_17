@@ -2,10 +2,12 @@ package tcp;
 
 
 
+import rmi.RmiConnection;
 import rmi.RmiInterface;
 
 import java.io.*;
 import java.net.*;
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.*;
 /**
@@ -18,11 +20,11 @@ import java.util.*;
     Socket clientSocket;
     int threadNumber;
     RmiInterface rmi;
+    RmiConnection rmiConnection;
 
-    public Connection(Socket clientSockt, int clientNumber, RmiInterface RmiI)
+    public Connection(Socket clientSockt, int clientNumber)
     {
         threadNumber = clientNumber;
-        rmi = RmiI;
         try
         {
             clientSocket = clientSockt;
@@ -40,6 +42,7 @@ import java.util.*;
     //Thread que vai tratar do pedido do cliente
     public void run()
     {
+        rmiConnection = new RmiConnection(rmi);
         try
         {
             while(true)
@@ -47,8 +50,16 @@ import java.util.*;
                 in = new DataInputStream(clientSocket.getInputStream());
                 String data = in.readUTF();
                 System.out.println("Recebeu: "+data);
-                System.out.println(rmi.teste());
-
+                for (int i = 0; i<10000; i++){
+                    rmi = rmiConnection.connectToRmi();
+                    int a = rmi.teste();
+                    System.out.println(a);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         } catch (EOFException e) {
             System.out.println("Cliente Desligado");
@@ -57,5 +68,13 @@ import java.util.*;
             e.printStackTrace();
         }
     }
-    }
 
+
+    public void teste(){
+        try {
+            int a = rmi.teste();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+}

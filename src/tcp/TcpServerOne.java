@@ -20,21 +20,9 @@ public class TcpServerOne {
 
         //Dados Server TCP
         int n_users = 0;
-        RmiInterface rmii = null;
 
         //Socket de ligação ao Cliente
         ServerSocket listenSocket;
-
-        //Ligação ao RMI
-        try {
-            RmiInterface clienteRmi = (RmiInterface) Naming.lookup("rmi://localhost:1099/rmi_server");
-            rmii = clienteRmi;
-            int a = clienteRmi.teste();
-            System.out.println(a);
-        } catch (NotBoundException e) {
-            System.out.println("Nao encontrou o servidor RMI");
-            e.printStackTrace();
-        }
 
         //waiting for client connections
         try
@@ -50,7 +38,7 @@ public class TcpServerOne {
             {
                 Socket clientSocket = listenSocket.accept();
                 n_users++;
-                new Connection(clientSocket,n_users,rmii);
+                new Connection(clientSocket,n_users);
                 System.out.println("Numero de users: "+ n_users);
             }
 
