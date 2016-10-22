@@ -3,6 +3,8 @@ package rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Interface do Servidor RMI
@@ -11,4 +13,6 @@ import java.rmi.RemoteException;
 public interface RmiInterface extends Remote{
 
     int teste() throws RemoteException;
+
+    ArrayList<String> test() throws RemoteException, SQLException;
 }

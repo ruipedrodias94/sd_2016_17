@@ -30,7 +30,7 @@ class Connection extends Thread {
         {
             clientSocket = clientSockt;
             in = new DataInputStream(clientSocket.getInputStream());
-            out = new DataOutputStream(clientSocket.getOutputStream());
+            this.out = new DataOutputStream(clientSocket.getOutputStream());
 
             out.writeUTF("Bem vindo ao iBEi\n");
             this.start();
@@ -56,16 +56,21 @@ class Connection extends Thread {
                     System.out.println("Recebeu: "+data);
                     System.out.println("Foi invocada uma nova chamada ao servidor rmi");
                     rmi = rmiConnection.connectToRmi();
-                    System.out.println(rmi.teste());
+                    System.out.printf(String.valueOf(rmi.test()));
+                    this.out.writeUTF(String.valueOf(rmi.test()));
                 }
             } catch (EOFException e) {
                 this.clients.remove(this);
                 System.out.println("Cliente Desligado");
                 System.out.println("Numero de users: "+ clients.size());
+                break;
 
             } catch (IOException e) {
                 //e.printStackTrace();
                 System.out.println("RMI Desligado religue e digite novo comando");
+                break;
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 

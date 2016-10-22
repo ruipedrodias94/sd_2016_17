@@ -2,12 +2,13 @@ package database;
 
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class ConnectDatabase {
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     // Esta na minha maquina! Ter atencao para depois nao haver conflitos
-    static final String DB_URL = "jdbc:mysql://localhost:3306/?user=root?autoReconnect=true&useSSL=false";
+    static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/?user=root";
 
     //  Database credentials
     static final String USER = "root";
@@ -37,16 +38,24 @@ public class ConnectDatabase {
         }
 
         if (connection != null){
-            System.out.println("Sucess");
+            System.out.println("Success");
         }else{
             System.out.println("Falha a conectar a base de dados");
         }
     }
 
     //método apenas para teste
-    public synchronized void test() throws SQLException {
+    public synchronized ArrayList<String> test() throws SQLException {
+        ArrayList <String> results = new ArrayList<>();
 
         statement = connection.createStatement();
-        resultSet = statement.executeQuery("SELECT * from ");
+        resultSet = statement.executeQuery("SELECT * FROM sd_2016_17.Utilizador;");
+
+        while(resultSet.next())
+        {
+            results.add(resultSet.getString(2));
+        }
+
+        return results;
     }
 }

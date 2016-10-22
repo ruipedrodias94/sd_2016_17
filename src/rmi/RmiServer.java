@@ -3,6 +3,9 @@ package rmi;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import database.*;
 
 
@@ -21,6 +24,11 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         int b = 3;
         return a+b;
 
+    }
+
+
+    public ArrayList<String> test() throws RemoteException, SQLException {
+        return connectDatabase.test();
     }
 
     public static void main(String[] args) throws RemoteException {

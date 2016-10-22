@@ -1,4 +1,4 @@
-
+package tcp;
 
 import java.io.*;
 import java.net.*;
@@ -47,7 +47,6 @@ class TCPClient {
             texto = reader.readLine();
             out = new DataOutputStream(socket.getOutputStream());
             out.writeUTF(texto);
-            out.flush();
             } catch (IOException e) {
               e.printStackTrace();
             }
