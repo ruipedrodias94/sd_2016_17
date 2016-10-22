@@ -6,6 +6,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import java.sql.Date;
+
 import database.*;
 
 
@@ -25,6 +27,57 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         return a+b;
 
     }
+
+    // add some functional methods here
+
+    /**
+     * Criar uma nova conta de cliente
+     * @param name
+     * @param userName
+     * @param password
+     * @return
+     */
+
+    public boolean registerClient(String name, String userName, String password){
+
+        return true;
+    }
+
+    /**
+     * Fazer o login
+     * @param userName
+     * @param password
+     * @return
+     */
+
+    public boolean doLogin(String userName, String password){
+
+        return true;
+    }
+
+
+    /**
+     * Criar um leilao
+     * @param code
+     * @param title
+     * @param descritption
+     * @param deadline
+     * @param amount
+     * @return
+     */
+    public boolean createAuction(int code, String title, String descritption, Date deadline, int amount){
+
+        return true;
+    }
+
+    /*
+    public () searchAuction(int code){
+
+        return auction;
+    }
+
+    public */
+
 
 
     public ArrayList<String> test() throws RemoteException, SQLException {
