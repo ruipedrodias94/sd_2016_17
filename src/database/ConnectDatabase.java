@@ -8,7 +8,7 @@ public class ConnectDatabase {
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     // Esta na minha maquina! Ter atencao para depois nao haver conflitos
-    static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/?user=root";
+    static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/sd_2016_17?user=root?autoReconnect=true&useSSL=false";
 
     //  Database credentials
     static final String USER = "root";
@@ -27,6 +27,7 @@ public class ConnectDatabase {
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
 
             statement = connection.createStatement();
+            connection.setAutoCommit(false);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -44,18 +45,20 @@ public class ConnectDatabase {
         }
     }
 
-    //método apenas para teste
-    public synchronized ArrayList<String> test() throws SQLException {
-        ArrayList <String> results = new ArrayList<>();
-
-        statement = connection.createStatement();
-        resultSet = statement.executeQuery("SELECT * FROM sd_2016_17.Utilizador;");
-
-        while(resultSet.next())
-        {
-            results.add(resultSet.getString(2));
+    public void rollback(){
+        try{
+            connection.rollback();
+        }catch(SQLException se){
+            System.err.println("Rollback failed!");
         }
-
-        return results;
     }
+
+    public void commit(){
+        try{
+            connection.commit();
+        }catch(SQLException se){
+            System.err.println("Commit failed!");
+        }
+    }
+
 }

@@ -21,13 +21,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         connectDatabase = new ConnectDatabase();
     }
 
-    public int teste() throws RemoteException{
-        int a = 2;
-        int b = 3;
-        return a+b;
-
-    }
-
     // add some functional methods here
 
     /**
@@ -38,10 +31,25 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      * @return
      */
 
-    public boolean registerClient(String name, String userName, String password){
+    public synchronized boolean registerClient(String name, String userName, String password){
 
+        String add = "insert into Utilizador(nome, userName, pass) values ('"+name+"','"+userName+"','"+password+"');";
+
+        try {
+            connectDatabase.statement.executeUpdate(add);
+            connectDatabase.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connectDatabase.connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            return false;
+        }
         return true;
     }
+
 
     /**
      * Fazer o login
@@ -51,8 +59,17 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public boolean doLogin(String userName, String password){
+        String search = "select * from Utilizador where userName ='" + userName + "'and pass='" + password +"';";
 
-        return true;
+        try {
+            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
+            while (connectDatabase.resultSet.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 
@@ -70,19 +87,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         return true;
     }
 
-    /*
-    public () searchAuction(int code){
-
-        return auction;
-    }
-
-    public */
-
-
-
-    public ArrayList<String> test() throws RemoteException, SQLException {
-        return connectDatabase.test();
-    }
 
     public static void main(String[] args) throws RemoteException {
 
@@ -101,7 +105,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
-                //e.printStackTrace();
             }
         }
     }

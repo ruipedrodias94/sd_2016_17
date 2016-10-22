@@ -12,7 +12,8 @@ import java.util.ArrayList;
 
 public interface RmiInterface extends Remote{
 
-    int teste() throws RemoteException;
+    // Put the methods here!
 
-    ArrayList<String> test() throws RemoteException, SQLException;
+    boolean registerClient(String name, String userName, String password) throws RemoteException;
+    boolean doLogin(String userName, String password) throws RemoteException;
 }

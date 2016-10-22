@@ -56,8 +56,9 @@ class Connection extends Thread {
                     System.out.println("Recebeu: "+data);
                     System.out.println("Foi invocada uma nova chamada ao servidor rmi");
                     rmi = rmiConnection.connectToRmi();
-                    System.out.printf(String.valueOf(rmi.test()));
-                    this.out.writeUTF(String.valueOf(rmi.test()));
+                    boolean consegiu = rmi.doLogin("ruidias", "123");
+                    if (consegiu)
+                    this.out.writeUTF("Caralho cliente de piça");
                 }
             } catch (EOFException e) {
                 this.clients.remove(this);
@@ -69,8 +70,6 @@ class Connection extends Thread {
                 //e.printStackTrace();
                 System.out.println("RMI Desligado religue e digite novo comando");
                 break;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         }
 
