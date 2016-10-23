@@ -61,14 +61,10 @@ class Connection extends Thread {
                     System.out.println("Foi invocada uma nova chamada ao servidor rmi");
                     rmi = rmiConnection.connectToRmi();
                     m = ProtocolParser.parse(data);
-                    if (m.get("type").equals("register")){
-                        String nome = String.valueOf(m.get("name"));
-                        String userName = String.valueOf(m.get("username"));
-                        String password = String.valueOf(m.get("password"));
-
-                        rmi.registerClient(nome, userName, password);
+                    if (m.get("type").equals("search_users")){
+                       String teste = rmi.searchUsers();
+                        out.writeUTF(teste);
                     }
-
                 }
             } catch (EOFException e) {
                 this.clients.remove(this);

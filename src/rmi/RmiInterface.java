@@ -14,6 +14,7 @@ public interface RmiInterface extends Remote{
 
     // Put the methods here!
 
-    boolean registerClient(String name, String userName, String password) throws RemoteException;
-    boolean doLogin(String userName, String password) throws RemoteException;
+    String registerClient(String name, String userName, String password) throws RemoteException;
+    String doLogin(String userName, String password) throws RemoteException;
+    String searchUsers() throws RemoteException;
 }
