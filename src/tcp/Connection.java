@@ -2,6 +2,7 @@ package tcp;
 
 
 
+import helpers.ProtocolParser;
 import rmi.RmiConnection;
 import rmi.RmiInterface;
 
@@ -10,9 +11,8 @@ import java.net.*;
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.*;
-/**
- * Created by jorgearaujo on 19/10/16.
- */
+
+
 class Connection extends Thread {
 
     DataInputStream in;
@@ -21,6 +21,9 @@ class Connection extends Thread {
     RmiInterface rmi;
     RmiConnection rmiConnection;
     ArrayList<Connection> clients = null;
+
+    //Teste do parser
+    HashMap<String, String> m = null;
 
     public Connection(Socket clientSockt, ArrayList<Connection> clients)
     {
@@ -45,6 +48,7 @@ class Connection extends Thread {
     public void run()
     {
         rmiConnection = new RmiConnection(rmi);
+
         while (true){
 
             try
@@ -56,9 +60,15 @@ class Connection extends Thread {
                     System.out.println("Recebeu: "+data);
                     System.out.println("Foi invocada uma nova chamada ao servidor rmi");
                     rmi = rmiConnection.connectToRmi();
-                    boolean consegiu = rmi.doLogin("ruidias", "123");
-                    if (consegiu)
-                    this.out.writeUTF("Caralho cliente de piça");
+                    m = ProtocolParser.parse(data);
+                    if (m.get("type").equals("register")){
+                        String nome = String.valueOf(m.get("name"));
+                        String userName = String.valueOf(m.get("username"));
+                        String password = String.valueOf(m.get("password"));
+
+                        rmi.registerClient(nome, userName, password);
+                    }
+
                 }
             } catch (EOFException e) {
                 this.clients.remove(this);
