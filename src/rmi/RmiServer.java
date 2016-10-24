@@ -2,6 +2,7 @@ package rmi;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -117,36 +118,39 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
 
+    /**
+     * Criar um leilao. Recebe a string, que é intrepertada pelo parser e adicionada a base de dados
+     * @param command
+     * @param userId
+     * @return
+     */
+
     public String createAuction(String command, int userId){
 
         String result = "";
 
-
         // Intrepreta o comando
         HashMap<String, String> m = ProtocolParser.parse(command);
 
-        try {
+        System.out.println(m.get("deadline"));
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            Date parsedDate = (Date) dateFormat.parse(m.get("deadline"));
-            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+        try {
             String add = "insert into AUCTION(idItem, title, description, deadline, amount, USER_idUSER) values('"
                     + Double.valueOf(m.get("code")) + "', '" + m.get("title")+ "', '" +m.get("description") +"', '"
-                    + timestamp + "', '" + Integer.parseInt(m.get("amount"))+ "');";
+                    + Timestamp.valueOf(m.get("deadline")) + "', '" + Integer.parseInt(m.get("amount"))+ "');";
 
             connectDatabase.statement.executeUpdate(add);
             connectDatabase.commit();
             result = "type: create_auction, ok: true";
+            return result;
         } catch (SQLException e) {
             e.printStackTrace();
+            result = "type: create_auction, ok: false";
             try {
                 connectDatabase.connection.rollback();
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            result = "type: create_auction, ok: false";
         }
         return result;
     }
@@ -158,7 +162,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
         while(true){
             try {
-                LocateRegistry.createRegistry(1099).rebind("rmi_server", rmiServer);
+                Registry registry = LocateRegistry.createRegistry(1099);
+                registry.rebind("rmi_server", rmiServer);
                 System.out.println("Rmi Ligado");
                 System.out.println("Servidor Primário");
                 break;
