@@ -15,8 +15,8 @@ import java.util.*;
 
 class Connection extends Thread {
 
-    DataInputStream in;
-    DataOutputStream out;
+    PrintWriter outToClient;
+    BufferedReader inFromClient = null;
     Socket clientSocket;
     RmiInterface rmi;
     RmiConnection rmiConnection;
@@ -32,10 +32,11 @@ class Connection extends Thread {
         try
         {
             clientSocket = clientSockt;
-            in = new DataInputStream(clientSocket.getInputStream());
-            this.out = new DataOutputStream(clientSocket.getOutputStream());
+            // create streams for writing to and reading from the socket
 
-            out.writeUTF("Bem vindo ao iBEi\n");
+            outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
+
+            outToClient.println("Bem vindo ao iBEi\n");
             this.start();
 
         } catch (IOException e) {
@@ -48,35 +49,32 @@ class Connection extends Thread {
     public void run()
     {
         rmiConnection = new RmiConnection(rmi);
+        String messageFromClient;
 
         while (true){
 
             try
             {
-                while(true)
+                inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                while((messageFromClient = inFromClient.readLine()) != null)
                 {
-                    in = new DataInputStream(clientSocket.getInputStream());
-                    String data = in.readUTF();
-                    System.out.println("Recebeu: "+data);
+
+                    System.out.println("Recebeu: "+messageFromClient);
                     System.out.println("Foi invocada uma nova chamada ao servidor rmi");
                     rmi = rmiConnection.connectToRmi();
+                   /*
                     m = ProtocolParser.parse(data);
                     if (m.get("type").equals("search_users")){
                        String teste = rmi.searchUsers();
                         out.writeUTF(teste);
-                    }
-                }
-            } catch (EOFException e) {
-                this.clients.remove(this);
-                System.out.println("Cliente Desligado");
-                System.out.println("Numero de users: "+ clients.size());
-                break;
+                    }*/}
 
-            } catch (IOException e) {
-                //e.printStackTrace();
-                System.out.println("RMI Desligado religue e digite novo comando");
-                break;
+
+                } catch (IOException e) {
+                e.printStackTrace();
             }
+            clients.remove(this);
+
         }
 
     }
