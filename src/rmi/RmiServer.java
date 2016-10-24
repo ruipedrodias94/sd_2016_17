@@ -27,15 +27,14 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     /**
      * Criar uma nova conta de cliente
-     * @param name
      * @param userName
      * @param password
      * @return
      */
 
-    public synchronized String registerClient(String name, String userName, String password){
+    public synchronized String registerClient(String userName, String password){
 
-        String add = "insert into Utilizador(nome, userName, pass) values ('"+name+"','"+userName+"','"+password+"');";
+        String add = "insert into USER (userName, password, online) values ('"+userName+"', '"+ password+"', "+ 0+");";
         String result = "";
         try {
             connectDatabase.statement.executeUpdate(add);
@@ -63,7 +62,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public String doLogin(String userName, String password){
-        String search = "select * from Utilizador where userName ='" + userName + "'and pass='" + password +"';";
+        String search = "select * from USER where userName ='" + userName + "'and pass='" + password +"';";
         String result = "";
         try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
@@ -83,27 +82,27 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      * @return
      */
 
-    public String searchUsers(){
-        String search = "select * from Utilizador;";
+    public String searchOnlineUsers(){
+        String search = "select * from USER where online = 1;";
         String result = "";
         ArrayList<Client> clients = new ArrayList<>();
-        Client client = null;
+        Client client;
 
         try{
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
             if (!connectDatabase.resultSet.next()){
-                result = "type: users_registered, items_count: 0";
+                result = "type: online_users, items_count: 0";
             }
             while (connectDatabase.resultSet.next()){
-                client = new Client(connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3), connectDatabase.resultSet.getString(4));
+                client = new Client(connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
                 clients.add(client);
             }
 
-            result = "type: registered_users, item_count: " + clients.size();
+            result = "type: online_users, items_count: " + clients.size();
 
             String result2 = "";
             for (int i = 0; i < clients.size(); i++) {
-                result2 = result2 + ", item_"+i+"_name: " + clients.get(i).getName();
+                result2 = result2 + ", users_"+i+"_username: " + clients.get(i).getUserName();
             }
             result = result + result2;
         } catch (SQLException e) {
@@ -111,6 +110,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         }
         return result;
     }
+
+
 
 
     public static void main(String[] args) throws RemoteException {

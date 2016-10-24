@@ -5,30 +5,31 @@ import java.sql.Date;
 
 public class Auction {
 
-    private String id;
+    private int idAuction;
+    private int idItem;
     private String title;
     private String description;
     private Date deadline;
     private int amount;
-    private Client client;
-    private Item item;
+    private int idUser;
 
-    public Auction(String id, String title, String description, Date deadline, int amount, Client client, Item item){
-        this.id = id;
+
+    public Auction(int idAuction, int idItem, String title, String description, Date deadline, int amount, int idUser) {
+        this.setIdAuction(idAuction);
+        this.setIdItem(idItem);
         this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.amount = amount;
-        this.client = client;
-        this.item = item;
+        this.setIdUser(idUser);
     }
 
-    public String getId() {
-        return id;
+    public int getId() {
+        return getIdAuction();
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(int id) {
+        this.setIdAuction(id);
     }
 
     public String getTitle() {
@@ -63,19 +64,27 @@ public class Auction {
         this.amount = amount;
     }
 
-    public Client getClient() {
-        return client;
+    public int getIdAuction() {
+        return idAuction;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setIdAuction(int idAuction) {
+        this.idAuction = idAuction;
     }
 
-    public Item getItem() {
-        return item;
+    public int getIdItem() {
+        return idItem;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setIdItem(int idItem) {
+        this.idItem = idItem;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 }
