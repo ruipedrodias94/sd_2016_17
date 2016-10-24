@@ -4,13 +4,18 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.sql.Date;
+import java.util.HashMap;
 
 import components.Auction;
 import components.Client;
 import database.*;
+import helpers.ProtocolParser;
 
 
 public class RmiServer extends UnicastRemoteObject implements RmiInterface {
@@ -62,7 +67,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public String doLogin(String userName, String password){
-        String search = "select * from USER where userName ='" + userName + "'and pass='" + password +"';";
+        String search = "select * from USER where userName ='" + userName + "'and password='" + password +"';";
         String result = "";
         try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
@@ -112,6 +117,39 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
 
+    public String createAuction(String command, int userId){
+
+        String result = "";
+
+
+        // Intrepreta o comando
+        HashMap<String, String> m = ProtocolParser.parse(command);
+
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            Date parsedDate = (Date) dateFormat.parse(m.get("deadline"));
+            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+            String add = "insert into AUCTION(idItem, title, description, deadline, amount, USER_idUSER) values('"
+                    + Double.valueOf(m.get("code")) + "', '" + m.get("title")+ "', '" +m.get("description") +"', '"
+                    + timestamp + "', '" + Integer.parseInt(m.get("amount"))+ "');";
+
+            connectDatabase.statement.executeUpdate(add);
+            connectDatabase.commit();
+            result = "type: create_auction, ok: true";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connectDatabase.connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            result = "type: create_auction, ok: false";
+        }
+        return result;
+    }
 
 
     public static void main(String[] args) throws RemoteException {

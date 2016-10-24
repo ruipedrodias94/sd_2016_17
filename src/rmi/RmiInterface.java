@@ -17,4 +17,6 @@ public interface RmiInterface extends Remote{
     String registerClient(String userName, String password) throws RemoteException;
     String doLogin(String userName, String password) throws RemoteException;
     String searchOnlineUsers() throws RemoteException;
+    String createAuction(String command, int userId) throws RemoteException;
+
 }

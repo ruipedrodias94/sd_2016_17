@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `sd_2016_17`.`USER` (
   `idUSER` INT NOT NULL AUTO_INCREMENT,
   `userName` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
-  `online` VARCHAR(45) NOT NULL,
+  `online` TINYINT(1) NOT NULL,
   PRIMARY KEY (`idUSER`))
 ENGINE = InnoDB;
 
@@ -31,10 +31,10 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `sd_2016_17`.`AUCTION` (
   `idAUCTION` INT NOT NULL AUTO_INCREMENT,
-  `idITEM` INT NOT NULL,
+  `idITEM` DOUBLE NOT NULL,
   `title` VARCHAR(45) NOT NULL,
-  `description` VARCHAR(45) NOT NULL,
-  `deadline` DATE NOT NULL,
+  `description` VARCHAR(200) NOT NULL,
+  `deadline` TIMESTAMP NOT NULL,
   `amount` INT NOT NULL,
   `USER_idUSER` INT NOT NULL,
   PRIMARY KEY (`idAUCTION`, `USER_idUSER`),

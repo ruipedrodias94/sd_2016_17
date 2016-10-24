@@ -56,19 +56,15 @@ class Connection extends Thread {
             try
             {
                 inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                while((messageFromClient = inFromClient.readLine()) != null)
-                {
+                while((messageFromClient = inFromClient.readLine()) != null) {
 
-                    System.out.println("Recebeu: "+messageFromClient);
+                    System.out.println("Recebeu: " + messageFromClient);
                     System.out.println("Foi invocada uma nova chamada ao servidor rmi");
                     rmi = rmiConnection.connectToRmi();
-                   /*
-                    m = ProtocolParser.parse(data);
-                    if (m.get("type").equals("search_users")){
-                       String teste = rmi.searchUsers();
-                        out.writeUTF(teste);
-                    }*/}
+                    String a = rmi.createAuction(messageFromClient, 1);
+                    System.out.println(a);
 
+                    }
 
                 } catch (IOException e) {
                 e.printStackTrace();
