@@ -155,6 +155,50 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         return result;
     }
 
+    /**
+     * Procura o leilao por codigo do item
+     * @param command
+     * @return
+     */
+
+    public String searchAuction(String command){
+        String result = "";
+        ArrayList<Auction> auctions = new ArrayList<>();
+        Auction auction;
+
+        HashMap<String, String> m = ProtocolParser.parse(command);
+
+        String code = m.get("code");
+
+        String search = "select * from AUCTION where idITEM = " + code +";";
+
+        try{
+            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
+            if (!connectDatabase.resultSet.next()){
+                result = "type: search_auction, items_count: 0";
+            }
+            while (connectDatabase.resultSet.next()){
+                auction = new Auction(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getInt(2),
+                        connectDatabase.resultSet.getString(3), connectDatabase.resultSet.getString(4),
+                        connectDatabase.resultSet.getDate(5), connectDatabase.resultSet.getInt(6), connectDatabase.resultSet.getInt(7));
+                auctions.add(auction);
+            }
+
+            result = "type: search_auction, items_count: " + auctions.size();
+
+            String result2 = "";
+
+            for (int i = 0; i < auctions.size(); i++) {
+                result2 = result2 + ", items_"+i+"_id: " + auctions.get(i).getIdAuction() + ", items_"+i+"_code: "
+                        + auctions.get(i).getIdItem() + ", items_"+i+"_title: " + auctions.get(i).getTitle();
+            }
+            result = result + result2;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     public static void main(String[] args) throws RemoteException {
 

@@ -5,6 +5,7 @@ import java.sql.Date;
 
 public class Auction {
 
+    private int idAuction;
     private int idItem;
     private String title;
     private String description;
@@ -13,7 +14,8 @@ public class Auction {
     private int idUser;
 
 
-    public Auction(int idItem, String title, String description, Date deadline, int amount, int idUser) {
+    public Auction(int idAuction, int idItem, String title, String description, Date deadline, int amount, int idUser) {
+        this.idAuction = idAuction;
         this.idItem = idItem;
         this.title = title;
         this.description = description;
@@ -68,5 +70,13 @@ public class Auction {
 
     public void setIdUser(int idUser) {
         this.idUser = idUser;
+    }
+
+    public int getIdAuction() {
+        return idAuction;
+    }
+
+    public void setIdAuction(int idAuction) {
+        this.idAuction = idAuction;
     }
 }
