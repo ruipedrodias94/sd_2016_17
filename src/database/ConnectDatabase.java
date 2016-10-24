@@ -8,7 +8,7 @@ public class ConnectDatabase {
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     // Esta na minha maquina! Ter atencao para depois nao haver conflitos
-    static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/sd_2016_17?user=root?autoReconnect=true&useSSL=false";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/sd_2016_17?user=root?autoReconnect=true&useSSL=false";
 
     //  Database credentials
     static final String USER = "root";
@@ -33,8 +33,6 @@ public class ConnectDatabase {
             e.printStackTrace();
         } catch (SQLException e) {
 
-            // Handle errors from JDBC
-            System.out.println("Nao encontrou a JDBC");
             e.printStackTrace();
         }
 
