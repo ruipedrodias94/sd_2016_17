@@ -33,13 +33,15 @@ public class ConnectDatabase {
             e.printStackTrace();
         } catch (SQLException e) {
 
+            // Handle errors from JDBC
+            //System.out.println("Nao encontrou a JDBC");
             e.printStackTrace();
         }
 
         if (connection != null){
             System.out.println("Success");
         }else{
-            System.out.println("Falha a conectar a base de dados");
+            //System.out.println("Falha a conectar a base de dados");
         }
     }
 

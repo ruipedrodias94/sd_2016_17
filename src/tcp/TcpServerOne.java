@@ -23,6 +23,7 @@ public class TcpServerOne {
         //Dados Server TCP
         ArrayList <Connection> ClientConnections = new ArrayList <Connection>() ;
         int porto = 8000;
+        String host = "localhost";
 
         //Socket de ligação ao Cliente
         ServerSocket listenSocket;
@@ -31,9 +32,9 @@ public class TcpServerOne {
         try
         {
             //Estatico apenas para testes
-            InetAddress hostAdress = InetAddress.getByName("localhost");
+            InetAddress hostAdress = InetAddress.getByName(host);
             listenSocket = new ServerSocket(porto,500,hostAdress);
-            System.out.println("[Ligacao TCP à escuta no host: localhost no porto "+porto+"]");
+            System.out.println("[Ligacao TCP à escuta no host: "+host+" no porto "+porto+"]");
 
             //Threads de balanceamento de carga
             new udpMulticastReceiver();

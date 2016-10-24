@@ -50,7 +50,7 @@ public class udpMulticastSender extends Thread {
                 byte[] buf = numberClientsMessage.getBytes();
                 DatagramPacket msgOut = new DatagramPacket(buf,buf.length,InetAddress.getByName(group),port);
                 socket.send(msgOut);
-                Thread.sleep(5000);
+                Thread.sleep(10000);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {
