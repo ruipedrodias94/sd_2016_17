@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.*;
 import java.rmi.RemoteException;
 import java.sql.*;
+import java.text.ParseException;
 import java.util.*;
 
 
@@ -50,6 +51,9 @@ class Connection extends Thread {
     {
         rmiConnection = new RmiConnection(rmi);
         String messageFromClient;
+        HashMap<String, String> messageParsed;
+        String type;
+        String answer;
 
         while (true){
 
@@ -57,16 +61,25 @@ class Connection extends Thread {
             {
                 inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 while((messageFromClient = inFromClient.readLine()) != null) {
+                    System.out.println(messageFromClient);
+                        messageParsed = ProtocolParser.parse(messageFromClient);
+                        type = messageParsed.get("type");
+                        rmi = rmiConnection.connectToRmi();
 
-                    System.out.println("Recebeu: " + messageFromClient);
-                    System.out.println("Foi invocada uma nova chamada ao servidor rmi");
-                    rmi = rmiConnection.connectToRmi();
-                    String a = rmi.createAuction(messageFromClient, 1);
-                    System.out.println(a);
+                        switch(type)
+                        {
+                            case("register"):
+                            {
+                                answer = rmi.registerClient(messageParsed.get("username"),messageParsed.get("password"));
+                                outToClient.println(answer);
+                            }
+                        }
 
-                    }
 
-                } catch (IOException e) {
+
+                }
+                outToClient.println("Escreve um commando decente");
+                } catch (Exception e) {
                 e.printStackTrace();
             }
             clients.remove(this);

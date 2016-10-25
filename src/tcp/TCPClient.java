@@ -1,3 +1,5 @@
+package tcp;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -39,6 +41,7 @@ class TCPClient {
           Scanner keyboardScanner = new Scanner(System.in);
           while(!socket.isClosed()) {
             String readKeyboard = keyboardScanner.nextLine();
+
             outToServer.println(readKeyboard);
           }
         }

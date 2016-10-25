@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class TcpServerOne {
@@ -23,6 +24,7 @@ public class TcpServerOne {
 
         //Socket de ligação ao Cliente
         ServerSocket listenSocket;
+
 
         //waiting for client connections
         try
