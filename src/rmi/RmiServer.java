@@ -165,6 +165,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
 
+    //funcao para ver se o server rmi esta ligado num determinado host e porto
     public static boolean checkRMIServer(String address, int port, int numtry) {
         int tries = 0;
         boolean status = false;
@@ -195,9 +196,10 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
 
         while(true){
-
+                //vê se algum registo rmi está ligado naquele host e porto
                 if(checkRMIServer(remoteRMIHost,remotermiPort,500)==true)
                 {
+                    //se não estiver liga-se como primario
                     Registry registry = LocateRegistry.createRegistry(1098);
                     registry.rebind("rmi_server", rmiServer);
                     System.out.println("Rmi Ligado");
@@ -206,6 +208,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
                 }
                 else
                 {
+                    //Se estiver fica como secuandário e vai tentando ligar-se
                     System.out.println("Servidor Secundário... Tentativa de religação como primário.");
                     Thread.sleep(1000);
                 }

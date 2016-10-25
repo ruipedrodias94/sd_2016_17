@@ -10,7 +10,7 @@ public class RmiConnection {
 
     RmiInterface clienteRmi = null;
     int numTentativas = 0;
-    int rmiPort = 1099;
+    int rmiPort = 1098;
 
 
 
@@ -25,6 +25,7 @@ public class RmiConnection {
                 System.getProperties().put("java.security.policy", "security.policy");
                 System.setSecurityManager(new RMISecurityManager());
 
+                System.out.println("Entrou aqui");
                    clienteRmi = (RmiInterface) LocateRegistry.getRegistry("localhost", rmiPort).lookup("rmi_server");
                    numTentativas = 30;
 
