@@ -280,7 +280,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
 
 
-    public static void main(String[] args) throws RemoteException InterruptedException{
+    public static void main(String[] args) throws RemoteException, InterruptedException{
 
         rmiServer = new RmiServer();
         rmiServer = new RmiServer();
