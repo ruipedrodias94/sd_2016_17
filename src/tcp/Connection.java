@@ -23,8 +23,6 @@ class Connection extends Thread {
     RmiConnection rmiConnection;
     ArrayList<Connection> clients = null;
 
-    //Teste do parser
-    HashMap<String, String> m = null;
 
     public Connection(Socket clientSockt, ArrayList<Connection> clients)
     {
@@ -71,8 +69,7 @@ class Connection extends Thread {
 
                         switch (type) {
                             case ("register"): {
-                                answer = rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"));
-                                outToClient.println(answer);
+
                             }
                         }
                     }catch (Exception e){
@@ -86,6 +83,5 @@ class Connection extends Thread {
             }
             clients.remove(this);
         }
-
     }
 }

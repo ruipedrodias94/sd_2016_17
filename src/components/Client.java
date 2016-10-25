@@ -1,6 +1,8 @@
 package components;
 
-public class Client {
+import java.io.Serializable;
+
+public class Client implements Serializable{
 
     private String userName;
     private String password;

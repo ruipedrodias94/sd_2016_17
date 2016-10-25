@@ -1,9 +1,10 @@
 package components;
 
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Auction {
+public class Auction implements Serializable{
 
     private int idAuction;
     private int idItem;

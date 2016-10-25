@@ -1,6 +1,9 @@
 package rmi;
 
 
+import components.Auction;
+import components.Client;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -14,10 +17,11 @@ public interface RmiInterface extends Remote{
 
     // Put the methods here!
 
-    String registerClient(String userName, String password) throws RemoteException;
-    String doLogin(String userName, String password) throws RemoteException;
-    String searchOnlineUsers() throws RemoteException;
-    String createAuction(String command, int userId) throws RemoteException;
-    String searchAuction(String command) throws RemoteException;
+    boolean registerClient(Client client) throws RemoteException;
+    boolean doLogin(Client client) throws RemoteException;
+    ArrayList<Client> searchOnlineUsers() throws RemoteException;
+    boolean createAuction(Auction auction) throws RemoteException;
+    ArrayList<Auction> searchAuction(int code) throws RemoteException;
+
 
 }

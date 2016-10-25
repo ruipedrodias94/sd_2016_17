@@ -1,7 +1,9 @@
 package components;
 
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable{
 
     private int idMessage;
     private String text;
