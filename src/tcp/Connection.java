@@ -70,6 +70,7 @@ class Connection extends Thread {
                         switch (type) {
                             case ("register"): {
                                 //chamada aqui para registar;
+                                System.out.println("Tentou fazer registo");
                                 break;
 
                             }

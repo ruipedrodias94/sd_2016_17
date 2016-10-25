@@ -20,14 +20,12 @@ public class RmiConnection {
 
     public RmiInterface connectToRmi() {
         numTentativas = 30;
-        while (numTentativas >= 0) {
+        //while(numTentativas>=0){ Este ciclo ta fodido
             try {
                 System.getProperties().put("java.security.policy", "security.policy");
                 System.setSecurityManager(new RMISecurityManager());
-
-                   clienteRmi = (RmiInterface) LocateRegistry.getRegistry("localhost", rmiPort).lookup("rmi_server");
-                   numTentativas = 30;
-
+                System.out.println("Aqui");
+                clienteRmi = (RmiInterface) LocateRegistry.getRegistry("localhost", rmiPort).lookup("rmi_server");
 
 
             } catch (Exception e) {
@@ -39,7 +37,7 @@ public class RmiConnection {
                     e1.printStackTrace();
                 }
             }
-        }
+        //}
 
         return clienteRmi;
     }
