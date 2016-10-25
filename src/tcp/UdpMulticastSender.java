@@ -14,13 +14,13 @@ import java.util.ArrayList;
 /**
  * Created by jorgearaujo on 21/10/16.
  */
-public class udpMulticastSender extends Thread {
+public class UdpMulticastSender extends Thread {
 
     ArrayList<Connection> clients = null;
     int porto;
     String host;
 
-    public udpMulticastSender( ArrayList<Connection> clients, String host, int porto)
+    public UdpMulticastSender(ArrayList<Connection> clients, String host, int porto)
     {
         this.clients = clients;
         this.host = host;

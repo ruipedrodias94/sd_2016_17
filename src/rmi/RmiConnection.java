@@ -1,6 +1,5 @@
 package rmi;
 
-import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 
@@ -15,7 +14,7 @@ public class RmiConnection {
     }
 
     public RmiInterface connectToRmi(){
-        numTentativas = 10;
+        numTentativas = 30;
         while (numTentativas >= 0)
         {
             try {
@@ -23,7 +22,7 @@ public class RmiConnection {
                 System.setSecurityManager(new RMISecurityManager());
 
                 clienteRmi = (RmiInterface) LocateRegistry.getRegistry("localhost", rmiPort).lookup("rmi_server");
-                numTentativas = 10;
+                numTentativas = 30;
                 break;
 
             } catch (Exception e) {

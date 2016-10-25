@@ -59,7 +59,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         return result;
     }
 
-
     /**
      * Fazer o login
      * @param userName
@@ -134,14 +133,21 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
         System.out.println(m.get("deadline"));
 
+
+
         try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh-mm");
+            Date parsedDate = (Date) dateFormat.parse(m.get("deadline"));
+            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+
             String add = "insert into AUCTION(idItem, title, description, deadline, amount, USER_idUSER) values('"
                     + Double.valueOf(m.get("code")) + "', '" + m.get("title")+ "', '" +m.get("description") +"', '"
-                    + Timestamp.valueOf(m.get("deadline")) + "', '" + Integer.parseInt(m.get("amount"))+ "');";
+                    + timestamp + "', '" + Integer.parseInt(m.get("amount"))+ "', '" + userId + "');";
 
             connectDatabase.statement.executeUpdate(add);
             connectDatabase.commit();
             result = "type: create_auction, ok: true";
+
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -151,6 +157,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -198,6 +206,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         }
         return result;
     }
+
+
 
 
     public static void main(String[] args) throws RemoteException {

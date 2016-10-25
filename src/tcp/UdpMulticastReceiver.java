@@ -2,18 +2,14 @@ package tcp;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
 
-/**
- * Created by jorgearaujo on 22/10/16.
- */
-public class udpMulticastReceiver extends Thread {
+public class UdpMulticastReceiver extends Thread {
 
 
     MulticastSocket socket;
 
 
-    public udpMulticastReceiver()
+    public UdpMulticastReceiver()
     {
 
         this.start();

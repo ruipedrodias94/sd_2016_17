@@ -1,14 +1,10 @@
 package tcp;
 
-import rmi.RmiInterface;
-
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.util.ArrayList;
 
@@ -37,8 +33,8 @@ public class TcpServerOne {
             System.out.println("[Ligacao TCP à escuta no host: "+host+" no porto "+porto+"]");
 
             //Threads de balanceamento de carga
-            new udpMulticastReceiver();
-            new udpMulticastSender(ClientConnections,"localhost",porto);
+            new UdpMulticastReceiver();
+            new UdpMulticastSender(ClientConnections,"localhost",porto);
 
 
 

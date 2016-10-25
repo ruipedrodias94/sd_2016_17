@@ -70,7 +70,6 @@ class Connection extends Thread {
                 e.printStackTrace();
             }
             clients.remove(this);
-
         }
 
     }
