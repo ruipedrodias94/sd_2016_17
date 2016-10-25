@@ -1,5 +1,6 @@
 package tcp;
 
+import resources.GetPropertiesValues;
 import rmi.RmiConnection;
 import rmi.RmiInterface;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.net.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * Created by jorgearaujo on 21/10/16.
@@ -33,12 +35,18 @@ public class UdpMulticastSender extends Thread {
 
     public void run()
     {
+
+        //Carrega Ficheiro de propriedades
+        GetPropertiesValues gpv = new GetPropertiesValues();
+        Properties prop = gpv.getProperties();
+
         //thread que vai mandar de tempos a tempos a informação relativa à carga do servidor
         //Sender
         MulticastSocket socket = null;
-        int port = 5000;
-        String group = "225.4.5.6";
-        int ttl = 1;
+        int port = Integer.parseInt(prop.getProperty("multicastPort"));
+        String group = prop.getProperty("multicastGroup");
+        int ttl = Integer.parseInt(prop.getProperty("multicastTTL"));
+
         while(true){
             try
             {
@@ -50,7 +58,7 @@ public class UdpMulticastSender extends Thread {
                 byte[] buf = numberClientsMessage.getBytes();
                 DatagramPacket msgOut = new DatagramPacket(buf,buf.length,InetAddress.getByName(group),port);
                 socket.send(msgOut);
-                Thread.sleep(10000);
+                Thread.sleep(Integer.parseInt(prop.getProperty("multicastRefreshTime")));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {

@@ -1,7 +1,10 @@
 package tcp;
 
+import resources.GetPropertiesValues;
+
 import java.io.IOException;
 import java.net.*;
+import java.util.Properties;
 
 public class UdpMulticastReceiver extends Thread {
 
@@ -22,9 +25,13 @@ public class UdpMulticastReceiver extends Thread {
     {
         //thread que vai receber a informação relativa à carga do servidor
         //Receiver
-        int port = 5000;
-        String group = "225.4.5.6";
-        int ttl = 1;
+
+        GetPropertiesValues gpv = new GetPropertiesValues();
+        Properties prop = gpv.getProperties();
+
+        int port = Integer.parseInt(prop.getProperty("multicastPort"));
+        String group = prop.getProperty("multicastGroup");
+        int ttl = Integer.parseInt(prop.getProperty("multicastTTL"));
 
 
         while(true){

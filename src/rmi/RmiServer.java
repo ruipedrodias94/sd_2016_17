@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import java.sql.Date;
 import java.util.HashMap;
+import java.util.Properties;
 
 import components.Auction;
 import components.Bid;
@@ -22,6 +23,7 @@ import components.Client;
 import components.Message;
 import database.*;
 import helpers.ProtocolParser;
+import resources.GetPropertiesValues;
 
 
 public class RmiServer extends UnicastRemoteObject implements RmiInterface {
@@ -282,17 +284,21 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     public static void main(String[] args) throws RemoteException, InterruptedException{
 
+        GetPropertiesValues gpv = new GetPropertiesValues();
+        Properties prop = gpv.getProperties();
+
+
         rmiServer = new RmiServer();
-        rmiServer = new RmiServer();
-        String remoteRMIHost = "localhost";
-        int remotermiPort = 1098;
+        String remoteRMIHost = prop.getProperty("rmi2host");
+        int remotermiPort = Integer.parseInt(prop.getProperty("rmi2port"));
+        int localRmiPort = Integer.parseInt(prop.getProperty("rmi1port"));
 
         while(true){
                 //vê se algum registo rmi está ligado naquele host e porto
                 if(checkRMIServer(remoteRMIHost,remotermiPort,500)==true)
                 {
                     //se não estiver liga-se como primario
-                    Registry registry = LocateRegistry.createRegistry(1098);
+                    Registry registry = LocateRegistry.createRegistry(localRmiPort);
                     registry.rebind("rmi_server", rmiServer);
                     System.out.println("Rmi Ligado");
                     System.out.println("Servidor Primário");
@@ -302,7 +308,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
                 {
                     //Se estiver fica como secuandário e vai tentando ligar-se
                     System.out.println("Servidor Secundário... Tentativa de religação como primário.");
-                    Thread.sleep(1000);
+                    Thread.sleep(Integer.parseInt(prop.getProperty("sleepTimeSecondaryRmi")));
                 }
         }
     }
