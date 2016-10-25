@@ -283,16 +283,15 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     public static void main(String[] args) throws RemoteException, InterruptedException{
 
         rmiServer = new RmiServer();
-        rmiServer = new RmiServer();
         String remoteRMIHost = "localhost";
-        int remotermiPort = 1098;
+        int remotermiPort = 1093;
 
         while(true){
                 //vê se algum registo rmi está ligado naquele host e porto
                 if(checkRMIServer(remoteRMIHost,remotermiPort,500)==true)
                 {
                     //se não estiver liga-se como primario
-                    Registry registry = LocateRegistry.createRegistry(1098);
+                    Registry registry = LocateRegistry.createRegistry(1099);
                     registry.rebind("rmi_server", rmiServer);
                     System.out.println("Rmi Ligado");
                     System.out.println("Servidor Primário");

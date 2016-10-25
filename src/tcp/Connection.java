@@ -2,6 +2,7 @@ package tcp;
 
 
 
+import components.Client;
 import helpers.ProtocolParser;
 import rmi.RmiConnection;
 import rmi.RmiInterface;
@@ -52,6 +53,8 @@ class Connection extends Thread {
         HashMap<String, String> messageParsed;
         String type;
         String answer;
+        Client client;
+        boolean result;
 
         while (true){
 
@@ -67,13 +70,66 @@ class Connection extends Thread {
                         type = messageParsed.get("type");
                         rmi = rmiConnection.connectToRmi();
 
+                        //TODO: Completar o "menu", criar as instancias de cada merda, e fazer o parse da string recebida
+                        //TODO: Aqui é para fazer a intrepertação das merdas
+
                         switch (type) {
                             case ("register"): {
                                 //chamada aqui para registar;
                                 System.out.println("Tentou fazer registo");
+                                outToClient.println("bom registo");
                                 break;
-
                             }
+
+                            case ("login") :{
+                                // Nao esquecer de criar o Cliente depois de intrepertar as merdas
+                                // Guardar o cliente
+                                // rmi.doLogin();
+                                break;
+                            }
+
+
+                            case ("create_auction"): {
+                                //rmi.createAuction();
+                                break;
+                            }
+
+                            case ("search_auction"): {
+                                //TODO: Este metodo deve ser revisto, pq acho que nao deve ter 3 merdas na mesma merda
+                                //rmi.searchAuction();
+                                break;
+                            }
+
+                            case ("detail_auction") :{
+                                // TODO: Este tb
+                                //rmi.searchAuction();
+                                break;
+                            }
+
+                            case ("my_auctions") :{
+                                //rmi.searchAuction();
+                                break;
+                            }
+
+                            case ("bid") :{
+                                //rmi.bid();
+                                break;
+                            }
+
+                            case ("edit_auction") :{
+                                //rmi.editAuction();
+                                break;
+                            }
+
+                            case ("online_users") :{
+                                //rmi.searchOnlineUsers();
+                                break;
+                            }
+
+                            default :{
+                                break;
+                            }
+
                         }
                     }catch (Exception e){
                         outToClient.println("parser problem, correct your string command");

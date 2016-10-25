@@ -19,7 +19,7 @@ public class TcpServerOne {
 
         //Dados Server TCP
         ArrayList <Connection> ClientConnections = new ArrayList <Connection>() ;
-        int porto = 8000;
+        int porto = 7000;
         String host = "localhost";
 
         //Socket de ligação ao Cliente
@@ -37,8 +37,6 @@ public class TcpServerOne {
             //Threads de balanceamento de carga
             new UdpMulticastReceiver();
             new UdpMulticastSender(ClientConnections,"localhost",porto);
-
-
 
             //Thread de ligação ao cliente TCP
             //noinspection InfiniteLoopStatement
