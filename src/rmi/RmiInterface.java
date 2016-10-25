@@ -2,6 +2,7 @@ package rmi;
 
 
 import components.Auction;
+import components.Bid;
 import components.Client;
 
 import java.rmi.Remote;
@@ -21,7 +22,8 @@ public interface RmiInterface extends Remote{
     boolean doLogin(Client client) throws RemoteException;
     ArrayList<Client> searchOnlineUsers() throws RemoteException;
     boolean createAuction(Auction auction) throws RemoteException;
-    ArrayList<Auction> searchAuction(int code) throws RemoteException;
-
+    ArrayList<Auction> searchAuction(int code, int mode) throws RemoteException;
+    boolean bid(Bid bid) throws RemoteException;
+    boolean editAuction(Auction auction) throws RemoteException;
 
 }

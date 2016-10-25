@@ -14,7 +14,9 @@ import java.sql.Date;
 import java.util.HashMap;
 
 import components.Auction;
+import components.Bid;
 import components.Client;
+import components.Message;
 import database.*;
 import helpers.ProtocolParser;
 
@@ -56,7 +58,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         }
     }
 
-
     /**
      * Fazer grande Login
      * @param client
@@ -70,12 +71,29 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
             while (connectDatabase.resultSet.next()){
+                putOnline(client);
                 return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * Método para colocar os utilizadores online a partir do momento em que é feito o login
+     * @param client
+     */
+
+    public void putOnline(Client client){
+        String update = "update USER online = '" + 1 + "' WHERE idUSER =" +client.getIdUser();
+
+        try {
+            connectDatabase.statement.executeUpdate(update);
+            connectDatabase.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -92,7 +110,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
 
             while (connectDatabase.resultSet.next()){
-                client = new Client(connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
+                client = new Client(connectDatabase.resultSet.getInt(1),connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
                 clients.add(client);
             }
         } catch (SQLException e) {
@@ -133,15 +151,34 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     /**
      * Procura o leilao por codigo do item
      * @param code
+     * @param mode 1 - Search Auctions / 2 - Detail of Auctions / 3 - My Auctions
      * @return
      */
 
-    public ArrayList<Auction> searchAuction(int code){
+    //TODO: Esta merda está mal, estou-me a baralhar todo fodasse. Acabar esta merda
+
+    public ArrayList<Auction> searchAuction(int code, int mode){
+
+        Auction auction;
+        Bid bid;
+        Message message;
 
         ArrayList<Auction> auctions = new ArrayList<>();
-        Auction auction;
+        ArrayList<Bid> bids = new ArrayList<>();
+        ArrayList<Message> messages = new ArrayList<>();
 
-        String search = "select * from AUCTION where idITEM = " + code +";";
+        String search = "";
+
+        String search1 = "select * from AUCTION, MESSAGE, BID where idITEM = " + code +" and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
+        String search2 = "select * from AUCTION, MESSAGE, BID where idAUCTION = " + code +" and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
+        String search3 = "select * from AUCTION, MESSAGE, BID where AUCTION.USER_idUSER = " + code +" and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
+        if (mode == 1){
+            search = search1;
+        }else if (mode == 2){
+            search = search2;
+        }else if (mode == 3){
+            search = search3;
+        }
 
         try{
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
@@ -149,9 +186,20 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
                 return auctions;
             }
             while (connectDatabase.resultSet.next()){
+                message = new Message(connectDatabase.resultSet.getInt(8), connectDatabase.resultSet.getString(9),
+                        connectDatabase.resultSet.getInt(10), connectDatabase.resultSet.getInt(11), connectDatabase.resultSet.getInt(12));
+
+                messages.add(message);
+
+                bid = new Bid(connectDatabase.resultSet.getInt(13), connectDatabase.resultSet.getInt(14),
+                        connectDatabase.resultSet.getInt(15), connectDatabase.resultSet.getInt(16));
+
+                bids.add(bid);
+
                 auction = new Auction(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getInt(2),
                         connectDatabase.resultSet.getString(3), connectDatabase.resultSet.getString(4),
-                        connectDatabase.resultSet.getDate(5), connectDatabase.resultSet.getInt(6), connectDatabase.resultSet.getInt(7));
+                        connectDatabase.resultSet.getDate(5), connectDatabase.resultSet.getInt(6), connectDatabase.resultSet.getInt(7), messages, bids);
+
                 auctions.add(auction);
             }
 
@@ -161,6 +209,50 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         return auctions;
     }
 
+
+    /**
+     * Fazer uma licitacao. Recebe um argumento do tipo BID
+     * @param bid
+     * @return
+     */
+
+    public boolean bid(Bid bid) {
+        String add = "insert into BID(idBID, amount, USER.idUSER, AUCTION.idAUCTION) values('" + bid.getIdBid() + "','" +
+                bid.getAmount() + "', '" + bid.getIdUser() + "', '" + bid.getIdAuction() + "');";
+        try {
+            connectDatabase.statement.executeUpdate(add);
+            connectDatabase.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connectDatabase.connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Edit auction. Recebe um parametro auction
+     * @param auction
+     * @return
+     */
+
+    public boolean editAuction(Auction auction){
+        String update = "update AUCTION set idITEM = '" + auction.getIdItem() + "', title = '" + auction.getTitle() + "', description = '" +
+                auction.getDescription() + "', amount = '" + auction.getAmount() + "', where idAUCTION = '" +auction.getIdAuction() +"';";
+
+        try {
+            connectDatabase.statement.executeUpdate(update);
+            connectDatabase.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
 
