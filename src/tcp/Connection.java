@@ -69,6 +69,8 @@ class Connection extends Thread {
 
                         switch (type) {
                             case ("register"): {
+                                //chamada aqui para registar;
+                                break;
 
                             }
                         }
