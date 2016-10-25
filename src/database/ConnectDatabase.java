@@ -1,18 +1,26 @@
 package database;
 
 
+import resources.GetPropertiesValues;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class ConnectDatabase {
+
+    GetPropertiesValues gpv = new GetPropertiesValues();
+    Properties prop = gpv.getProperties();
+
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     // Esta na minha maquina! Ter atencao para depois nao haver conflitos
-    static final String DB_URL = "jdbc:mysql://localhost:3306/sd_2016_17?user=root?autoReconnect=true&useSSL=false";
+    final String DB_URL = prop.getProperty("stringJDBC");
 
     //  Database credentials
-    static final String USER = "root";
-    static final String PASS = "root";
+
+     String USER = prop.getProperty("dbUser");
+     String PASS = prop.getProperty("dbPass");
 
     public Connection connection = null;
     public Statement statement = null;
