@@ -60,26 +60,28 @@ class Connection extends Thread {
             try
             {
                 inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
                 while((messageFromClient = inFromClient.readLine()) != null) {
-                    System.out.println(messageFromClient);
+
+                    try {
+                        System.out.println(messageFromClient);
                         messageParsed = ProtocolParser.parse(messageFromClient);
                         type = messageParsed.get("type");
                         rmi = rmiConnection.connectToRmi();
 
-                        switch(type)
-                        {
-                            case("register"):
-                            {
-                                answer = rmi.registerClient(messageParsed.get("username"),messageParsed.get("password"));
+                        switch (type) {
+                            case ("register"): {
+                                answer = rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"));
                                 outToClient.println(answer);
                             }
                         }
-
-
-
+                    }catch (Exception e){
+                        outToClient.println("parser problem, correct your string command");
+                        System.out.println("Penso que o problema esta no parser: " + e.getLocalizedMessage());
+                    }
                 }
-                outToClient.println("Escreve um commando decente");
-                } catch (Exception e) {
+            } catch (Exception e) {
+                System.out.println("Não sei");
                 e.printStackTrace();
             }
             clients.remove(this);
