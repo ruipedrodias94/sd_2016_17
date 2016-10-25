@@ -13,7 +13,7 @@ public class ProtocolParser {
 
     public static HashMap<String, String> parse(String line) {
         HashMap<String, String> g = new HashMap<>();
-        Arrays.stream(line.split(",")).map(s -> s.split(":")).forEach(i -> g.put(i[0].trim(), i[1].trim()));
+            Arrays.stream(line.split(",")).map(s -> s.split(":")).forEach(i -> g.put(i[0].trim(), i[1].trim()));
         return g;
     }
 

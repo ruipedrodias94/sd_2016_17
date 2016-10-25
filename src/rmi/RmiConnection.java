@@ -1,5 +1,8 @@
 package rmi;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 
@@ -9,21 +12,23 @@ public class RmiConnection {
     int numTentativas = 0;
     int rmiPort = 1099;
 
-    public RmiConnection(RmiInterface clienteRmi){
+
+
+    public RmiConnection(RmiInterface clienteRmi) {
         this.clienteRmi = clienteRmi;
     }
 
-    public RmiInterface connectToRmi(){
+    public RmiInterface connectToRmi() {
         numTentativas = 30;
-        while (numTentativas >= 0)
-        {
+        while (numTentativas >= 0) {
             try {
                 System.getProperties().put("java.security.policy", "security.policy");
                 System.setSecurityManager(new RMISecurityManager());
 
-                clienteRmi = (RmiInterface) LocateRegistry.getRegistry("localhost", rmiPort).lookup("rmi_server");
-                numTentativas = 30;
-                break;
+                   clienteRmi = (RmiInterface) LocateRegistry.getRegistry("localhost", rmiPort).lookup("rmi_server");
+                   numTentativas = 30;
+
+
 
             } catch (Exception e) {
                 System.out.println("Nao encontrou o servidor RMI tentando ligar em " + numTentativas + "s");
@@ -38,5 +43,8 @@ public class RmiConnection {
 
         return clienteRmi;
     }
-}
 
+
+
+
+}

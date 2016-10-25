@@ -1,5 +1,8 @@
 package rmi;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -162,28 +165,50 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
 
+    public static boolean checkRMIServer(String address, int port, int numtry) {
+        int tries = 0;
+        boolean status = false;
+        while (tries < numtry) {
+            try {
+                Socket testSocket = new Socket();
+                testSocket.connect(new InetSocketAddress(address, port), 500);
+                status = false;
+                testSocket.close();
+            } catch (IOException e) {
+                status = true;
+                break;
+            }
+            tries++;
+        }
+        return status;
+    }
 
 
 
-    public static void main(String[] args) throws RemoteException {
+
+
+    public static void main(String[] args) throws RemoteException, InterruptedException {
 
         rmiServer = new RmiServer();
+        String remoteRMIHost = "localhost";
+        int remotermiPort = 1098;
+
 
         while(true){
-            try {
-                Registry registry = LocateRegistry.createRegistry(1099);
-                registry.rebind("rmi_server", rmiServer);
-                System.out.println("Rmi Ligado");
-                System.out.println("Servidor Primário");
+
+                if(checkRMIServer(remoteRMIHost,remotermiPort,500)==true)
+                {
+                    Registry registry = LocateRegistry.createRegistry(1098);
+                    registry.rebind("rmi_server", rmiServer);
+                    System.out.println("Rmi Ligado");
+                    System.out.println("Servidor Primário");
                 break;
-            } catch (RemoteException e) {
-                System.out.println("O resgisto está em uso. --> Servidor Secundário");
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
                 }
-            }
+                else
+                {
+                    System.out.println("Servidor Secundário... Tentativa de religação como primário.");
+                    Thread.sleep(1000);
+                }
         }
     }
 }
