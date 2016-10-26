@@ -185,6 +185,9 @@ class Connection extends Thread {
             rmiHost = prop.getProperty("rmi2host");
         }
 
+        System.out.println(rmiHost);
+        System.out.println(rmiPort);
+
         RmiInterface rmiInterface = null;
 
         int numTentativas = 30;
