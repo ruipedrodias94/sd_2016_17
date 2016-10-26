@@ -21,7 +21,6 @@ class Connection extends Thread {
     PrintWriter outToClient;
     BufferedReader inFromClient = null;
     Socket clientSocket;
-    RmiInterface rmi;
     ArrayList<Connection> clients = null;
 
 
@@ -52,6 +51,8 @@ class Connection extends Thread {
         Client client = null;
         Auction auction;
         boolean result;
+        RmiInterface rmi = null;
+
 
         while (true) {
 
@@ -144,7 +145,7 @@ class Connection extends Thread {
                             case ("logout"): {
                                 //rmi = rmiConnection.connectToRmi();
 
-                                rmi.putOffline(client);
+                                //rmi.putOffline(client);
                                 client = null;
                                 break;
                             }
@@ -179,7 +180,7 @@ class Connection extends Thread {
 
         String rmiHost;
 
-        boolean runningRMI = true;
+        boolean runningRMI = false;
 
         if (runningRMI){
             rmiHost = prop.getProperty("rmi1host");
@@ -214,7 +215,6 @@ class Connection extends Thread {
                 }
             }
         }
-
         return rmiInterface;
     }
 }
