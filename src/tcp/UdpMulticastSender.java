@@ -1,15 +1,9 @@
 package tcp;
 
 import resources.GetPropertiesValues;
-import rmi.RmiConnection;
-import rmi.RmiInterface;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.*;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Properties;
 

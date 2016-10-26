@@ -3,6 +3,8 @@ package rmi;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.rmi.AccessException;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -40,7 +42,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     // TODO: REVER A MERDA DA BASE DE DADOS PUTA QUE PARIU
 
     /**
-     *
      * @param username
      * @param password
      * @return
@@ -140,6 +141,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     /**
      * Update user status
+     *
      * @param client
      */
 
@@ -371,6 +373,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     /**
      * Send a message to a auction
+     *
      * @param message
      * @return
      */
@@ -395,7 +398,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
 
-
     //funcao para ver se o server rmi esta ligado num determinado host e porto
     public static boolean checkRMIServer(String address, int port, int numtry) {
         int tries = 0;
@@ -416,34 +418,62 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
 
-
-    public static void main(String[] args) throws RemoteException, InterruptedException{
+    public static void main(String[] args) {
 
         GetPropertiesValues gpv = new GetPropertiesValues();
         Properties prop = gpv.getProperties();
 
 
-        rmiServer = new RmiServer();
-        String remoteRMIHost = prop.getProperty("rmi2host");
-        int remotermiPort = Integer.parseInt(prop.getProperty("rmi2port"));
-        int localRmiPort = Integer.parseInt(prop.getProperty("rmi1port"));
+        try {
+            rmiServer = new RmiServer();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
-        while(true){
+        int rmiPort = Integer.parseInt(prop.getProperty("rmi1Port"));
+
+        int rmiHost;
+
+        boolean runningRMI = true;
+
+        if (runningRMI) {
+            rmiHost = Integer.parseInt(prop.getProperty("rmi1host"));
+        } else {
+            rmiHost = Integer.parseInt(prop.getProperty("rmi2host"));
+        }
+
+        while (true) {
             //vê se algum registo rmi está ligado naquele host e porto
-            if(checkRMIServer(remoteRMIHost,remotermiPort,500)==true)
+
+            //if(checkRMIServer(remoteRMIHost,remotermiPort,500)==true)
             {
                 //se não estiver liga-se como primario
-                Registry registry = LocateRegistry.createRegistry(localRmiPort);
-                registry.rebind("rmi_server", rmiServer);
-                System.out.println("RMI ligado como servidor primário com registo no porto: " +localRmiPort);
-                break;
+
+                try {
+
+                    System.getProperties().put("java.security.policy", "security.policy");
+                    System.setSecurityManager(new RMISecurityManager());
+
+                    System.out.println("RMI ligado como servidor primário com registo no porto: " + rmiPort);
+                    System.out.println("HOST: " + rmiHost);
+
+                    LocateRegistry.createRegistry(rmiPort).rebind("rmi_server", rmiServer);
+
+                    break;
+                } catch (AccessException e) {
+                    e.printStackTrace();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+
+                    System.out.println("Servidor Secundário... Tentativa de religação como primário.");
+                    try {
+                        Thread.sleep(Integer.parseInt(prop.getProperty("sleepTimeSecondaryRmi")));
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             }
-            else
-            {
-                //Se estiver fica como secuandário e vai tentando ligar-se
-                System.out.println("Servidor Secundário... Tentativa de religação como primário.");
-                Thread.sleep(Integer.parseInt(prop.getProperty("sleepTimeSecondaryRmi")));
-            }
+
         }
     }
 }

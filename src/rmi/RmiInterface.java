@@ -30,4 +30,5 @@ public interface RmiInterface extends Remote{
     Client getClient(String username, String password) throws RemoteException;
     boolean message(Message message) throws RemoteException;
     void putOffline(Client client) throws RemoteException;
+
 }

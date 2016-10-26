@@ -5,15 +5,14 @@ package tcp;
 import components.Auction;
 import components.Client;
 import helpers.ProtocolParser;
-import rmi.RmiConnection;
+import resources.GetPropertiesValues;
 import rmi.RmiInterface;
 
 import java.io.*;
 import java.net.*;
-import java.rmi.RemoteException;
-import java.sql.*;
+import java.rmi.RMISecurityManager;
+import java.rmi.registry.LocateRegistry;
 import java.sql.Date;
-import java.text.ParseException;
 import java.util.*;
 
 
@@ -53,7 +52,6 @@ class Connection extends Thread {
         Client client = null;
         Auction auction;
         boolean result;
-        RmiConnection rmiConnection = null;
 
         while (true) {
 
@@ -70,8 +68,8 @@ class Connection extends Thread {
                         switch (type) {
                             case ("register"): {
 
-                                rmi = rmiConnection.connectToRmi();
-                                
+                                rmi = invoqueRMI();
+
                                 if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"))) {
                                     outToClient.println("type: register, ok: true");
                                 } else {
@@ -83,11 +81,9 @@ class Connection extends Thread {
                             case ("login"): {
 
                                 // Guardar o cliente
-                                rmi = rmiConnection.connectToRmi();
 
                                 client = new Client(rmi.getClient(messageParsed.get("username"), messageParsed.get("password")).getIdUser(),
                                         messageParsed.get("username"), messageParsed.get("password"));
-
 
                                 if (rmi.doLogin(client) == true) {
                                     outToClient.println("type: login, ok: true");
@@ -142,7 +138,7 @@ class Connection extends Thread {
                             }
 
                             case ("logout"): {
-                                rmi = rmiConnection.connectToRmi();
+                                //rmi = rmiConnection.connectToRmi();
 
                                 rmi.putOffline(client);
                                 client = null;
@@ -166,5 +162,52 @@ class Connection extends Thread {
             }
             clients.remove(this);
         }
+    }
+
+
+    public RmiInterface invoqueRMI(){
+
+
+        GetPropertiesValues gpv = new GetPropertiesValues();
+        Properties prop = gpv.getProperties();
+
+        int rmiPort = Integer.parseInt(prop.getProperty("rmi1port"));
+
+        String rmiHost;
+
+        boolean runningRMI = true;
+
+        if (runningRMI){
+            rmiHost = prop.getProperty("rmi1host");
+        }
+
+        else{
+            rmiHost = prop.getProperty("rmi2host");
+        }
+
+        RmiInterface rmiInterface = null;
+
+        int numTentativas = 30;
+
+        while(numTentativas>=0){
+
+            try {
+                System.getProperties().put("java.security.policy", "security.policy");
+                System.setSecurityManager(new RMISecurityManager());
+                rmiInterface = (RmiInterface) LocateRegistry.getRegistry(rmiHost, rmiPort).lookup("rmi_server");
+                numTentativas = 30;
+                break;
+            } catch (Exception e) {
+                System.out.println("Nao encontrou o servidor RMI tentando ligar em " + numTentativas + "s");
+                try {
+                    Thread.sleep(1000);
+                    numTentativas--;
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
+        return rmiInterface;
     }
 }
