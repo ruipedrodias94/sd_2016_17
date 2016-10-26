@@ -74,7 +74,6 @@ class Connection extends Thread {
                         System.out.println(messageFromClient);
                         messageParsed = ProtocolParser.parse(messageFromClient);
                         type = messageParsed.get("type");
-                        rmi = rmiConnection.connectToRmi();
 
                         //TODO: Completar o "menu", criar as instancias , e fazer o parse da string recebida
                         //TODO: Aqui é para fazer a intrepertação das strings
@@ -84,14 +83,16 @@ class Connection extends Thread {
                                 //chamada aqui para registar;
                                 client = new Client(1,messageParsed.get("username"),messageParsed.get("password"));
 
+                                rmi = rmiConnection.connectToRmi();
+
                                 if(rmi.registerClient(client)==true)
                                 {
                                     outToClient.println("type: register, ok: true");
                                 }
                                 else
-                                    {
-                                        outToClient.println("type: register, ok: false");
-                                    }
+                                {
+                                    outToClient.println("type: register, ok: false");
+                                }
                                 break;
                             }
 
@@ -105,9 +106,9 @@ class Connection extends Thread {
                                     userID = rmi.returnUserID(client);
                                 }
                                 else
-                                    {
-                                        outToClient.println("type: login, ok: true");
-                                    }
+                                {
+                                    outToClient.println("type: login, ok: true");
+                                }
                                 break;
                             }
 
@@ -120,9 +121,9 @@ class Connection extends Thread {
                                     outToClient.println("type : create_auction , ok: true");
                                 }
                                 else
-                                    {
-                                        outToClient.println("type : create_auction , ok: false");
-                                    }
+                                {
+                                    outToClient.println("type : create_auction , ok: false");
+                                }
                                 break;
                             }
 
@@ -170,7 +171,7 @@ class Connection extends Thread {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Não sei");
+                outToClient.println("string null repeat please");
                 e.printStackTrace();
             }
             clients.remove(this);

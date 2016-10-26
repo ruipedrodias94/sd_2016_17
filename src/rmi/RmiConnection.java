@@ -31,13 +31,14 @@ public class RmiConnection {
         rmiPort = Integer.parseInt(prop.getProperty("rmi1port"));
 
         numTentativas = 30;
-        //while(numTentativas>=0){ Este ciclo ta fodido
+        while(numTentativas>=0){ //Este ciclo ta fodido
             try {
                 System.getProperties().put("java.security.policy", "security.policy");
                 System.setSecurityManager(new RMISecurityManager());
                 clienteRmi = (RmiInterface) LocateRegistry.getRegistry("localhost", rmiPort).lookup("rmi_server");
 
-
+                numTentativas = 30;
+                break;
             } catch (Exception e) {
                 System.out.println("Nao encontrou o servidor RMI tentando ligar em " + numTentativas + "s");
                 try {
@@ -47,12 +48,8 @@ public class RmiConnection {
                     e1.printStackTrace();
                 }
             }
-        //}
+        }
 
         return clienteRmi;
     }
-
-
-
-
 }

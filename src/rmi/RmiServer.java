@@ -88,6 +88,32 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
     /**
+     * Método que nos retorna o cliente para guardar na conexão. Mais fácil para depois associar sempre o cliente à operação
+     * @param username
+     * @param password
+     * @return
+     */
+
+    public Client getClient(String username, String password){
+
+        Client client = null;
+
+        String search = "select * from USER where userName ='" + username
+                + "'and password='" + password +"';";
+
+        try {
+            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
+            while (connectDatabase.resultSet.next()){
+                client = new Client(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
+            }
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            System.out.println("client not found");
+        }
+        return client;
+    }
+
+    /**
      * Método para colocar os utilizadores online a partir do momento em que é feito o login
      * @param client
      */
@@ -182,13 +208,10 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     /**
      * Procura o leilao por codigo do item
      * @param code
-     * @param mode 1 - Search Auctions / 2 - Detail of Auctions / 3 - My Auctions
      * @return
      */
 
-    //TODO: Esta merda está mal, estou-me a baralhar todo fodasse. Acabar esta merda
-
-    public ArrayList<Auction> searchAuction(int code, int mode){
+    public ArrayList<Auction> searchAuction(int code){
 
         Auction auction;
         Bid bid;
@@ -198,18 +221,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         ArrayList<Bid> bids = new ArrayList<>();
         ArrayList<Message> messages = new ArrayList<>();
 
-        String search = "";
-
-        String search1 = "select * from AUCTION, MESSAGE, BID where idITEM = " + code +" and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
-        String search2 = "select * from AUCTION, MESSAGE, BID where idAUCTION = " + code +" and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
-        String search3 = "select * from AUCTION, MESSAGE, BID where AUCTION.USER_idUSER = " + code +" and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
-        if (mode == 1){
-            search = search1;
-        }else if (mode == 2){
-            search = search2;
-        }else if (mode == 3){
-            search = search3;
-        }
+        String search = "select * from AUCTION, MESSAGE, BID where idITEM = " + code +" and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
 
         try{
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
