@@ -40,15 +40,14 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     // TODO: REVER A MERDA DA BASE DE DADOS PUTA QUE PARIU
 
     /**
-     * Registar Cliente
      *
-     * @param client
+     * @param username
+     * @param password
      * @return
      */
+    public synchronized boolean registerClient(String username, String password) {
 
-    public synchronized boolean registerClient(Client client) {
-
-        String add = "insert into USER (userName, password, online) values ('" + client.getUserName() + "', '" + client.getPassword() + "', " + 0 + ");";
+        String add = "insert into USER (userName, password, online) values ('" + username + "', '" + password + "', " + 0 + ");";
 
         try {
             connectDatabase.statement.executeUpdate(add);

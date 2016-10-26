@@ -27,15 +27,25 @@ public class RmiConnection {
         GetPropertiesValues gpv = new GetPropertiesValues();
         Properties prop = gpv.getProperties();
 
-        rmiHost = prop.getProperty("rmi1host");
+        //rmiHost = prop.getProperty("rmi1host");
         rmiPort = Integer.parseInt(prop.getProperty("rmi1port"));
+
+        boolean runningRMI = true;
+
+        if (runningRMI){
+            rmiHost = prop.getProperty("rmi1host");
+        }
+
+        else{
+            rmiHost = prop.getProperty("rmi2host");
+        }
 
         numTentativas = 30;
         while(numTentativas>=0){ //Este ciclo ta fodido
             try {
                 System.getProperties().put("java.security.policy", "security.policy");
                 System.setSecurityManager(new RMISecurityManager());
-                clienteRmi = (RmiInterface) LocateRegistry.getRegistry("localhost", rmiPort).lookup("rmi_server");
+                clienteRmi = (RmiInterface) LocateRegistry.getRegistry(rmiHost, rmiPort).lookup("rmi_server");
 
                 numTentativas = 30;
                 break;

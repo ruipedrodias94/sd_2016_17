@@ -77,7 +77,7 @@ class Connection extends Thread {
                                  */
 
 
-                                if (rmi.registerClient(client) == true) {
+                                if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password")) == true) {
                                     outToClient.println("type: register, ok: true");
                                 } else {
                                     outToClient.println("type: register, ok: false");
