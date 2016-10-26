@@ -23,7 +23,6 @@ class Connection extends Thread {
     BufferedReader inFromClient = null;
     Socket clientSocket;
     RmiInterface rmi;
-    RmiConnection rmiConnection;
     ArrayList<Connection> clients = null;
 
 
@@ -47,13 +46,14 @@ class Connection extends Thread {
 
     //Thread que vai tratar do pedido do cliente
     public void run() {
-        //rmiConnection = new RmiConnection(rmi);
+
         String messageFromClient;
         HashMap<String, String> messageParsed;
         String type;
         Client client = null;
         Auction auction;
         boolean result;
+        RmiConnection rmiConnection = null;
 
         while (true) {
 
@@ -71,13 +71,8 @@ class Connection extends Thread {
                             case ("register"): {
 
                                 rmi = rmiConnection.connectToRmi();
-
-                                /**
-                                 * Get the cliente here
-                                 */
-
-
-                                if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password")) == true) {
+                                
+                                if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"))) {
                                     outToClient.println("type: register, ok: true");
                                 } else {
                                     outToClient.println("type: register, ok: false");

@@ -18,16 +18,13 @@ public class RmiConnection {
 
 
 
-    public RmiConnection(RmiInterface clienteRmi) {
-        this.clienteRmi = clienteRmi;
-    }
+    public RmiConnection(){}
 
     public RmiInterface connectToRmi() {
 
         GetPropertiesValues gpv = new GetPropertiesValues();
         Properties prop = gpv.getProperties();
 
-        //rmiHost = prop.getProperty("rmi1host");
         rmiPort = Integer.parseInt(prop.getProperty("rmi1port"));
 
         boolean runningRMI = true;
