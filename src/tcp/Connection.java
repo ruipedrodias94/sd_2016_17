@@ -70,6 +70,10 @@ class Connection extends Thread {
 
                                 rmi = invoqueRMI();
 
+                                if (rmi!=null){
+                                    System.out.println("Epah que qualidade, criaste uma interface com sucesso.");
+                                }
+
                                 if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"))) {
                                     outToClient.println("type: register, ok: true");
                                 } else {

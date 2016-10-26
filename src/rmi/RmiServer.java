@@ -53,11 +53,13 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         try {
             connectDatabase.statement.executeUpdate(add);
             connectDatabase.connection.commit();
+            System.out.println("DEU CRL");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             try {
                 connectDatabase.connection.rollback();
+                System.out.println("NAO DEU CRL");
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
