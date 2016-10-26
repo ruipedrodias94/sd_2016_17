@@ -75,8 +75,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     //falta verificar quando o username e a password não estão certos. faz login na mesma
     public boolean doLogin(Client client) {
-        String search = "select * from USER where userName ='" + client.getUserName()
-                + "'and password='" + client.getPassword() + "';";
+        String search = "select * from USER where userName = '" + String.valueOf(client.getUserName())
+                + "' and password = '" + String.valueOf(client.getPassword()) + "';";
 
         try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
@@ -124,7 +124,28 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public void putOnline(Client client) {
-        String update = "update USER online = " + 1 + " WHERE idUSER =" + client.getIdUser();
+        String update = "update USER set online = " + 1 + " WHERE idUSER = " + String.valueOf(client.getIdUser());
+
+        try {
+            connectDatabase.statement.executeUpdate(update);
+            connectDatabase.connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connectDatabase.connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Update user status
+     * @param client
+     */
+
+    public void putOffline(Client client) {
+        String update = "update USER set online = " + 0 + " WHERE idUSER = " + String.valueOf(client.getIdUser());
 
         try {
             connectDatabase.statement.executeUpdate(update);
