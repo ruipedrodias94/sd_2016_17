@@ -70,6 +70,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      * @return
      */
 
+    //falta verificar quando o username e a password não estão certos. faz login na mesma
     public boolean doLogin(Client client){
         String search = "select * from USER where userName ='" + client.getUserName()
                 + "'and password='" + client.getPassword() +"';";
@@ -92,7 +93,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public void putOnline(Client client){
-        String update = "update USER online = '" + 1 + "' WHERE idUSER =" +client.getIdUser();
+        String update = "update USER online = " + 1 + " WHERE idUSER =" +client.getIdUser();
 
         try {
             connectDatabase.statement.executeUpdate(update);
@@ -124,6 +125,30 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         }
 
         return clients;
+    }
+
+
+
+    /**
+     * Procurar os utilizadores, depois temos de ver como postar os online e os offline
+     * @return
+     */
+
+    public int returnUserID(Client client){
+        String search = "select * from USER where userName = '"+client.getUserName()+"' AND password = '"+client.getPassword()+"';";
+        int id = 0;
+
+        try{
+            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
+
+            while (connectDatabase.resultSet.next()){
+                id = connectDatabase.resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
     }
 
     /**
@@ -300,8 +325,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
                     //se não estiver liga-se como primario
                     Registry registry = LocateRegistry.createRegistry(localRmiPort);
                     registry.rebind("rmi_server", rmiServer);
-                    System.out.println("Rmi Ligado");
-                    System.out.println("Servidor Primário");
+                    System.out.println("RMI ligado como servidor primário com registo no porto: "+localRmiPort);
                 break;
                 }
                 else

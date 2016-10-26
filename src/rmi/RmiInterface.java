@@ -25,5 +25,6 @@ public interface RmiInterface extends Remote{
     ArrayList<Auction> searchAuction(int code, int mode) throws RemoteException;
     boolean bid(Bid bid) throws RemoteException;
     boolean editAuction(Auction auction) throws RemoteException;
+    int returnUserID(Client client)throws RemoteException;
 
 }

@@ -54,7 +54,7 @@ public class UdpMulticastSender extends Thread {
                 socket = new MulticastSocket(port);
                 socket.setTimeToLive(2);
 
-                String numberClientsMessage = " servidor host: "+host+" no porto: "+porto+" Número de clientes -->"+clients.size();
+                String numberClientsMessage = " servidor: "+host+" no porto: "+porto+" Número de clientes --> "+clients.size();
                 byte[] buf = numberClientsMessage.getBytes();
                 DatagramPacket msgOut = new DatagramPacket(buf,buf.length,InetAddress.getByName(group),port);
                 socket.send(msgOut);

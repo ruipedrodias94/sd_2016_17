@@ -36,7 +36,6 @@ public class TcpServerOne {
         //waiting for client connections
         try
         {
-            //Estatico apenas para testesw
             InetAddress hostAdress = InetAddress.getByName(host);
             listenSocket = new ServerSocket(porto,500,hostAdress);
             System.out.println("[Ligacao TCP à escuta no host: "+host+" no porto :"+porto+"]");

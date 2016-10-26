@@ -2,6 +2,7 @@ package tcp;
 
 
 
+import components.Auction;
 import components.Client;
 import helpers.ProtocolParser;
 import rmi.RmiConnection;
@@ -11,6 +12,7 @@ import java.io.*;
 import java.net.*;
 import java.rmi.RemoteException;
 import java.sql.*;
+import java.sql.Date;
 import java.text.ParseException;
 import java.util.*;
 
@@ -23,6 +25,9 @@ class Connection extends Thread {
     RmiInterface rmi;
     RmiConnection rmiConnection;
     ArrayList<Connection> clients = null;
+
+    //assim que se faça o login atribui-se o userID nesta variável
+    int userID;
 
 
     public Connection(Socket clientSockt, ArrayList<Connection> clients)
@@ -54,6 +59,7 @@ class Connection extends Thread {
         String type;
         String answer;
         Client client;
+        Auction auction;
         boolean result;
 
         while (true){
@@ -70,27 +76,53 @@ class Connection extends Thread {
                         type = messageParsed.get("type");
                         rmi = rmiConnection.connectToRmi();
 
-                        //TODO: Completar o "menu", criar as instancias de cada merda, e fazer o parse da string recebida
-                        //TODO: Aqui é para fazer a intrepertação das merdas
+                        //TODO: Completar o "menu", criar as instancias , e fazer o parse da string recebida
+                        //TODO: Aqui é para fazer a intrepertação das strings
 
                         switch (type) {
                             case ("register"): {
                                 //chamada aqui para registar;
-                                System.out.println("Tentou fazer registo");
-                                outToClient.println("bom registo");
+                                client = new Client(1,messageParsed.get("username"),messageParsed.get("password"));
+
+                                if(rmi.registerClient(client)==true)
+                                {
+                                    outToClient.println("type: register, ok: true");
+                                }
+                                else
+                                    {
+                                        outToClient.println("type: register, ok: false");
+                                    }
                                 break;
                             }
 
                             case ("login") :{
                                 // Nao esquecer de criar o Cliente depois de intrepertar as merdas
                                 // Guardar o cliente
-                                // rmi.doLogin();
+                                client = new Client(1,messageParsed.get("username"),messageParsed.get("password"));
+                                if(rmi.doLogin(client)==true)
+                                {
+                                    outToClient.println("type: login, ok: true");
+                                    userID = rmi.returnUserID(client);
+                                }
+                                else
+                                    {
+                                        outToClient.println("type: login, ok: true");
+                                    }
                                 break;
                             }
 
 
                             case ("create_auction"): {
-                                //rmi.createAuction();
+                                auction = new Auction(Integer.parseInt(messageParsed.get("code")),messageParsed.get("title"),messageParsed.get("description"), Date.valueOf(messageParsed.get("deadline")),Integer.parseInt(messageParsed.get("amount")));
+                                auction.setIdUser(userID);
+                                if(rmi.createAuction(auction)==true)
+                                {
+                                    outToClient.println("type : create_auction , ok: true");
+                                }
+                                else
+                                    {
+                                        outToClient.println("type : create_auction , ok: false");
+                                    }
                                 break;
                             }
 
@@ -132,6 +164,7 @@ class Connection extends Thread {
 
                         }
                     }catch (Exception e){
+                        e.printStackTrace();
                         outToClient.println("parser problem, correct your string command");
                         System.out.println("Penso que o problema esta no parser: " + e.getLocalizedMessage());
                     }

@@ -47,7 +47,7 @@ public class ConnectDatabase {
         }
 
         if (connection != null){
-            System.out.println("Success");
+            System.out.println("Connection to the database successfull");
         }else{
             //System.out.println("Falha a conectar a base de dados");
         }
