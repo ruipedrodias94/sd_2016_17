@@ -435,7 +435,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
                 //se não estiver liga-se como primario
                 Registry registry = LocateRegistry.createRegistry(localRmiPort);
                 registry.rebind("rmi_server", rmiServer);
-                System.out.println("RMI ligado como servidor primário com registo no porto: "+localRmiPort);
+                System.out.println("RMI ligado como servidor primário com registo no porto: " +localRmiPort);
                 break;
             }
             else

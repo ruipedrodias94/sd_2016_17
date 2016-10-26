@@ -47,7 +47,7 @@ class Connection extends Thread {
 
     //Thread que vai tratar do pedido do cliente
     public void run() {
-        rmiConnection = new RmiConnection(rmi);
+        //rmiConnection = new RmiConnection(rmi);
         String messageFromClient;
         HashMap<String, String> messageParsed;
         String type;
@@ -99,6 +99,7 @@ class Connection extends Thread {
                                 } else {
                                     outToClient.println("type: login, ok: false");
                                 }
+
                                 break;
                             }
 

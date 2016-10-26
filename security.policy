@@ -1,5 +1,7 @@
-grant {
-// Allow everything for now
-permission java.security.AllPermission;
-};
 
+grant {
+    permission java.security.AllPermission;
+    permission java.net.SocketPermission "localhost:1099", "connect, resolve";
+    permission java.net.SocketPermission "192.168.1.64:1099", "connect, resolve";
+
+};
