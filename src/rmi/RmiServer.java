@@ -36,21 +36,23 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         connectDatabase = new ConnectDatabase();
     }
 
-    // add some functional methods here
+
+    // TODO: REVER A MERDA DA BASE DE DADOS PUTA QUE PARIU
 
     /**
      * Registar Cliente
+     *
      * @param client
      * @return
      */
 
-    public synchronized boolean registerClient(Client client){
+    public synchronized boolean registerClient(Client client) {
 
-        String add = "insert into USER (userName, password, online) values ('"+client.getUserName()+"', '"+ client.getPassword()+"', "+ 0+");";
+        String add = "insert into USER (userName, password, online) values ('" + client.getUserName() + "', '" + client.getPassword() + "', " + 0 + ");";
 
         try {
             connectDatabase.statement.executeUpdate(add);
-            connectDatabase.commit();
+            connectDatabase.connection.commit();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,18 +68,19 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     /**
      * Fazer grande Login
+     *
      * @param client
      * @return
      */
 
     //falta verificar quando o username e a password não estão certos. faz login na mesma
-    public boolean doLogin(Client client){
+    public boolean doLogin(Client client) {
         String search = "select * from USER where userName ='" + client.getUserName()
-                + "'and password='" + client.getPassword() +"';";
+                + "'and password='" + client.getPassword() + "';";
 
         try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
-            while (connectDatabase.resultSet.next()){
+            while (connectDatabase.resultSet.next()) {
                 putOnline(client);
                 return true;
             }
@@ -89,21 +92,22 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     /**
      * Método que nos retorna o cliente para guardar na conexão. Mais fácil para depois associar sempre o cliente à operação
+     *
      * @param username
      * @param password
      * @return
      */
 
-    public Client getClient(String username, String password){
+    public Client getClient(String username, String password) {
 
         Client client = null;
 
         String search = "select * from USER where userName ='" + username
-                + "'and password='" + password +"';";
+                + "'and password='" + password + "';";
 
         try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
-            while (connectDatabase.resultSet.next()){
+            while (connectDatabase.resultSet.next()) {
                 client = new Client(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
             }
         } catch (SQLException e) {
@@ -115,35 +119,42 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     /**
      * Método para colocar os utilizadores online a partir do momento em que é feito o login
+     *
      * @param client
      */
 
-    public void putOnline(Client client){
-        String update = "update USER online = " + 1 + " WHERE idUSER =" +client.getIdUser();
+    public void putOnline(Client client) {
+        String update = "update USER online = " + 1 + " WHERE idUSER =" + client.getIdUser();
 
         try {
             connectDatabase.statement.executeUpdate(update);
-            connectDatabase.commit();
+            connectDatabase.connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connectDatabase.connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
     /**
      * Procurar os utilizadores, depois temos de ver como postar os online e os offline
+     *
      * @return
      */
 
-    public ArrayList<Client> searchOnlineUsers(){
+    public ArrayList<Client> searchOnlineUsers() {
         String search = "select * from USER where online = 1;";
         ArrayList<Client> clients = new ArrayList<>();
         Client client;
 
-        try{
+        try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
 
-            while (connectDatabase.resultSet.next()){
-                client = new Client(connectDatabase.resultSet.getInt(1),connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
+            while (connectDatabase.resultSet.next()) {
+                client = new Client(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
                 clients.add(client);
             }
         } catch (SQLException e) {
@@ -154,43 +165,21 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
 
-
-    /**
-     * Procurar os utilizadores, depois temos de ver como postar os online e os offline
-     * @return
-     */
-
-    public int returnUserID(Client client){
-        String search = "select * from USER where userName = '"+client.getUserName()+"' AND password = '"+client.getPassword()+"';";
-        int id = 0;
-
-        try{
-            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
-
-            while (connectDatabase.resultSet.next()){
-                id = connectDatabase.resultSet.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return id;
-    }
-
     /**
      * Cria leilao
+     *
      * @param auction
      * @return
      */
-    public synchronized boolean createAuction(Auction auction){
+    public synchronized boolean createAuction(Auction auction) {
 
-        try{
+        try {
             String add = "insert into AUCTION(idItem, title, description, deadline, amount, USER_idUSER) values('"
-                    + auction.getIdItem()+ "', '" + auction.getTitle()+ "', '" + auction.getDescription() +"', '"
-                    + auction.getDeadline() + "', '" + auction.getAmount()+ "', '" + auction.getIdUser() + "');";
+                    + auction.getIdItem() + "', '" + auction.getTitle() + "', '" + auction.getDescription() + "', '"
+                    + auction.getDeadline() + "', '" + auction.getAmount() + "', '" + auction.getIdUser() + "');";
 
             connectDatabase.statement.executeUpdate(add);
-            connectDatabase.commit();
+            connectDatabase.connection.commit();
 
             return true;
         } catch (SQLException e) {
@@ -207,11 +196,12 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     /**
      * Procura o leilao por codigo do item
+     *
      * @param code
-     * @return
+     * @return auctions
      */
 
-    public ArrayList<Auction> searchAuction(int code){
+    public ArrayList<Auction> searchAuction(int code) {
 
         Auction auction;
         Bid bid;
@@ -221,15 +211,15 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         ArrayList<Bid> bids = new ArrayList<>();
         ArrayList<Message> messages = new ArrayList<>();
 
-        String search = "select * from AUCTION, MESSAGE, BID where idITEM = " + code +" and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
+        String search = "select * from AUCTION, MESSAGE, BID where idITEM = " + code + " and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
 
-        try{
+        try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
-            if (!connectDatabase.resultSet.next()){
+            if (!connectDatabase.resultSet.next()) {
                 return auctions;
             }
-            while (connectDatabase.resultSet.next()){
-                message = new Message(connectDatabase.resultSet.getInt(8), connectDatabase.resultSet.getString(9),
+            while (connectDatabase.resultSet.next()) {
+                message = new Message(connectDatabase.resultSet.getString(9),
                         connectDatabase.resultSet.getInt(10), connectDatabase.resultSet.getInt(11), connectDatabase.resultSet.getInt(12));
 
                 messages.add(message);
@@ -254,7 +244,62 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
 
     /**
+     * Retorna apenas um projecto, para poder-mos aceder ao detalhe do projecto
+     *
+     * @param code
+     * @return
+     */
+
+    public Auction detailAuction(int code) {
+
+        Auction auction = null;
+        Bid bid;
+        Message message;
+
+        ArrayList<Bid> bids = new ArrayList<>();
+        ArrayList<Message> messages = new ArrayList<>();
+
+        String search = "select * from AUCTION, MESSAGE, BID where idAUCTION = " + code +
+                " and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION" +
+                " and BID.AUCTION_idAUCTION = AUCTION.idAUCTION;";
+
+        try {
+            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
+            if (!connectDatabase.resultSet.next()) {
+                return null;
+            }
+            while (connectDatabase.resultSet.next()) {
+                message = new Message(connectDatabase.resultSet.getString(9),
+                        connectDatabase.resultSet.getInt(10), connectDatabase.resultSet.getInt(11), connectDatabase.resultSet.getInt(12));
+
+                messages.add(message);
+
+                bid = new Bid(connectDatabase.resultSet.getInt(13), connectDatabase.resultSet.getInt(14),
+                        connectDatabase.resultSet.getInt(15), connectDatabase.resultSet.getInt(16));
+
+                bids.add(bid);
+
+                auction = new Auction(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getInt(2),
+                        connectDatabase.resultSet.getString(3), connectDatabase.resultSet.getString(4),
+                        connectDatabase.resultSet.getDate(5), connectDatabase.resultSet.getInt(6), connectDatabase.resultSet.getInt(7), messages, bids);
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return auction;
+    }
+
+
+    // TODO: ESTA MERDA TAMBEM NAO ME ATREVO
+    public void myAuctions(Client client) {
+
+    }
+
+    /**
      * Fazer uma licitacao. Recebe um argumento do tipo BID
+     *
      * @param bid
      * @return
      */
@@ -264,7 +309,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
                 bid.getAmount() + "', '" + bid.getIdUser() + "', '" + bid.getIdAuction() + "');";
         try {
             connectDatabase.statement.executeUpdate(add);
-            connectDatabase.commit();
+            connectDatabase.connection.commit();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -279,23 +324,56 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     /**
      * Edit auction. Recebe um parametro auction
+     *
      * @param auction
      * @return
      */
 
-    public boolean editAuction(Auction auction){
+    public boolean editAuction(Auction auction) {
         String update = "update AUCTION set idITEM = '" + auction.getIdItem() + "', title = '" + auction.getTitle() + "', description = '" +
-                auction.getDescription() + "', amount = '" + auction.getAmount() + "', where idAUCTION = '" +auction.getIdAuction() +"';";
+                auction.getDescription() + "', amount = '" + auction.getAmount() + "', where idAUCTION = '" + auction.getIdAuction() + "';";
 
         try {
             connectDatabase.statement.executeUpdate(update);
-            connectDatabase.commit();
+            connectDatabase.connection.commit();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connectDatabase.connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         }
         return false;
     }
+
+
+    /**
+     * Send a message to a auction
+     * @param message
+     * @return
+     */
+
+    public boolean message(Message message) {
+        String add = "insert int MESSAGE (text, readed, USER_idUSER, AUCTION_idAUCTION) values ('" + message.getText() + "', '" +
+                message.getReaded() + "', '" + message.getIdCient() + "', '" + message.getIdAuction() + "');";
+
+        try {
+            connectDatabase.statement.executeUpdate(add);
+            connectDatabase.connection.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connectDatabase.connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return false;
+    }
+
 
 
     //funcao para ver se o server rmi esta ligado num determinado host e porto
@@ -331,21 +409,21 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         int localRmiPort = Integer.parseInt(prop.getProperty("rmi1port"));
 
         while(true){
-                //vê se algum registo rmi está ligado naquele host e porto
-                if(checkRMIServer(remoteRMIHost,remotermiPort,500)==true)
-                {
-                    //se não estiver liga-se como primario
-                    Registry registry = LocateRegistry.createRegistry(localRmiPort);
-                    registry.rebind("rmi_server", rmiServer);
-                    System.out.println("RMI ligado como servidor primário com registo no porto: "+localRmiPort);
+            //vê se algum registo rmi está ligado naquele host e porto
+            if(checkRMIServer(remoteRMIHost,remotermiPort,500)==true)
+            {
+                //se não estiver liga-se como primario
+                Registry registry = LocateRegistry.createRegistry(localRmiPort);
+                registry.rebind("rmi_server", rmiServer);
+                System.out.println("RMI ligado como servidor primário com registo no porto: "+localRmiPort);
                 break;
-                }
-                else
-                {
-                    //Se estiver fica como secuandário e vai tentando ligar-se
-                    System.out.println("Servidor Secundário... Tentativa de religação como primário.");
-                    Thread.sleep(Integer.parseInt(prop.getProperty("sleepTimeSecondaryRmi")));
-                }
+            }
+            else
+            {
+                //Se estiver fica como secuandário e vai tentando ligar-se
+                System.out.println("Servidor Secundário... Tentativa de religação como primário.");
+                Thread.sleep(Integer.parseInt(prop.getProperty("sleepTimeSecondaryRmi")));
+            }
         }
     }
 }

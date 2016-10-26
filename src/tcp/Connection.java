@@ -26,9 +26,6 @@ class Connection extends Thread {
     RmiConnection rmiConnection;
     ArrayList<Connection> clients = null;
 
-    //assim que se faça o login atribui-se o userID nesta variável
-    int userID;
-
 
     public Connection(Socket clientSockt, ArrayList<Connection> clients)
     {
@@ -57,7 +54,6 @@ class Connection extends Thread {
         String messageFromClient;
         HashMap<String, String> messageParsed;
         String type;
-        String answer;
         Client client;
         Auction auction;
         boolean result;
@@ -97,13 +93,12 @@ class Connection extends Thread {
                             }
 
                             case ("login") :{
-                                // Nao esquecer de criar o Cliente depois de intrepertar as merdas
+
                                 // Guardar o cliente
                                 client = new Client(1,messageParsed.get("username"),messageParsed.get("password"));
                                 if(rmi.doLogin(client)==true)
                                 {
                                     outToClient.println("type: login, ok: true");
-                                    userID = rmi.returnUserID(client);
                                 }
                                 else
                                 {
@@ -112,10 +107,9 @@ class Connection extends Thread {
                                 break;
                             }
 
-
                             case ("create_auction"): {
                                 auction = new Auction(Integer.parseInt(messageParsed.get("code")),messageParsed.get("title"),messageParsed.get("description"), Date.valueOf(messageParsed.get("deadline")),Integer.parseInt(messageParsed.get("amount")));
-                                auction.setIdUser(userID);
+                                //auction.setIdUser(client.getIdUser());
                                 if(rmi.createAuction(auction)==true)
                                 {
                                     outToClient.println("type : create_auction , ok: true");

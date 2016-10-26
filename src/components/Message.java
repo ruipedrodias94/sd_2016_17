@@ -5,27 +5,18 @@ import java.io.Serializable;
 
 public class Message implements Serializable{
 
-    private int idMessage;
     private String text;
     private int readed;
     private int idCient;
     private int idAuction;
 
-    public Message(int idMessage, String text, int readed, int idCient, int idAuction) {
-        this.setIdMessage(idMessage);
+    public Message(String text, int readed, int idCient, int idAuction) {
         this.setText(text);
         this.setReaded(readed);
         this.setIdCient(idCient);
         this.setIdAuction(idAuction);
     }
 
-    public int getIdMessage() {
-        return idMessage;
-    }
-
-    public void setIdMessage(int idMessage) {
-        this.idMessage = idMessage;
-    }
 
     public String getText() {
         return text;
