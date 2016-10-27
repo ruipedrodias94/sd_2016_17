@@ -3,6 +3,7 @@ package components;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class Auction implements Serializable{
@@ -11,14 +12,14 @@ public class Auction implements Serializable{
     private int idItem;
     private String title;
     private String description;
-    private Date deadline;
+    private Timestamp deadline;
     private int amount;
     private int idUser;
     private ArrayList<Message> messages;
     private ArrayList<Bid> bids;
 
 
-    public Auction(int idAuction, int idItem, String title, String description, Date deadline, int amount, int idUser, ArrayList<Message> messages, ArrayList<Bid> bids) {
+    public Auction(int idAuction, int idItem, String title, String description, Timestamp deadline, int amount, int idUser, ArrayList<Message> messages, ArrayList<Bid> bids) {
         this.idAuction = idAuction;
         this.idItem = idItem;
         this.title = title;
@@ -30,7 +31,7 @@ public class Auction implements Serializable{
         this.setBids(bids);
     }
 
-    public Auction( int idItem, String title, String description, Date deadline, int amount) {
+    public Auction( int idItem, String title, String description, Timestamp deadline, int amount, int idUser) {
         this.idItem = idItem;
         this.title = title;
         this.description = description;
@@ -55,11 +56,11 @@ public class Auction implements Serializable{
         this.description = description;
     }
 
-    public Date getDeadline() {
+    public Timestamp getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Date deadline) {
+    public void setDeadline(Timestamp deadline) {
         this.deadline = deadline;
     }
 

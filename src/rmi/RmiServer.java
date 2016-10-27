@@ -25,7 +25,6 @@ import components.Bid;
 import components.Client;
 import components.Message;
 import database.*;
-import helpers.ProtocolParser;
 import resources.GetPropertiesValues;
 
 
@@ -225,7 +224,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      * @return auctions
      */
 
-    public ArrayList<Auction> searchAuction(int code) {
+    /*public ArrayList<Auction> searchAuction(int code) {
 
         Auction auction;
         Bid bid;
@@ -264,17 +263,17 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
             e.printStackTrace();
         }
         return auctions;
-    }
+    }*/
 
 
     /**
      * Retorna apenas um projecto, para poder-mos aceder ao detalhe do projecto
      *
-     * @param code
+     * //@param code
      * @return
      */
 
-    public Auction detailAuction(int code) {
+    /*public Auction detailAuction(int code) {
 
         Auction auction = null;
         Bid bid;
@@ -313,7 +312,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
             e.printStackTrace();
         }
         return auction;
-    }
+    }*/
 
 
     // TODO: ESTA TAMBEM NAO ME ATREVO

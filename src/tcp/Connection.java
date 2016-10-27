@@ -13,6 +13,9 @@ import java.net.*;
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -75,7 +78,6 @@ class Connection extends Thread {
                                 if (rmi!=null){
                                     System.out.println("Epah que qualidade, criaste uma interface com sucesso.");
                                 }
-
                                 if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"))) {
                                     outToClient.println("type: register, ok: true");
                                 } else {
@@ -86,12 +88,12 @@ class Connection extends Thread {
 
                             case ("login"): {
 
-                                // Guardar o cliente
+                                rmi = invoqueRMI();
 
-                                client = new Client(rmi.getClient(messageParsed.get("username"), messageParsed.get("password")).getIdUser(),
-                                        messageParsed.get("username"), messageParsed.get("password"));
+                                //Get that cliente back online
+                                client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
 
-                                if (rmi.doLogin(client) == true) {
+                                if (rmi.doLogin(client)) {
                                     outToClient.println("type: login, ok: true");
                                 } else {
                                     outToClient.println("type: login, ok: false");
@@ -101,9 +103,32 @@ class Connection extends Thread {
                             }
 
                             case ("create_auction"): {
-                                auction = new Auction(Integer.parseInt(messageParsed.get("code")), messageParsed.get("title"), messageParsed.get("description"), Date.valueOf(messageParsed.get("deadline")), Integer.parseInt(messageParsed.get("amount")));
-                                //auction.setIdUser(client.getIdUser());
-                                if (rmi.createAuction(auction) == true) {
+
+                                int idAuction = Integer.parseInt(messageParsed.get("code"));
+                                String title = messageParsed.get("title");
+                                String description = messageParsed.get("description");
+                                String data = messageParsed.get("deadline");
+
+                                int amount = Integer.parseInt(messageParsed.get("amount"));
+
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm");
+                                SimpleDateFormat simpleDateFormatnew = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                try {
+                                    data = simpleDateFormatnew.format(simpleDateFormat.parse(data));
+                                }
+                                catch (ParseException pqp){
+
+                                }
+
+                                 Timestamp newData = Timestamp.valueOf(data);
+
+                                auction = new Auction(idAuction, title, description, newData, amount, client.getIdUser());
+
+                                //Chamada ao RMI
+
+                                rmi = invoqueRMI();
+
+                                if (rmi.createAuction(auction)) {
                                     outToClient.println("type : create_auction , ok: true");
                                 } else {
                                     outToClient.println("type : create_auction , ok: false");
@@ -181,7 +206,7 @@ class Connection extends Thread {
 
         String rmiHost;
 
-        boolean runningRMI = false;
+        boolean runningRMI = true;
 
         if (runningRMI){
             rmiHost = prop.getProperty("rmi1host");
