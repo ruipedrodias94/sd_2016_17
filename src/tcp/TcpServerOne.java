@@ -27,24 +27,21 @@ public class TcpServerOne {
         //Dados Server TCP
         ArrayList <Connection> ClientConnections = new ArrayList <Connection>() ;
         int porto = Integer.parseInt(prop.getProperty("server1TcpPort"));
-        String host = prop.getProperty("server1TcpHost");
+        //String host = prop.getProperty("server1TcpHost");
 
         //Socket de ligação ao Cliente
         ServerSocket listenSocket;
 
-
         //waiting for client connections
         try
         {
-            InetAddress hostAdress = InetAddress.getByName(host);
+            InetAddress hostAdress = InetAddress.getLocalHost();
             listenSocket = new ServerSocket(porto);
-            System.out.println("[Ligacao TCP à escuta no host: "+host+" no porto :"+porto+"]");
+            System.out.println("[Ligacao TCP à escuta no host: " + hostAdress + " no porto :" + porto + "]");
 
             //Threads de balanceamento de carga
             new UdpMulticastReceiver();
-            new UdpMulticastSender(ClientConnections,host,porto);
-
-
+            new UdpMulticastSender(ClientConnections, "localhost" ,porto);
 
             //Thread de ligação ao cliente TCP
             //noinspection InfiniteLoopStatement
@@ -53,9 +50,7 @@ public class TcpServerOne {
                 Socket clientSocket = listenSocket.accept();
                 Connection C = new Connection(clientSocket,ClientConnections);
                 System.out.println("Numero de users: "+ ClientConnections.size());
-
             }
-
         }catch (UnknownHostException e) {
             e.printStackTrace();
         }

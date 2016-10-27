@@ -34,6 +34,7 @@ class Connection extends Thread {
             outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
             outToClient.println("Bem vindo ao iBEi\n");
+
             this.start();
 
         } catch (IOException e) {
@@ -111,7 +112,7 @@ class Connection extends Thread {
                             }
 
                             case ("search_auction"): {
-                                //TODO: Este metodo deve ser revisto, pq acho que nao deve ter 3 merdas na mesma merda
+                                //TODO: Este metodo deve ser revisto, pq acho que nao deve ter 3 na mesma merda
                                 //rmi.searchAuction();
                                 break;
                             }

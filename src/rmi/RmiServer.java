@@ -53,13 +53,13 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         try {
             connectDatabase.statement.executeUpdate(add);
             connectDatabase.connection.commit();
-            System.out.println("DEU CRL");
+            System.out.println("DEU");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             try {
                 connectDatabase.connection.rollback();
-                System.out.println("NAO DEU CRL");
+                System.out.println("NAO DEU");
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
@@ -316,7 +316,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }
 
 
-    // TODO: ESTA MERDA TAMBEM NAO ME ATREVO
+    // TODO: ESTA TAMBEM NAO ME ATREVO
     public void myAuctions(Client client) {
 
     }
@@ -417,7 +417,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
         String rmiHost;
 
-        boolean runningRMI = false;
+        boolean runningRMI = true;
 
         if (runningRMI) {
             rmiHost = prop.getProperty("rmi1host");
