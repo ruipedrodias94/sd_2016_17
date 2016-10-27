@@ -146,6 +146,7 @@ class Connection extends Thread {
 
                                 for (int i = 0; i < auctions.size(); i++) {
                                     outToClient.print(auctions.get(i).getTitle());
+                                    System.out.println(auctions.get(i).getTitle());
                                 }
 
                                 break;
