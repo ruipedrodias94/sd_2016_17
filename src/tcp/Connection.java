@@ -71,6 +71,8 @@ class Connection extends Thread {
                         type = messageParsed.get("type");
 
                         switch (type) {
+
+                            //TODO----> Working? Checa aqui JJ
                             case ("register"): {
 
                                 rmi = invoqueRMI();
@@ -86,6 +88,7 @@ class Connection extends Thread {
                                 break;
                             }
 
+                            //TODO----> Working? Checa aqui JJ
                             case ("login"): {
 
                                 rmi = invoqueRMI();
@@ -102,6 +105,7 @@ class Connection extends Thread {
                                 break;
                             }
 
+                            //TODO----> Working? Checa aqui JJ
                             case ("create_auction"): {
 
                                 int idAuction = Integer.parseInt(messageParsed.get("code"));
@@ -136,7 +140,11 @@ class Connection extends Thread {
                                 break;
                             }
 
+                            //TODO----> Working? Checa aqui JJ
                             case ("search_auction"): {
+
+                                String init;
+                                String aux = "";
 
                                 int code = Integer.parseInt(messageParsed.get("code"));
 
@@ -144,17 +152,28 @@ class Connection extends Thread {
 
                                 ArrayList<Auction> auctions = rmi.searchAuction(code);
 
-                                for (int i = 0; i < auctions.size(); i++) {
-                                    outToClient.print(auctions.get(i).getTitle());
-                                    System.out.println(auctions.get(i).getTitle());
+                                // Make new string
+                                if (auctions.isEmpty()){
+                                    init = "type: search_auction, items_count: " + auctions.size();
+                                    outToClient.print(init);
+                                }else{
+                                    init = "type: search_auction, items_count: " + auctions.size() +", ";
+
+                                    for (int i = 0; i < auctions.size(); i++) {
+                                        aux += "items_" + i +"_id: " + auctions.get(i).getIdItem() + ", items_"+i+"_code: "+ auctions.get(i).getIdAuction() +
+                                                "items_"+i+"_title: "+ auctions.get(i).getTitle();
+                                    }
+
+                                    init += aux;
                                 }
 
+                                outToClient.print(init);
                                 break;
                             }
 
+                            //TODO----> Falta fazer a merda na RmiServer
                             case ("detail_auction"): {
-                                // TODO: Este tb
-                                //rmi.searchAuction();
+
                                 break;
                             }
 
@@ -164,7 +183,7 @@ class Connection extends Thread {
                             }
 
                             case ("bid"): {
-                                //rmi.bid();
+
                                 break;
                             }
 
