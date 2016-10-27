@@ -235,23 +235,18 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
         ArrayList<Bid> bids = new ArrayList<>();
         ArrayList<Message> messages = new ArrayList<>();
 
-        String search = "select * from AUCTION, MESSAGE, BID where idITEM = " + code + " and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
+        String search = "select * from AUCTION where idITEM = '"+code+"';";
 
         try {
             connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
             if (!connectDatabase.resultSet.next()) {
+                System.out.println("ali");
                 return auctions;
+
             }
             while (connectDatabase.resultSet.next()) {
-                message = new Message(connectDatabase.resultSet.getString(9),
-                        connectDatabase.resultSet.getInt(10), connectDatabase.resultSet.getInt(11), connectDatabase.resultSet.getInt(12));
 
-                messages.add(message);
-
-                bid = new Bid(connectDatabase.resultSet.getInt(13), connectDatabase.resultSet.getInt(14),
-                        connectDatabase.resultSet.getInt(15), connectDatabase.resultSet.getInt(16));
-
-                bids.add(bid);
+                System.out.println("aqui");
 
                 auction = new Auction(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getInt(2),
                         connectDatabase.resultSet.getString(3), connectDatabase.resultSet.getString(4),

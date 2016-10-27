@@ -21,6 +21,7 @@ class Connection extends Thread {
     PrintWriter outToClient;
     BufferedReader inFromClient = null;
     Socket clientSocket;
+    RmiInterface rmi;
     ArrayList<Connection> clients = null;
 
 
@@ -34,7 +35,6 @@ class Connection extends Thread {
             outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
             outToClient.println("Bem vindo ao iBEi\n");
-
             this.start();
 
         } catch (IOException e) {
@@ -101,19 +101,28 @@ class Connection extends Thread {
                             }
 
                             case ("create_auction"): {
-                                auction = new Auction(Integer.parseInt(messageParsed.get("code")), messageParsed.get("title"), messageParsed.get("description"), Date.valueOf(messageParsed.get("deadline")), Integer.parseInt(messageParsed.get("amount")));
+                                auction = new Auction(Integer.parseInt(messageParsed.get("code")), messageParsed.get("title"), messageParsed.get("description"), Date.valueOf(messageParsed.get("deadline")), Integer.parseInt(messageParsed.get("amount")),client.getIdUser());
                                 //auction.setIdUser(client.getIdUser());
+                                rmi = invoqueRMI();
                                 if (rmi.createAuction(auction) == true) {
                                     outToClient.println("type : create_auction , ok: true");
                                 } else {
                                     outToClient.println("type : create_auction , ok: false");
                                 }
                                 break;
+
                             }
 
                             case ("search_auction"): {
-                                //TODO: Este metodo deve ser revisto, pq acho que nao deve ter 3 na mesma merda
-                                //rmi.searchAuction();
+                                //TODO: Este metodo deve ser revisto, pq acho que nao deve ter 3 na mesma
+                                ArrayList <Auction> search;
+                                rmi = invoqueRMI();
+                                search = rmi.searchAuction(Integer.parseInt(messageParsed.get("code")));
+                                System.out.println("TAMANHO:"+search.size());
+                                for (int i=0;i<search.size();i++)
+                                {
+                                    System.out.println(search.get(i).getIdItem());
+                                }
                                 break;
                             }
 
@@ -181,7 +190,7 @@ class Connection extends Thread {
 
         String rmiHost;
 
-        boolean runningRMI = false;
+        boolean runningRMI = true;
 
         if (runningRMI){
             rmiHost = prop.getProperty("rmi1host");
