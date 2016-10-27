@@ -13,6 +13,9 @@ import java.net.*;
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -21,7 +24,6 @@ class Connection extends Thread {
     PrintWriter outToClient;
     BufferedReader inFromClient = null;
     Socket clientSocket;
-    RmiInterface rmi;
     ArrayList<Connection> clients = null;
 
 
@@ -35,6 +37,7 @@ class Connection extends Thread {
             outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
             outToClient.println("Bem vindo ao iBEi\n");
+
             this.start();
 
         } catch (IOException e) {
@@ -86,12 +89,12 @@ class Connection extends Thread {
 
                             case ("login"): {
 
-                                // Guardar o cliente
+                                rmi = invoqueRMI();
 
-                                client = new Client(rmi.getClient(messageParsed.get("username"), messageParsed.get("password")).getIdUser(),
-                                        messageParsed.get("username"), messageParsed.get("password"));
+                                //Get that cliente back online
+                                client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
 
-                                if (rmi.doLogin(client) == true) {
+                                if (rmi.doLogin(client)) {
                                     outToClient.println("type: login, ok: true");
                                 } else {
                                     outToClient.println("type: login, ok: false");
@@ -101,16 +104,37 @@ class Connection extends Thread {
                             }
 
                             case ("create_auction"): {
-                                auction = new Auction(Integer.parseInt(messageParsed.get("code")), messageParsed.get("title"), messageParsed.get("description"), Date.valueOf(messageParsed.get("deadline")), Integer.parseInt(messageParsed.get("amount")),client.getIdUser());
-                                //auction.setIdUser(client.getIdUser());
+
+                                int idAuction = Integer.parseInt(messageParsed.get("code"));
+                                String title = messageParsed.get("title");
+                                String description = messageParsed.get("description");
+                                String data = messageParsed.get("deadline");
+
+                                int amount = Integer.parseInt(messageParsed.get("amount"));
+
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm");
+                                SimpleDateFormat simpleDateFormatnew = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                try {
+                                    data = simpleDateFormatnew.format(simpleDateFormat.parse(data));
+                                }
+                                catch (ParseException pqp){
+
+                                }
+
+                                 Timestamp newData = Timestamp.valueOf(data);
+
+                                auction = new Auction(idAuction, title, description, newData, amount, client.getIdUser());
+
+                                //Chamada ao RMI
+
                                 rmi = invoqueRMI();
-                                if (rmi.createAuction(auction) == true) {
+
+                                if (rmi.createAuction(auction)) {
                                     outToClient.println("type : create_auction , ok: true");
                                 } else {
                                     outToClient.println("type : create_auction , ok: false");
                                 }
                                 break;
-
                             }
 
                             case ("search_auction"): {
@@ -190,7 +214,7 @@ class Connection extends Thread {
 
         String rmiHost;
 
-        boolean runningRMI = true;
+        boolean runningRMI = false;
 
         if (runningRMI){
             rmiHost = prop.getProperty("rmi1host");
