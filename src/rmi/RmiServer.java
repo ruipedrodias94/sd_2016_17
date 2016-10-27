@@ -19,6 +19,8 @@ import components.Message;
 
 import resources.GetPropertiesValues;
 
+import javax.xml.transform.Result;
+
 
 public class RmiServer extends UnicastRemoteObject implements RmiInterface, Serializable{
 
@@ -248,6 +250,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         ResultSet resultSet;
 
         try {
+
             resultSet = statement.executeQuery(search);
 
             while (resultSet.next()) {
@@ -275,20 +278,67 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
 
     /**
+     * Get messages with the idAuction
+     * @param idAuction
+     * @return
+     */
+
+    public ArrayList<Message> getMessages(int idAuction){
+
+        Message message;
+        ArrayList<Message> messages = null;
+
+        String search = "SELECT MESSAGE.* FROM MESSAGE, AUCTION WHERE MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION AND AUCTION.idAUCTION =" + idAuction;
+
+        ResultSet resultSet;
+
+        try {
+            resultSet = statement.executeQuery(search);
+
+            while (resultSet.next()){
+
+                int idMessage = resultSet.getInt(1);
+                String text = resultSet.getString(2);
+                int readed = resultSet.getInt(3);
+                int idUser = resultSet.getInt(4);
+
+                message = new Message(idMessage, text, readed, idUser, idAuction);
+
+                messages.add(message);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return  messages;
+    }
+
+
+    /*public ArrayList<Bid> getBids(int idAuction){
+
+        Bid bid;
+        String searchBid = " SELECT BID.* FROM BID WHERE AUCTION_idAUCTION = "+idAuction+";";
+
+        ResultSet resultSet;
+
+
+    }*/
+
+    /**
      * Retorna apenas um projecto, para poder-mos aceder ao detalhe do projecto
      *
      * //@param code
      * @return
      */
 
-    /*public Auction detailAuction(int code) {
+   /* public Auction detailAuction(int code) {
 
         Auction auction = null;
         Bid bid;
         Message message;
 
         ArrayList<Bid> bids = new ArrayList<>();
-        ArrayList<Message> messages = new ArrayList<>();
+        ArrayList<Message> messages = getMessages(code);
 
         String search = "select * from AUCTION, MESSAGE, BID where idAUCTION = " + code +
                 " and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION" +
