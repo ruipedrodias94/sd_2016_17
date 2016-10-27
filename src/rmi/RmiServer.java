@@ -1,42 +1,51 @@
 package rmi;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.io.Serializable;
 import java.rmi.AccessException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.*;
 import java.util.ArrayList;
 
-import java.sql.Date;
-import java.util.HashMap;
 import java.util.Properties;
-import java.util.StringJoiner;
 
 import components.Auction;
 import components.Bid;
 import components.Client;
 import components.Message;
-import database.*;
+
 import resources.GetPropertiesValues;
 
 
-public class RmiServer extends UnicastRemoteObject implements RmiInterface {
+public class RmiServer extends UnicastRemoteObject implements RmiInterface, Serializable{
 
-    public static ConnectDatabase connectDatabase;
     public static RmiServer rmiServer;
+    private Connection connection;
+    private Statement statement;
 
+    GetPropertiesValues gpv = new GetPropertiesValues();
+    Properties prop = gpv.getProperties();
+
+    // JDBC driver name and database URL
+    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    // Esta na minha maquina! Ter atencao para depois nao haver conflitos
+    final String DB_URL = prop.getProperty("stringJDBC");
+
+    //  Database credentials
+
+    String USER = prop.getProperty("dbUser");
+    String PASS = prop.getProperty("dbPass");
 
     public RmiServer() throws RemoteException {
-        connectDatabase = new ConnectDatabase();
+        connectDatabase();
     }
+
+
+    //-----------------------------------------------------------------------
+    // DATABASE METHODS
 
     /**
      * @param username
@@ -45,23 +54,18 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
     public synchronized boolean registerClient(String username, String password) {
 
-        String add = "insert into USER (userName, password, online) values ('" + username + "', '" + password + "', " + 0 + ");";
+        String add = "INSERT INTO USER (userName, password, online) VALUES ('" + username + "', '" + password + "', " + 0 + ");";
 
         System.out.println("Recebeu o registo clinete");
 
         try {
-            connectDatabase.statement.executeUpdate(add);
-            connectDatabase.connection.commit();
+            statement.executeUpdate(add);
+            commit();
             System.out.println("DEU");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connectDatabase.connection.rollback();
-                System.out.println("NAO DEU");
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            rollback();
             return false;
         }
     }
@@ -76,12 +80,13 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
     //falta verificar quando o username e a password não estão certos. faz login na mesma
     public boolean doLogin(Client client) {
-        String search = "select * from USER where userName = '" + String.valueOf(client.getUserName())
-                + "' and password = '" + String.valueOf(client.getPassword()) + "';";
+        String search = "SELECT * FROM USER WHERE userName = '" + String.valueOf(client.getUserName())
+                + "' AND password = '" + String.valueOf(client.getPassword()) + "';";
 
+        ResultSet resultSet;
         try {
-            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
-            while (connectDatabase.resultSet.next()) {
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()) {
                 putOnline(client);
                 return true;
             }
@@ -103,16 +108,23 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
         Client client = null;
 
-        String search = "select * from USER where userName ='" + username
-                + "'and password='" + password + "';";
+        String search = "SELECT * FROM USER WHERE userName ='" + username
+                + "'AND password='" + password + "';";
+
+        ResultSet resultSet;
 
         try {
-            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
-            while (connectDatabase.resultSet.next()) {
-                client = new Client(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
+            resultSet = statement.executeQuery(search);
+
+            while (resultSet.next()) {
+
+                int idUser = resultSet.getInt(1);
+                String userName = resultSet.getString(2);
+                String pass = resultSet.getString(3);
+
+                client = new Client(idUser, userName, pass);
             }
         } catch (SQLException e) {
-            //e.printStackTrace();
             System.out.println("client not found");
         }
         return client;
@@ -125,18 +137,16 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public void putOnline(Client client) {
-        String update = "update USER set online = " + 1 + " WHERE idUSER = " + String.valueOf(client.getIdUser());
+        String update = "UPDATE USER SET online = " + 1 + " WHERE idUSER = " + client.getIdUser();
+
+        ResultSet resultSet;
 
         try {
-            connectDatabase.statement.executeUpdate(update);
-            connectDatabase.connection.commit();
+            statement.executeUpdate(update);
+            commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connectDatabase.connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            rollback();
         }
     }
 
@@ -147,18 +157,17 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public void putOffline(Client client) {
-        String update = "update USER set online = " + 0 + " WHERE idUSER = " + String.valueOf(client.getIdUser());
+
+        String update = "UPDATE USER SET online = " + 0 + " WHERE idUSER = " + client.getIdUser();
+
+        ResultSet resultSet;
 
         try {
-            connectDatabase.statement.executeUpdate(update);
-            connectDatabase.connection.commit();
+            statement.executeUpdate(update);
+            commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connectDatabase.connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            rollback();
         }
     }
 
@@ -169,15 +178,22 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public ArrayList<Client> searchOnlineUsers() {
-        String search = "select * from USER where online = 1;";
+        String search = "SELECT * FROM USER WHERE online = 1;";
         ArrayList<Client> clients = new ArrayList<>();
         Client client;
 
-        try {
-            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
+        ResultSet resultSet;
 
-            while (connectDatabase.resultSet.next()) {
-                client = new Client(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getString(2), connectDatabase.resultSet.getString(3));
+        try {
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()){
+
+                int idUser = resultSet.getInt(1);
+                String userName = resultSet.getString(2);
+                String password = resultSet.getString(3);
+
+                client = new Client(idUser, userName, password);
+
                 clients.add(client);
             }
         } catch (SQLException e) {
@@ -196,23 +212,20 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
     public synchronized boolean createAuction(Auction auction) {
 
+        String add = "INSERT INTO AUCTION(idItem, title, description, deadline, amount, USER_idUSER) VALUES('"
+                + auction.getIdItem() + "', '" + auction.getTitle() + "', '" + auction.getDescription() + "', '"
+                + auction.getDeadline() + "', '" + auction.getAmount() + "', '" + auction.getIdUser() + "');";
+
+
         try {
-            String add = "insert into AUCTION(idItem, title, description, deadline, amount, USER_idUSER) values('"
-                    + auction.getIdItem() + "', '" + auction.getTitle() + "', '" + auction.getDescription() + "', '"
-                    + auction.getDeadline() + "', '" + auction.getAmount() + "', '" + auction.getIdUser() + "');";
 
-            connectDatabase.statement.executeUpdate(add);
-            connectDatabase.connection.commit();
-
+            statement.executeUpdate(add);
+            commit();
             return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
-
-            try {
-                connectDatabase.connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            rollback();
             return false;
         }
     }
@@ -224,37 +237,32 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      * @return auctions
      */
 
-    /*public ArrayList<Auction> searchAuction(int code) {
+    public ArrayList<Auction> searchAuction(int code) {
 
         Auction auction;
-        Bid bid;
-        Message message;
 
         ArrayList<Auction> auctions = new ArrayList<>();
-        ArrayList<Bid> bids = new ArrayList<>();
-        ArrayList<Message> messages = new ArrayList<>();
 
-        String search = "select * from AUCTION, MESSAGE, BID where idITEM = " + code + " and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION;";
+        String search = "SELECT * FROM AUCTION WHERE idITEM = " + code + ";";
+
+        ResultSet resultSet;
 
         try {
-            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
-            if (!connectDatabase.resultSet.next()) {
-                return auctions;
-            }
-            while (connectDatabase.resultSet.next()) {
-                message = new Message(connectDatabase.resultSet.getString(9),
-                        connectDatabase.resultSet.getInt(10), connectDatabase.resultSet.getInt(11), connectDatabase.resultSet.getInt(12));
+            resultSet = statement.executeQuery(search);
 
-                messages.add(message);
+            while (resultSet.next()) {
 
-                bid = new Bid(connectDatabase.resultSet.getInt(13), connectDatabase.resultSet.getInt(14),
-                        connectDatabase.resultSet.getInt(15), connectDatabase.resultSet.getInt(16));
+                System.out.println("Ele entra aqui");
 
-                bids.add(bid);
+                int idAuction = resultSet.getInt(1);
+                String title = resultSet.getString(2);
+                String description = resultSet.getString(3);
+                Timestamp timestamp = resultSet.getTimestamp(4);
+                int amount = resultSet.getInt(5);
 
-                auction = new Auction(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getInt(2),
-                        connectDatabase.resultSet.getString(3), connectDatabase.resultSet.getString(4),
-                        connectDatabase.resultSet.getDate(5), connectDatabase.resultSet.getInt(6), connectDatabase.resultSet.getInt(7), messages, bids);
+                auction = new Auction(idAuction, title, description, timestamp, amount);
+
+                System.out.println("E aqui?");
 
                 auctions.add(auction);
             }
@@ -263,7 +271,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
             e.printStackTrace();
         }
         return auctions;
-    }*/
+    }
 
 
     /**
@@ -315,7 +323,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
     }*/
 
 
-    // TODO: ESTA TAMBEM NAO ME ATREVO
     public void myAuctions(Client client) {
 
     }
@@ -327,20 +334,20 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      * @return
      */
 
-    public boolean bid(Bid bid) {
-        String add = "insert into BID(idBID, amount, USER.idUSER, AUCTION.idAUCTION) values('" + bid.getIdBid() + "','" +
+    public synchronized boolean bid(Bid bid) {
+        String add = "INSERT INTO BID(idBID, amount, USER.idUSER, AUCTION.idAUCTION) VALUES('" + bid.getIdBid() + "','" +
                 bid.getAmount() + "', '" + bid.getIdUser() + "', '" + bid.getIdAuction() + "');";
         try {
-            connectDatabase.statement.executeUpdate(add);
-            connectDatabase.connection.commit();
+
+            statement.executeUpdate(add);
+            commit();
             return true;
+
         } catch (SQLException e) {
+
             e.printStackTrace();
-            try {
-                connectDatabase.connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            rollback();
+
             return false;
         }
     }
@@ -352,21 +359,18 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      * @return
      */
 
-    public boolean editAuction(Auction auction) {
-        String update = "update AUCTION set idITEM = '" + auction.getIdItem() + "', title = '" + auction.getTitle() + "', description = '" +
-                auction.getDescription() + "', amount = '" + auction.getAmount() + "', where idAUCTION = '" + auction.getIdAuction() + "';";
+    public synchronized boolean editAuction(Auction auction, Client client) {
+        String update = "UPDATE AUCTION SET idITEM = '" + auction.getIdItem() + "', title = '" + auction.getTitle() + "', description = '" +
+                auction.getDescription() + "', amount = '" + auction.getAmount() + "', WHERE idAUCTION = '" + auction.getIdAuction() + "'" +
+                "AND USER_idUSER = " + client.getIdUser() +"';";
 
         try {
-            connectDatabase.statement.executeUpdate(update);
-            connectDatabase.connection.commit();
+            statement.executeUpdate(update);
+            commit();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connectDatabase.connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            rollback();
         }
         return false;
     }
@@ -380,25 +384,68 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
      */
 
     public boolean message(Message message) {
-        String add = "insert int MESSAGE (text, readed, USER_idUSER, AUCTION_idAUCTION) values ('" + message.getText() + "', '" +
+        String add = "INSERT INTO MESSAGE (text, readed, USER_idUSER, AUCTION_idAUCTION) VALUES ('" + message.getText() + "', '" +
                 message.getReaded() + "', '" + message.getIdCient() + "', '" + message.getIdAuction() + "');";
 
         try {
-            connectDatabase.statement.executeUpdate(add);
-            connectDatabase.connection.commit();
+            statement.executeUpdate(add);
+            commit();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connectDatabase.connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            rollback();
         }
         return false;
     }
 
+    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
+    //-----------------------------------------
+    // LIGAR A BASE DE DADOS
+
+    public void connectDatabase(){
+        try{
+            // Register JDBC
+            Class.forName(JDBC_DRIVER);
+
+            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            statement = connection.createStatement();
+            connection.setAutoCommit(false);
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+
+        if (connection != null){
+            System.out.println("Connection to the database successfull");
+        }else{
+            System.out.println("Fail to connect to data base");
+        }
+    }
+
+    private void rollback(){
+        try{
+            connection.rollback();
+        }catch(SQLException se){
+            System.err.println("Rollback failed!");
+        }
+    }
+
+    private void commit(){
+        try{
+            connection.commit();
+        }catch(SQLException se){
+            System.err.println("Commit failed!");
+        }
+    }
+
+    //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
 
     public static void main(String[] args) {
 
@@ -424,6 +471,10 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
             rmiHost = prop.getProperty("rmi2host");
         }
 
+
+        //----------------------------------------------------------------------------
+        // Parte de ligar o RMI SERVER
+
         while (true) {
 
             try {
@@ -433,8 +484,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface {
 
                 System.out.println("RMI ligado como servidor primário com registo no porto: " + rmiPort);
                 System.out.println("HOST: " + rmiHost);
-
-
 
                 LocateRegistry.createRegistry(rmiPort).rebind("rmi_server", rmiServer);
 

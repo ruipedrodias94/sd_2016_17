@@ -137,8 +137,17 @@ class Connection extends Thread {
                             }
 
                             case ("search_auction"): {
-                                //TODO: Este metodo deve ser revisto, pq acho que nao deve ter 3 na mesma merda
-                                //rmi.searchAuction();
+
+                                int code = Integer.parseInt(messageParsed.get("code"));
+
+                                rmi = invoqueRMI();
+
+                                ArrayList<Auction> auctions = rmi.searchAuction(code);
+
+                                for (int i = 0; i < auctions.size(); i++) {
+                                    outToClient.print(auctions.get(i).getTitle());
+                                }
+
                                 break;
                             }
 
@@ -164,7 +173,13 @@ class Connection extends Thread {
                             }
 
                             case ("online_users"): {
-                                //rmi.searchOnlineUsers();
+                                rmi = invoqueRMI();
+
+                                ArrayList<Client> clients = rmi.searchOnlineUsers();
+
+                                for (int i = 0; i < clients.size(); i++) {
+                                    System.out.println(clients.get(i).getUserName());
+                                }
                                 break;
                             }
 
@@ -184,7 +199,6 @@ class Connection extends Thread {
                     } catch (Exception e) {
                         e.printStackTrace();
                         outToClient.println("parser problem, correct your string command");
-                        //System.out.println("Penso que o problema esta no parser: " + e.getLocalizedMessage());
                     }
                 }
             } catch (Exception e) {
@@ -206,7 +220,7 @@ class Connection extends Thread {
 
         String rmiHost;
 
-        boolean runningRMI = true;
+        boolean runningRMI =true;
 
         if (runningRMI){
             rmiHost = prop.getProperty("rmi1host");
