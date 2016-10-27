@@ -31,6 +31,14 @@ public class Auction implements Serializable{
         this.setBids(bids);
     }
 
+    public Auction( int idItem, String title, String description, Timestamp deadline, int amount) {
+        this.idItem = idItem;
+        this.title = title;
+        this.description = description;
+        this.deadline = deadline;
+        this.amount = amount;
+    }
+
     public Auction( int idItem, String title, String description, Timestamp deadline, int amount, int idUser) {
         this.idItem = idItem;
         this.title = title;

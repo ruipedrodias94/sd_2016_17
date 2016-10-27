@@ -23,10 +23,10 @@ public interface RmiInterface extends Remote{
     boolean doLogin(Client client) throws RemoteException;
     ArrayList<Client> searchOnlineUsers() throws RemoteException;
     boolean createAuction(Auction auction) throws RemoteException;
-    //ArrayList<Auction> searchAuction(int code) throws RemoteException;
+    ArrayList<Auction> searchAuction(int code) throws RemoteException;
     //Auction detailAuction(int code) throws RemoteException;
     boolean bid(Bid bid) throws RemoteException;
-    boolean editAuction(Auction auction) throws RemoteException;
+    boolean editAuction(Auction auction, Client client) throws RemoteException;
     Client getClient(String username, String password) throws RemoteException;
     boolean message(Message message) throws RemoteException;
     void putOffline(Client client) throws RemoteException;

@@ -78,7 +78,6 @@ class Connection extends Thread {
                                 if (rmi!=null){
                                     System.out.println("Epah que qualidade, criaste uma interface com sucesso.");
                                 }
-
                                 if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"))) {
                                     outToClient.println("type: register, ok: true");
                                 } else {
@@ -138,15 +137,17 @@ class Connection extends Thread {
                             }
 
                             case ("search_auction"): {
-                                //TODO: Este metodo deve ser revisto, pq acho que nao deve ter 3 na mesma
-                                ArrayList <Auction> search;
+
+                                int code = Integer.parseInt(messageParsed.get("code"));
+
                                 rmi = invoqueRMI();
-                                search = rmi.searchAuction(Integer.parseInt(messageParsed.get("code")));
-                                System.out.println("TAMANHO:"+search.size());
-                                for (int i=0;i<search.size();i++)
-                                {
-                                    System.out.println(search.get(i).getIdItem());
+
+                                ArrayList<Auction> auctions = rmi.searchAuction(code);
+
+                                for (int i = 0; i < auctions.size(); i++) {
+                                    outToClient.print(auctions.get(i).getTitle());
                                 }
+
                                 break;
                             }
 
@@ -172,7 +173,13 @@ class Connection extends Thread {
                             }
 
                             case ("online_users"): {
-                                //rmi.searchOnlineUsers();
+                                rmi = invoqueRMI();
+
+                                ArrayList<Client> clients = rmi.searchOnlineUsers();
+
+                                for (int i = 0; i < clients.size(); i++) {
+                                    System.out.println(clients.get(i).getUserName());
+                                }
                                 break;
                             }
 
@@ -214,7 +221,7 @@ class Connection extends Thread {
 
         String rmiHost;
 
-        boolean runningRMI = false;
+        boolean runningRMI = true;
 
         if (runningRMI){
             rmiHost = prop.getProperty("rmi1host");
