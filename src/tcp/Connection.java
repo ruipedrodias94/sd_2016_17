@@ -59,7 +59,6 @@ class Connection extends Thread {
         Auction auction;
         RmiInterface rmi = null;
 
-
         while (true) {
 
             try {
@@ -158,16 +157,27 @@ class Connection extends Thread {
 
                                 ArrayList<Auction> auctions = rmi.searchAuction(code);
 
+                                Date date = new Date();
+                                Timestamp now = new Timestamp(date.getTime());
+
+
                                 // Make new string
                                 if (auctions.isEmpty()){
                                     init = "type: search_auction, items_count: " + auctions.size();
                                     outToClient.print(init);
                                 }else{
-                                    init = "type: search_auction, items_count: " + auctions.size() +", ";
+                                    init = "type: search_auction, items_count: " + auctions.size();
 
                                     for (int i = 0; i < auctions.size(); i++) {
-                                        aux += " items_" + i +"_id: " + auctions.get(i).getIdItem() + ", items_"+i+"_code: "+ auctions.get(i).getIdAuction() +
+                                        aux += ", items_" + i +"_id: " + auctions.get(i).getIdItem() + ", items_"+i+"_code: "+ auctions.get(i).getIdAuction() +
                                                 " items_"+i+"_title: "+ auctions.get(i).getTitle()+ " ";
+
+
+                                        if (now.after(auctions.get(i).getDeadline())){
+                                            aux += ", bid_over: true";
+                                        }else{
+                                            aux += ", bid_over: false";
+                                        }
                                     }
 
                                     init += aux;
@@ -192,9 +202,19 @@ class Connection extends Thread {
                                 for (int i = 0; i < auction.getMessages().size(); i++) {
                                     aux += ", message_" + i + "_user: " + auction.getMessages().get(i).getIdCient()+ ", messages_" + i +
                                             "_text: " + auction.getMessages().get(i).getText();
+
                                 }
 
-                                init += aux + "bids_count: " + auction.getBids().size();
+                                init += aux + ", bids_count: " + auction.getBids().size();
+
+                                Date date = new Date();
+                                Timestamp now = new Timestamp(date.getTime());
+
+                                if (now.after(auction.getDeadline())){
+                                    init += ", bid_over: true";
+                                }else{
+                                    init += ", bid_over: false";
+                                }
 
                                 outToClient.println(init);
 
@@ -204,13 +224,9 @@ class Connection extends Thread {
                             // TODO Aqui tb
                             case ("my_auctions"): {
 
-
-
                                 break;
                             }
 
-
-                            //TODO WORKING
                             case ("bid"): {
                                 rmi = invoqueRMI();
 
@@ -231,7 +247,7 @@ class Connection extends Thread {
                             }
 
 
-                            // TODO FOR TEST
+                            // TODO FOR TEST - NOT WORKING YET
                             case ("edit_auction"): {
 
                                 // Variables
