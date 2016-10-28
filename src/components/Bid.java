@@ -16,6 +16,12 @@ public class Bid implements Serializable {
         this.setIdAuction(idAuction);
     }
 
+    public Bid(int amount, int idUser, int idAuction) {
+        this.setAmount(amount);
+        this.setIdUser(idUser);
+        this.setIdAuction(idAuction);
+    }
+
     public int getIdBid() {
         return idBid;
     }

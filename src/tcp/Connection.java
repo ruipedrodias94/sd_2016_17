@@ -3,6 +3,7 @@ package tcp;
 
 
 import components.Auction;
+import components.Bid;
 import components.Client;
 import helpers.ProtocolParser;
 import resources.GetPropertiesValues;
@@ -12,6 +13,7 @@ import java.io.*;
 import java.net.*;
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -64,6 +66,9 @@ class Connection extends Thread {
                 inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 while ((messageFromClient = inFromClient.readLine()) != null) {
+
+                    String init = "";
+                    String aux = "";
 
                     try {
                         System.out.println(messageFromClient);
@@ -143,9 +148,6 @@ class Connection extends Thread {
                             //TODO----> Working? Checa aqui JJ
                             case ("search_auction"): {
 
-                                String init;
-                                String aux = "";
-
                                 int code = Integer.parseInt(messageParsed.get("code"));
 
                                 rmi = invoqueRMI();
@@ -182,23 +184,49 @@ class Connection extends Thread {
                                 break;
                             }
 
+                            //TODO -----> Falta fazer as connexões em tempo real
                             case ("bid"): {
+                                rmi = invoqueRMI();
 
+                                int id = Integer.parseInt(messageParsed.get("id"));
+                                int amount = Integer.parseInt(messageParsed.get("amount"));
+
+                                Bid bid = new Bid(amount, client.getIdUser(), id);
+
+                                if (rmi.bid(bid)){
+                                    init = "type: bid, ok: true";
+                                    outToClient.print(init);
+                                }
+                                else{
+                                    init = "type: bid, ok: false";
+                                    outToClient.print(init);
+                                }
                                 break;
                             }
 
+                            // TODO Pode editar, mas temos de guardar as anteriores
                             case ("edit_auction"): {
                                 //rmi.editAuction();
                                 break;
                             }
 
+                            // TODO: Em principio bomba
                             case ("online_users"): {
                                 rmi = invoqueRMI();
 
                                 ArrayList<Client> clients = rmi.searchOnlineUsers();
 
-                                for (int i = 0; i < clients.size(); i++) {
-                                    System.out.println(clients.get(i).getUserName());
+                                if (clients.isEmpty()){
+                                    init = "type: online_users, users_count: " + clients.size();
+                                    outToClient.print(init);
+                                }else {
+                                    init = "type: online_users, users_count: " + clients.size() + ", ";
+                                    for (int i = 0; i < clients.size(); i++) {
+                                        aux = "users_"+i+"_username: " + clients.get(i).getUserName();
+                                    }
+
+                                    init += aux;
+                                    outToClient.print(init);
                                 }
                                 break;
                             }
@@ -241,7 +269,7 @@ class Connection extends Thread {
 
         String rmiHost;
 
-        boolean runningRMI = true;
+        boolean runningRMI = false;
 
         if (runningRMI){
             rmiHost = prop.getProperty("rmi1host");
@@ -263,6 +291,7 @@ class Connection extends Thread {
             try {
                 System.getProperties().put("java.security.policy", "security.policy");
                 System.setSecurityManager(new RMISecurityManager());
+                //Registry xota = LocateRegistry.getRegistry(rmiHost, rmiPort);
                 rmiInterface = (RmiInterface) LocateRegistry.getRegistry(rmiHost, rmiPort).lookup("rmi_server");
                 numTentativas = 30;
                 break;
