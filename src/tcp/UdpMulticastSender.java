@@ -52,7 +52,7 @@ public class UdpMulticastSender extends Thread {
                 byte[] buf = numberClientsMessage.getBytes();
                 DatagramPacket msgOut = new DatagramPacket(buf,buf.length,InetAddress.getByName(group),port);
                 socket.send(msgOut);
-                Thread.sleep(Integer.parseInt(prop.getProperty("multicastRefreshTime")));
+                this.sleep(Integer.parseInt(prop.getProperty("multicastRefreshTime")));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {

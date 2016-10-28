@@ -316,7 +316,7 @@ class Connection extends Thread {
 
         String rmiHost;
 
-        boolean runningRMI = false;
+        boolean runningRMI = true;
 
         if (runningRMI){
             rmiHost = prop.getProperty("rmi1host");
