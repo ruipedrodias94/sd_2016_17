@@ -40,8 +40,8 @@ public class TcpServerOne {
             System.out.println("[Ligacao TCP à escuta no host:  no porto :" + porto + "]");
 
             //Threads de balanceamento de carga
-            new UdpMulticastReceiver();
-            new UdpMulticastSender(ClientConnections, "localhost" ,porto);
+            //new UdpMulticastReceiver();
+            //new UdpMulticastSender(ClientConnections, "localhost" ,porto);
 
             //Thread de ligação ao cliente TCP
             //noinspection InfiniteLoopStatement

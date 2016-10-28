@@ -189,7 +189,7 @@ class Connection extends Thread {
                             case ("bid"): {
                                 rmi = invoqueRMI();
 
-                                int id = Integer.parseInt(messageParsed.get("id"));
+                                int id = Integer.parseInt(messageParsed.get("code"));
                                 int amount = Integer.parseInt(messageParsed.get("amount"));
 
                                 Bid bid = new Bid(amount, client.getIdUser(), id);

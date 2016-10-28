@@ -1,6 +1,8 @@
 package rmi;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.AccessException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 
 import java.util.Properties;
 
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
+import com.sun.tools.internal.xjc.*;
 import components.Auction;
 import components.Bid;
 import components.Client;
@@ -291,8 +295,11 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         String search = "SELECT MESSAGE.* FROM MESSAGE, AUCTION WHERE MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION AND AUCTION.idAUCTION =" + idAuction+";";
 
         ResultSet resultSet;
+        Connection connection1 = null;
 
         try {
+            connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+            Statement statement = connection1.createStatement();
             resultSet = statement.executeQuery(search);
 
             while (resultSet.next()){
@@ -308,21 +315,30 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        try {
+            connection1.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return  messages;
     }
 
 
-    public ArrayList<Bid> getBids(int idAuction){
+    public ArrayList<Bid> getBids(int idAuction)  {
 
         Bid bid;
-        String searchBid = " SELECT BID.* FROM BID WHERE AUCTION_idAUCTION = "+idAuction+";";
+        String search = " SELECT BID.* FROM BID WHERE AUCTION_idAUCTION = "+idAuction+";";
         ArrayList<Bid> bids = new ArrayList<>();
-
         ResultSet resultSet;
 
+
+
+        Connection connection1 = null;
+
         try {
-            resultSet = statement.executeQuery(searchBid);
+            connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+            Statement statement = connection1.createStatement();
+            resultSet = statement.executeQuery(search);
 
             while (resultSet.next()){
 
@@ -335,6 +351,11 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
                 bids.add(bid);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            connection1.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -356,20 +377,20 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         Message message;
 
         ArrayList<Bid> bids = new ArrayList<>();
-        ArrayList<Message> messages = getMessages(code);
+        ArrayList<Message> messages = new ArrayList<>();
 
         String search = "select * from AUCTION where idAUCTION = " + code +";";
 
         ResultSet resultSet;
-
         try {
             resultSet = statement.executeQuery(search);
-            if (!resultSet.next()) {
+            /*if (!resultSet.next()) {
+
                 return null;
-            }
+            }*/
             while (resultSet.next()) {
 
-
+                System.out.println("NOTNULL");
                 messages = getMessages(code);
                 getBids(code);
                 auction = new Auction(resultSet.getInt(1),resultSet.getInt(2),
@@ -397,7 +418,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      */
 
     public synchronized boolean bid(Bid bid) {
-        String add = "INSERT INTO BID(idBID, amount, USER.idUSER, AUCTION.idAUCTION) VALUES('" + bid.getIdBid() + "','" +
+        String add = "INSERT INTO BID(idBID, amount, USER_idUSER, AUCTION_idAUCTION) VALUES('" + bid.getIdBid() + "','" +
                 bid.getAmount() + "', '" + bid.getIdUser() + "', '" + bid.getIdAuction() + "');";
         try {
 
@@ -509,7 +530,9 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     //----------------------------------------------------------------------------------
     //----------------------------------------------------------------------------------
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
+
+        //System.out.println(InetAddress.getLocalHost().getHostAddress());
 
         GetPropertiesValues gpv = new GetPropertiesValues();
         Properties prop = gpv.getProperties();
