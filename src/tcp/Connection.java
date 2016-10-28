@@ -2,7 +2,7 @@ package tcp;
 
 
 
-import com.sun.xml.internal.bind.v2.TODO;
+
 import components.Auction;
 import components.Bid;
 import components.Client;
@@ -15,8 +15,7 @@ import java.io.*;
 import java.net.*;
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.sql.Date;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,7 +57,6 @@ class Connection extends Thread {
         String type;
         Client client = null;
         Auction auction;
-        boolean result;
         RmiInterface rmi = null;
 
 
@@ -103,6 +101,8 @@ class Connection extends Thread {
 
                                 //Get that cliente back online
                                 client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
+
+
 
                                 if (rmi.doLogin(client)) {
                                     outToClient.println("type: login, ok: true");
@@ -278,7 +278,6 @@ class Connection extends Thread {
 
                                     deadline = Timestamp.valueOf(data);
 
-                                    //deadline = Timestamp.valueOf(messageParsed.get("deadline"));
 
                                 }else {
                                     deadline = old.getDeadline();

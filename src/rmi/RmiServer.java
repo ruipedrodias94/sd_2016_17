@@ -378,10 +378,10 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         ResultSet resultSet;
         try {
             resultSet = statement.executeQuery(search);
-            /*if (!resultSet.next()) {
+            if (!resultSet.next()) {
 
                 return null;
-            }*/
+            }
             while (resultSet.next()) {
 
                 messages = getMessages(code);
