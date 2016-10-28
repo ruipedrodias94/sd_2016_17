@@ -162,23 +162,24 @@ class Connection extends Thread {
                                     init = "type: search_auction, items_count: " + auctions.size() +", ";
 
                                     for (int i = 0; i < auctions.size(); i++) {
-                                        aux += "items_" + i +"_id: " + auctions.get(i).getIdItem() + ", items_"+i+"_code: "+ auctions.get(i).getIdAuction() +
-                                                "items_"+i+"_title: "+ auctions.get(i).getTitle();
+                                        aux += " items_" + i +"_id: " + auctions.get(i).getIdItem() + ", items_"+i+"_code: "+ auctions.get(i).getIdAuction() +
+                                                " items_"+i+"_title: "+ auctions.get(i).getTitle()+ " ";
                                     }
 
                                     init += aux;
                                 }
 
-                                outToClient.print(init);
+                                outToClient.println(init);
                                 break;
                             }
 
-                            //TODO----> Falta fazer a merda na RmiServer
+                            //TODO----> Falta fazer na RmiServer
                             case ("detail_auction"): {
 
                                 break;
                             }
 
+                            // TODO Aqui tb
                             case ("my_auctions"): {
                                 //rmi.searchAuction();
                                 break;
@@ -195,11 +196,11 @@ class Connection extends Thread {
 
                                 if (rmi.bid(bid)){
                                     init = "type: bid, ok: true";
-                                    outToClient.print(init);
+                                    outToClient.println(init);
                                 }
                                 else{
                                     init = "type: bid, ok: false";
-                                    outToClient.print(init);
+                                    outToClient.println(init);
                                 }
                                 break;
                             }
@@ -226,7 +227,7 @@ class Connection extends Thread {
                                     }
 
                                     init += aux;
-                                    outToClient.print(init);
+                                    outToClient.println(init);
                                 }
                                 break;
                             }

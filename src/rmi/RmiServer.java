@@ -525,7 +525,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
         String rmiHost;
 
-        boolean runningRMI = true;
+        boolean runningRMI = false;
 
         if (runningRMI) {
             rmiHost = prop.getProperty("rmi1host");
