@@ -132,7 +132,7 @@ class Connection extends Thread {
 
                                 }
 
-                                 Timestamp newData = Timestamp.valueOf(data);
+                                Timestamp newData = Timestamp.valueOf(data);
 
                                 auction = new Auction(idAuction, title, description, newData, amount, client.getIdUser());
 
@@ -203,7 +203,9 @@ class Connection extends Thread {
 
                             // TODO Aqui tb
                             case ("my_auctions"): {
-                                //rmi.searchAuction();
+
+
+
                                 break;
                             }
 
@@ -229,9 +231,72 @@ class Connection extends Thread {
                             }
 
 
-                            // TODO NAO TESTEI E NAO SEI COMO GUARDAR OS MAIS ANTIGOS
+                            // TODO FOR TEST
                             case ("edit_auction"): {
-                                //rmi.editAuction();
+
+                                // Variables
+
+                                int code;
+                                String title;
+                                String description;
+                                Timestamp deadline;
+                                int amount;
+                                String data = "";
+
+                                rmi = invoqueRMI();
+
+                                int idAuction = Integer.parseInt(messageParsed.get("id"));
+
+                                Auction old = rmi.detailAuction(idAuction);
+
+                                if (!messageParsed.get("code").isEmpty()){
+                                    code = Integer.parseInt(messageParsed.get("code"));
+                                }else {
+                                    code = old.getIdAuction();
+                                }
+                                if (!messageParsed.get("title").isEmpty()){
+                                    title = messageParsed.get("title");
+                                }else {
+                                    title = old.getTitle();
+                                }
+                                if (!messageParsed.get("description").isEmpty()){
+                                    description = messageParsed.get("description");
+                                }else {
+                                    description = old.getDescription();
+                                }
+                                if (!messageParsed.get("deadline").isEmpty()){
+
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm");
+                                    SimpleDateFormat simpleDateFormatnew = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                                    try {
+                                        data = simpleDateFormatnew.format(simpleDateFormat.parse(messageParsed.get("deadline")));
+                                    }
+                                    catch (ParseException pqp){
+
+                                    }
+
+                                    deadline = Timestamp.valueOf(data);
+
+                                    //deadline = Timestamp.valueOf(messageParsed.get("deadline"));
+
+                                }else {
+                                    deadline = old.getDeadline();
+                                }
+                                if (!messageParsed.get("amount").isEmpty()){
+                                    amount = Integer.parseInt(messageParsed.get("amount"));
+                                }else{
+                                    amount = old.getAmount();
+                                }
+
+                                Auction newAuction = new Auction(code,title, description, deadline, amount);
+
+                                if (rmi.editAuction(old, newAuction, client)){
+                                    outToClient.println("type: edit_auction, ok: true");
+                                }else {
+                                    outToClient.println("type: edit_auction, ok: false");
+                                }
+
                                 break;
                             }
 
