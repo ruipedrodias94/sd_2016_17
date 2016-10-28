@@ -249,22 +249,23 @@ class Connection extends Thread {
 
                                 Auction old = rmi.detailAuction(idAuction);
 
-                                if (!messageParsed.get("code").isEmpty()){
+                                if (messageParsed.get("code")!=null){
                                     code = Integer.parseInt(messageParsed.get("code"));
                                 }else {
-                                    code = old.getIdAuction();
+                                    System.out.println("here");
+                                    code = old.getIdItem();
                                 }
-                                if (!messageParsed.get("title").isEmpty()){
+                                if (messageParsed.get("title")!=null){
                                     title = messageParsed.get("title");
                                 }else {
                                     title = old.getTitle();
                                 }
-                                if (!messageParsed.get("description").isEmpty()){
+                                if (messageParsed.get("description")!=null){
                                     description = messageParsed.get("description");
                                 }else {
                                     description = old.getDescription();
                                 }
-                                if (!messageParsed.get("deadline").isEmpty()){
+                                if (messageParsed.get("deadline")!=null){
 
                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm");
                                     SimpleDateFormat simpleDateFormatnew = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -282,13 +283,13 @@ class Connection extends Thread {
                                 }else {
                                     deadline = old.getDeadline();
                                 }
-                                if (!messageParsed.get("amount").isEmpty()){
+                                if (messageParsed.get("amount")!=null){
                                     amount = Integer.parseInt(messageParsed.get("amount"));
                                 }else{
                                     amount = old.getAmount();
                                 }
 
-                                Auction newAuction = new Auction(code,title, description, deadline, amount);
+                                Auction newAuction = new Auction(old.getIdAuction(),code,title, description, deadline, amount,old.getIdUser(),old.getMessages(),old.getBids());
 
                                 if (rmi.editAuction(old, newAuction, client)){
                                     outToClient.println("type: edit_auction, ok: true");

@@ -378,10 +378,10 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         ResultSet resultSet;
         try {
             resultSet = statement.executeQuery(search);
-            if (!resultSet.next()) {
+            //if (!resultSet.next()) {
 
-                return null;
-            }
+              //  return null;
+            //}
             while (resultSet.next()) {
 
                 messages = getMessages(code);
@@ -397,6 +397,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         }
         return auction;
     }
+
 
 
     //TODO MY AUCTIONS
@@ -440,8 +441,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         Connection connection1 = null;
         Connection connection2 = null;
 
-        String anterior = "INSERT INTO AUCTION_HIST(idAUCTION,idITEM,title,description,deadline,amount,hist_id,AUCTION_idAUCTION,AUCTION_USER_idUSER) VALUES('" + antigo.getIdAuction() + "', ,'" + antigo.getTitle() + "', '" +
-                antigo.getDescription() +"','"+antigo.getDeadline()+"','" + antigo.getAmount()+ "',,'"+antigo.getIdAuction()+"', '"+antigo.getIdUser()+"');";
+        String anterior = "INSERT INTO AUCTION_HIST(hist_id,idITEM,title,description,deadline,amount,AUCTION_idAUCTION,AUCTION_USER_idUSER) VALUES(, "+antigo.getIdItem()+" ,'" + antigo.getTitle() + "', '" +
+                antigo.getDescription() +"','"+antigo.getDeadline()+"','" + antigo.getAmount()+ "','"+antigo.getIdAuction()+"', '"+antigo.getIdUser()+"');";
 
         String update = "UPDATE AUCTION SET idITEM = '" + novo.getIdItem() + "', title = '" + novo.getTitle() + "', description = '" +
                 novo.getDescription() + "', amount = '" + novo.getAmount() + "', WHERE idAUCTION = '" + novo.getIdAuction() + "'" +
@@ -453,7 +454,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
                 connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
                 Statement statement = connection1.createStatement();
-                resultSet = statement.executeQuery(anterior);
+                statement.executeUpdate(anterior);
 
                 connection2 = DriverManager.getConnection(DB_URL,USER,PASS);
                 statement = connection1.createStatement();
