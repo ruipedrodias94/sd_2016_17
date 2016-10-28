@@ -441,11 +441,11 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         Connection connection1 = null;
         Connection connection2 = null;
 
-        String anterior = "INSERT INTO AUCTION_HIST(hist_id,idITEM,title,description,deadline,amount,AUCTION_idAUCTION,AUCTION_USER_idUSER) VALUES(, "+antigo.getIdItem()+" ,'" + antigo.getTitle() + "', '" +
+        String anterior = "INSERT INTO AUCTION_HIST(idITEM,title,description,deadline,amount,AUCTION_idAUCTION,AUCTION_USER_idUSER) VALUES( "+antigo.getIdItem()+" ,'" + antigo.getTitle() + "', '" +
                 antigo.getDescription() +"','"+antigo.getDeadline()+"','" + antigo.getAmount()+ "','"+antigo.getIdAuction()+"', '"+antigo.getIdUser()+"');";
 
         String update = "UPDATE AUCTION SET idITEM = '" + novo.getIdItem() + "', title = '" + novo.getTitle() + "', description = '" +
-                novo.getDescription() + "', amount = '" + novo.getAmount() + "', WHERE idAUCTION = '" + novo.getIdAuction() + "'" +
+                novo.getDescription() + "', amount = '" + novo.getAmount() + "' WHERE idAUCTION = '" + novo.getIdAuction() + "'" +
                 "AND USER_idUSER = " + client.getIdUser() +";";
 
 
