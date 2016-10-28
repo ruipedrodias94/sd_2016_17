@@ -436,19 +436,36 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
     public synchronized boolean editAuction(Auction antigo, Auction novo, Client client) {
 
-        String anterior = "UPDATE AUCTION SET idITEM = '" + novo.getIdItem() + "', title = '" + novo.getTitle() + "', description = '" +
-                novo.getDescription() + "', amount = '" + novo.getAmount() + "', WHERE idAUCTION = '" + novo.getIdAuction() + "'" +
-                "AND USER_idUSER = " + client.getIdUser() +"';";
+        ResultSet resultSet;
+        Connection connection1 = null;
+        Connection connection2 = null;
+
+        String anterior = "INSERT INTO AUCTION_HIST(idAUCTION,idITEM,title,description,deadline,amount,hist_id,AUCTION_idAUCTION,AUCTION_USER_idUSER) VALUES('" + antigo.getIdAuction() + "', ,'" + antigo.getTitle() + "', '" +
+                antigo.getDescription() +"','"+antigo.getDeadline()+"','" + antigo.getAmount()+ "',,'"+antigo.getIdAuction()+"', '"+antigo.getIdUser()+"');";
 
         String update = "UPDATE AUCTION SET idITEM = '" + novo.getIdItem() + "', title = '" + novo.getTitle() + "', description = '" +
                 novo.getDescription() + "', amount = '" + novo.getAmount() + "', WHERE idAUCTION = '" + novo.getIdAuction() + "'" +
-                "AND USER_idUSER = " + client.getIdUser() +"';";
+                "AND USER_idUSER = " + client.getIdUser() +";";
+
 
         try {
-            statement.executeUpdate(update);
+
+
+                connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+                Statement statement = connection1.createStatement();
+                resultSet = statement.executeQuery(anterior);
+
+                connection2 = DriverManager.getConnection(DB_URL,USER,PASS);
+                statement = connection1.createStatement();
+                statement.executeUpdate(update);
+
+
             commit();
+            connection1.close();
+            connection2.close();
             return true;
         } catch (SQLException e) {
+
             e.printStackTrace();
             rollback();
         }
@@ -545,7 +562,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
         String rmiHost;
 
-        boolean runningRMI = false;
+        boolean runningRMI = true;
 
         if (runningRMI) {
             rmiHost = prop.getProperty("rmi1host");
