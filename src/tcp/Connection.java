@@ -70,6 +70,7 @@ class Connection extends Thread {
 
                     String init = "";
                     String aux = "";
+                    auction = null;
 
                     try {
                         System.out.println(messageFromClient);
@@ -143,6 +144,7 @@ class Connection extends Thread {
                                 } else {
                                     outToClient.println("type : create_auction , ok: false");
                                 }
+
                                 break;
                             }
 
@@ -174,7 +176,26 @@ class Connection extends Thread {
                                 break;
                             }
 
+                            // TODO Fazer a porcaria de um método para ir buscar o nome do user atraves do id
                             case ("detail_auction"): {
+
+                                rmi = invoqueRMI();
+
+                                int id = Integer.parseInt(messageParsed.get("id"));
+
+                                auction = rmi.detailAuction(id);
+
+                                init = "type: detail_auction, title: " + auction.getTitle() + ", description: " + auction.getDescription() +
+                                        ", deadline: " + auction.getDeadline() + ", messages_count: " + auction.getMessages().size();
+
+                                for (int i = 0; i < auction.getMessages().size(); i++) {
+                                    aux += ", message_" + i + "_user: " + auction.getMessages().get(i).getIdCient()+ ", messages_" + i +
+                                            "_text: " + auction.getMessages().get(i).getText();
+                                }
+
+                                init += aux + "bids_count: " + auction.getBids().size();
+
+                                outToClient.println(init);
 
                                 break;
                             }
@@ -206,6 +227,7 @@ class Connection extends Thread {
                             }
 
 
+                            // TODO NAO TESTEI E NAO SEI COMO GUARDAR OS MAIS ANTIGOS
                             case ("edit_auction"): {
                                 //rmi.editAuction();
                                 break;

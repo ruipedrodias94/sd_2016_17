@@ -1,7 +1,7 @@
 package rmi;
 
 import java.io.Serializable;
-import java.net.InetAddress;
+
 import java.net.UnknownHostException;
 import java.rmi.AccessException;
 import java.rmi.RMISecurityManager;
@@ -14,16 +14,13 @@ import java.util.ArrayList;
 
 import java.util.Properties;
 
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
-import com.sun.tools.internal.xjc.*;
+
 import components.Auction;
 import components.Bid;
 import components.Client;
 import components.Message;
 
 import resources.GetPropertiesValues;
-
-import javax.xml.transform.Result;
 
 
 public class RmiServer extends UnicastRemoteObject implements RmiInterface, Serializable{
@@ -259,7 +256,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
             while (resultSet.next()) {
 
-                System.out.println("Ele entra aqui");
 
                 int idAuction = resultSet.getInt(1);
                 String title = resultSet.getString(3);
@@ -268,8 +264,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
                 int amount = resultSet.getInt(6);
 
                 auction = new Auction(idAuction, title, description, timestamp, amount);
-
-                System.out.println("E aqui?");
 
                 auctions.add(auction);
             }
@@ -390,7 +384,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             }*/
             while (resultSet.next()) {
 
-                System.out.println("NOTNULL");
                 messages = getMessages(code);
                 getBids(code);
                 auction = new Auction(resultSet.getInt(1),resultSet.getInt(2),
@@ -406,9 +399,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     }
 
 
-    public void myAuctions(Client client) {
-
-    }
+    //TODO MY AUCTIONS
 
     /**
      * Fazer uma licitacao. Recebe um argumento do tipo BID
