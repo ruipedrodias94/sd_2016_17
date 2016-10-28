@@ -35,9 +35,9 @@ public class TcpServerOne {
         //waiting for client connections
         try
         {
-            InetAddress hostAdress = InetAddress.getLocalHost();
+            //InetAddress hostAdress = InetAddress.getLocalHost();
             listenSocket = new ServerSocket(porto);
-            System.out.println("[Ligacao TCP à escuta no host: " + hostAdress + " no porto :" + porto + "]");
+            System.out.println("[Ligacao TCP à escuta no host:  no porto :" + porto + "]");
 
             //Threads de balanceamento de carga
             new UdpMulticastReceiver();

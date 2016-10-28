@@ -17,14 +17,9 @@ public class GetPropertiesValues {
 
         try {
 
-
-
-
-
             inputStream = new FileInputStream("config.properties");
             prop.load(inputStream);
             inputStream.close();
-
 
             return prop;
         } catch (FileNotFoundException e) {

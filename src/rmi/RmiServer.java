@@ -258,10 +258,10 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
                 System.out.println("Ele entra aqui");
 
                 int idAuction = resultSet.getInt(1);
-                String title = resultSet.getString(2);
-                String description = resultSet.getString(3);
-                Timestamp timestamp = resultSet.getTimestamp(4);
-                int amount = resultSet.getInt(5);
+                String title = resultSet.getString(3);
+                String description = resultSet.getString(4);
+                Timestamp timestamp = resultSet.getTimestamp(5);
+                int amount = resultSet.getInt(6);
 
                 auction = new Auction(idAuction, title, description, timestamp, amount);
 
@@ -286,9 +286,9 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     public ArrayList<Message> getMessages(int idAuction){
 
         Message message;
-        ArrayList<Message> messages = null;
+        ArrayList<Message> messages = new ArrayList<>();
 
-        String search = "SELECT MESSAGE.* FROM MESSAGE, AUCTION WHERE MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION AND AUCTION.idAUCTION =" + idAuction;
+        String search = "SELECT MESSAGE.* FROM MESSAGE, AUCTION WHERE MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION AND AUCTION.idAUCTION =" + idAuction+";";
 
         ResultSet resultSet;
 
@@ -296,7 +296,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             resultSet = statement.executeQuery(search);
 
             while (resultSet.next()){
-
                 int idMessage = resultSet.getInt(1);
                 String text = resultSet.getString(2);
                 int readed = resultSet.getInt(3);
@@ -314,15 +313,34 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     }
 
 
-    /*public ArrayList<Bid> getBids(int idAuction){
+    public ArrayList<Bid> getBids(int idAuction){
 
         Bid bid;
         String searchBid = " SELECT BID.* FROM BID WHERE AUCTION_idAUCTION = "+idAuction+";";
+        ArrayList<Bid> bids = new ArrayList<>();
 
         ResultSet resultSet;
 
+        try {
+            resultSet = statement.executeQuery(searchBid);
 
-    }*/
+            while (resultSet.next()){
+
+                int idBid = resultSet.getInt(1);
+                int amount = resultSet.getInt(2);
+                int iduser = resultSet.getInt(3);
+                int idauction = resultSet.getInt(4);
+
+                bid = new Bid(idBid,amount,iduser,idauction);
+
+                bids.add(bid);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bids;
+
+    }
 
     /**
      * Retorna apenas um projecto, para poder-mos aceder ao detalhe do projecto
@@ -331,7 +349,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      * @return
      */
 
-   /* public Auction detailAuction(int code) {
+    public Auction detailAuction(int code) {
 
         Auction auction = null;
         Bid bid;
@@ -340,29 +358,23 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         ArrayList<Bid> bids = new ArrayList<>();
         ArrayList<Message> messages = getMessages(code);
 
-        String search = "select * from AUCTION, MESSAGE, BID where idAUCTION = " + code +
-                " and MESSAGE.AUCTION_idAUCTION = AUCTION.idAUCTION" +
-                " and BID.AUCTION_idAUCTION = AUCTION.idAUCTION;";
+        String search = "select * from AUCTION where idAUCTION = " + code +";";
+
+        ResultSet resultSet;
 
         try {
-            connectDatabase.resultSet = connectDatabase.statement.executeQuery(search);
-            if (!connectDatabase.resultSet.next()) {
+            resultSet = statement.executeQuery(search);
+            if (!resultSet.next()) {
                 return null;
             }
-            while (connectDatabase.resultSet.next()) {
-                message = new Message(connectDatabase.resultSet.getString(9),
-                        connectDatabase.resultSet.getInt(10), connectDatabase.resultSet.getInt(11), connectDatabase.resultSet.getInt(12));
+            while (resultSet.next()) {
 
-                messages.add(message);
 
-                bid = new Bid(connectDatabase.resultSet.getInt(13), connectDatabase.resultSet.getInt(14),
-                        connectDatabase.resultSet.getInt(15), connectDatabase.resultSet.getInt(16));
-
-                bids.add(bid);
-
-                auction = new Auction(connectDatabase.resultSet.getInt(1), connectDatabase.resultSet.getInt(2),
-                        connectDatabase.resultSet.getString(3), connectDatabase.resultSet.getString(4),
-                        connectDatabase.resultSet.getDate(5), connectDatabase.resultSet.getInt(6), connectDatabase.resultSet.getInt(7), messages, bids);
+                messages = getMessages(code);
+                getBids(code);
+                auction = new Auction(resultSet.getInt(1),resultSet.getInt(2),
+                        resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getTimestamp(5), resultSet.getInt(6),resultSet.getInt(7), messages, bids);
 
             }
 
@@ -370,7 +382,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             e.printStackTrace();
         }
         return auction;
-    }*/
+    }
 
 
     public void myAuctions(Client client) {
