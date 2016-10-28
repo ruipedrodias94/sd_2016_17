@@ -2,6 +2,7 @@ package tcp;
 
 
 
+import com.sun.xml.internal.bind.v2.TODO;
 import components.Auction;
 import components.Bid;
 import components.Client;
@@ -207,6 +208,7 @@ class Connection extends Thread {
                             }
 
 
+                            //TODO WORKING
                             case ("bid"): {
                                 rmi = invoqueRMI();
 
@@ -233,6 +235,7 @@ class Connection extends Thread {
                                 break;
                             }
 
+                            //TODO WORKING
                             case ("message") :{
 
                                 int id = Integer.parseInt(messageParsed.get("id"));
@@ -254,6 +257,7 @@ class Connection extends Thread {
                                 break;
                             }
 
+                            // TODO WORKING
                             case ("online_users"): {
                                 rmi = invoqueRMI();
 
@@ -274,6 +278,7 @@ class Connection extends Thread {
                                 break;
                             }
 
+                            //TODO WORKING
                             case ("logout"): {
 
                                 rmi = invoqueRMI();

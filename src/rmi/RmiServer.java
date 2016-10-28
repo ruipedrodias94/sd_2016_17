@@ -427,15 +427,21 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     }
 
     /**
-     * Edit auction. Recebe um parametro auction
      *
-     * @param auction
+     * @param antigo
+     * @param novo
+     * @param client
      * @return
      */
 
-    public synchronized boolean editAuction(Auction auction, Client client) {
-        String update = "UPDATE AUCTION SET idITEM = '" + auction.getIdItem() + "', title = '" + auction.getTitle() + "', description = '" +
-                auction.getDescription() + "', amount = '" + auction.getAmount() + "', WHERE idAUCTION = '" + auction.getIdAuction() + "'" +
+    public synchronized boolean editAuction(Auction antigo, Auction novo, Client client) {
+
+        String anterior = "UPDATE AUCTION SET idITEM = '" + novo.getIdItem() + "', title = '" + novo.getTitle() + "', description = '" +
+                novo.getDescription() + "', amount = '" + novo.getAmount() + "', WHERE idAUCTION = '" + novo.getIdAuction() + "'" +
+                "AND USER_idUSER = " + client.getIdUser() +"';";
+
+        String update = "UPDATE AUCTION SET idITEM = '" + novo.getIdItem() + "', title = '" + novo.getTitle() + "', description = '" +
+                novo.getDescription() + "', amount = '" + novo.getAmount() + "', WHERE idAUCTION = '" + novo.getIdAuction() + "'" +
                 "AND USER_idUSER = " + client.getIdUser() +"';";
 
         try {
