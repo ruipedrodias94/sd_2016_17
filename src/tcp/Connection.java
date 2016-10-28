@@ -5,6 +5,7 @@ package tcp;
 import components.Auction;
 import components.Bid;
 import components.Client;
+import components.Message;
 import helpers.ProtocolParser;
 import resources.GetPropertiesValues;
 import rmi.RmiInterface;
@@ -173,7 +174,6 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            //TODO----> Falta fazer na RmiServer
                             case ("detail_auction"): {
 
                                 break;
@@ -185,7 +185,7 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            //TODO -----> Falta fazer as connexões em tempo real
+
                             case ("bid"): {
                                 rmi = invoqueRMI();
 
@@ -205,13 +205,33 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            // TODO Pode editar, mas temos de guardar as anteriores
+
                             case ("edit_auction"): {
                                 //rmi.editAuction();
                                 break;
                             }
 
-                            // TODO: Em principio bomba
+                            case ("message") :{
+
+                                int id = Integer.parseInt(messageParsed.get("id"));
+                                String text = messageParsed.get("text");
+
+                                Message message = new Message(text, 0, client.getIdUser(), id);
+
+                                rmi = invoqueRMI();
+
+                                if (rmi.message(message)){
+                                    init = "type: message, ok: true";
+                                    outToClient.println(init);
+                                }
+                                else {
+
+                                    init = "type: message, ok: false";
+                                    outToClient.println(init);
+                                }
+                                break;
+                            }
+
                             case ("online_users"): {
                                 rmi = invoqueRMI();
 
@@ -223,7 +243,7 @@ class Connection extends Thread {
                                 }else {
                                     init = "type: online_users, users_count: " + clients.size() + ", ";
                                     for (int i = 0; i < clients.size(); i++) {
-                                        aux = "users_"+i+"_username: " + clients.get(i).getUserName();
+                                        aux += " users_"+i+"_username: " + clients.get(i).getUserName();
                                     }
 
                                     init += aux;
@@ -233,9 +253,9 @@ class Connection extends Thread {
                             }
 
                             case ("logout"): {
-                                //rmi = rmiConnection.connectToRmi();
 
-                                //rmi.putOffline(client);
+                                rmi = invoqueRMI();
+                                rmi.putOffline(client);
                                 client = null;
                                 break;
                             }
@@ -248,7 +268,6 @@ class Connection extends Thread {
                     } catch (Exception e) {
                         e.printStackTrace();
                         outToClient.println("parser problem, correct your string command");
-                        //System.out.println("Penso que o problema esta no parser: " + e.getLocalizedMessage());
                     }
                 }
             } catch (Exception e) {

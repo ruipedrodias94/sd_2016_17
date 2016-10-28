@@ -19,6 +19,13 @@ public class Message implements Serializable{
         this.setIdAuction(idAuction);
     }
 
+    public Message(String text, int readed, int idCient, int idAuction) {
+        this.setText(text);
+        this.setReaded(readed);
+        this.setIdCient(idCient);
+        this.setIdAuction(idAuction);
+    }
+
 
     public String getText() {
         return text;
