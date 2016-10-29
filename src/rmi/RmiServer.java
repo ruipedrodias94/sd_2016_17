@@ -137,6 +137,25 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         return client;
     }
 
+
+    public String getUserName(int id){
+        String search = "SELECT userName FROM USER WHERE idUser ='" + 1 + "';";
+
+        ResultSet resultSet;
+
+        String userName = "";
+
+        try{
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()){
+                userName = resultSet.getString(2);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userName;
+    }
+
     /**
      * Método para colocar os utilizadores online a partir do momento em que é feito o login
      *
@@ -338,7 +357,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
     public ArrayList<Bid> searchBids(Client client) {
 
-
         ArrayList<Bid> bids = new ArrayList<>();
         Bid bid;
 
@@ -375,6 +393,11 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         return bids;
     }
 
+    /**
+     * Return my auctions
+     * @param client
+     * @return
+     */
 
     public ArrayList<Auction> myAuctions(Client client) {
 
