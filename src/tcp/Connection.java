@@ -14,8 +14,10 @@ import rmi.RmiInterface;
 import java.io.*;
 import java.net.*;
 import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,11 +30,15 @@ class Connection extends Thread {
     BufferedReader inFromClient = null;
     Socket clientSocket;
     ArrayList<Connection> clients = null;
+    CallbackInterface c;
+    Client client = null;
 
 
-    public Connection(Socket clientSockt, ArrayList<Connection> clients) {
+    public Connection(Socket clientSockt, ArrayList<Connection> clients, CallbackInterface c) {
         this.clients = clients;
         this.clients.add(this);
+
+        this.c = c;
         try {
             clientSocket = clientSockt;
             // create streams for writing to and reading from the socket
@@ -55,7 +61,6 @@ class Connection extends Thread {
         String messageFromClient;
         HashMap<String, String> messageParsed;
         String type;
-        Client client = null;
         Auction auction;
         RmiInterface rmi = null;
 
@@ -443,3 +448,4 @@ class Connection extends Thread {
         return rmiInterface;
     }
 }
+

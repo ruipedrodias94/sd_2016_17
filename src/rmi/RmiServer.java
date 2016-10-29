@@ -2,10 +2,9 @@ package rmi;
 
 import java.io.Serializable;
 
+import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.rmi.AccessException;
-import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
+import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 
 import java.rmi.server.UnicastRemoteObject;
@@ -13,6 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import java.util.Properties;
+import java.util.Scanner;
 
 
 import components.Auction;
@@ -21,6 +21,8 @@ import components.Client;
 import components.Message;
 
 import resources.GetPropertiesValues;
+import tcp.CallbackInterface;
+
 
 
 public class RmiServer extends UnicastRemoteObject implements RmiInterface, Serializable{
@@ -28,6 +30,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     public static RmiServer rmiServer;
     private Connection connection;
     private Statement statement;
+    static CallbackInterface clientNotification;
+
 
     GetPropertiesValues gpv = new GetPropertiesValues();
     Properties prop = gpv.getProperties();
@@ -91,9 +95,12 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             resultSet = statement.executeQuery(search);
             while (resultSet.next()) {
                 putOnline(client);
+                clientNotification.printOnClient("Cliente fez login");
                 return true;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
         return false;
@@ -414,6 +421,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     }
 
 
+
+
     /**
      * Get messages with the idAuction
      * @param idAuction
@@ -683,6 +692,28 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
     //----------------------------------------------------------------------------------
     //----------------------------------------------------------------------------------
+    //Callback
+
+    static class HelloServer extends UnicastRemoteObject implements ServerCallbackInterface{
+
+
+        public HelloServer() throws RemoteException {
+            super();
+        }
+
+        public void print_on_server(String s) throws RemoteException {
+            System.out.println("> "+s);
+        }
+
+
+        public void subscribe(String name, CallbackInterface c) throws RemoteException {
+            System.out.println("Subscribing: "+name);
+            clientNotification = c;
+        }
+    }
+
+
+
 
     public static void main(String[] args) throws UnknownHostException {
 
@@ -690,6 +721,9 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
         GetPropertiesValues gpv = new GetPropertiesValues();
         Properties prop = gpv.getProperties();
+
+
+
 
 
         try {
@@ -708,6 +742,23 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             rmiHost = prop.getProperty("rmi1host");
         } else {
             rmiHost = prop.getProperty("rmi2host");
+        }
+
+
+
+        System.getProperties().put("java.security.policy", "security.policy");
+        System.setSecurityManager(new RMISecurityManager());
+
+        try {
+            LocateRegistry.createRegistry(1099);
+            HelloServer h = new HelloServer();
+            Naming.rebind("hello", h);
+            System.out.println("Notifications Server ready.");
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
 
 

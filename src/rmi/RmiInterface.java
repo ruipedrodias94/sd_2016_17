@@ -5,6 +5,7 @@ import components.Auction;
 import components.Bid;
 import components.Client;
 import components.Message;
+import tcp.CallbackInterface;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -31,5 +32,6 @@ public interface RmiInterface extends Remote{
     boolean message(Message message) throws RemoteException;
     void putOffline(Client client) throws RemoteException;
     public ArrayList<Auction> myAuctions(Client client) throws RemoteException;
+
 
 }

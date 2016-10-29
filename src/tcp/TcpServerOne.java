@@ -1,21 +1,48 @@
 package tcp;
 
 import resources.GetPropertiesValues;
+import rmi.ServerCallbackInterface;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
+ class HelloClient extends UnicastRemoteObject implements CallbackInterface
+{
+    ArrayList<Connection> clientsToNotificate;
+
+    HelloClient( ArrayList<Connection> c) throws RemoteException {
+        super();
+        this.clientsToNotificate = c;
+
+    }
+
+
+    public void printOnClient(String s) throws RemoteException {
+        for(int i = 0;i<clientsToNotificate.size();i++)
+        {
+            clientsToNotificate.get(i).outToClient.println("Notificação: "+s);
+        }
+
+    }
+}
+
 
 public class TcpServerOne {
 
+    static HelloClient c;
 
+    public TcpServerOne() throws RemoteException {
+    }
 
     //Funciona como cliente RMI
     public static void main(String[] args) throws IOException, NotBoundException {
@@ -31,6 +58,17 @@ public class TcpServerOne {
 
         //Socket de ligação ao Cliente
         ServerSocket listenSocket;
+
+        try
+        {
+            c = new HelloClient(ClientConnections);
+            ServerCallbackInterface h = (ServerCallbackInterface) Naming.lookup("hello");
+            h.subscribe(" Servidor TCP ", (CallbackInterface) c);
+            System.out.println("Server TCP sent subscription to RMI Server");
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         //waiting for client connections
         try
@@ -48,7 +86,7 @@ public class TcpServerOne {
             while(true)
             {
                 Socket clientSocket = listenSocket.accept();
-                Connection C = new Connection(clientSocket,ClientConnections);
+                Connection C = new Connection(clientSocket,ClientConnections,c);
                 System.out.println("Numero de users: "+ ClientConnections.size());
             }
         }catch (UnknownHostException e) {
