@@ -45,8 +45,6 @@ class Connection extends Thread {
 
             outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
-
-
             this.start();
 
         } catch (IOException e) {
@@ -310,7 +308,6 @@ class Connection extends Thread {
                             }
 
 
-
                             case ("edit_auction"): {
 
                                 // Variables
@@ -383,8 +380,11 @@ class Connection extends Thread {
                             case ("message") :{
 
                                 int idAuction = Integer.parseInt(messageParsed.get("id"));
+
                                 String text = messageParsed.get("text");
+
                                 Message message = new Message(text, 0, client.getIdUser(), idAuction);
+
                                 message.setUsername(client.getUserName());
 
                                 rmi = invoqueRMI();
@@ -410,9 +410,9 @@ class Connection extends Thread {
                                     init = "type: online_users, users_count: " + clients.size();
                                     outToClient.print(init);
                                 }else {
-                                    init = "type: online_users, users_count: " + clients.size() + ", ";
+                                    init = "type: online_users, users_count: " + clients.size();
                                     for (int i = 0; i < clients.size(); i++) {
-                                        aux += " users_"+i+"_username: " + clients.get(i).getUserName();
+                                        aux += ", users_"+i+"_username: " + clients.get(i).getUserName();
                                     }
 
                                     init += aux;

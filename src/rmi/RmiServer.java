@@ -480,7 +480,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     }
 
 
-    public void deleteUnreadedMessages(int idmessage){
+    public synchronized void deleteUnreadedMessages(int idmessage){
 
         Message message;
         ArrayList<Message> messages = new ArrayList<>();
@@ -765,12 +765,12 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             while (resultSet.next()) {
                 onlineFlag = resultSet.getInt(4);
                 if(onlineFlag==1){
-                return true;
+                    return true;
                 }
                 else
-                    {
-                        return false;
-                    }
+                {
+                    return false;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -786,7 +786,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      * @return
      */
 
-    public boolean message(Message message) {
+    public synchronized boolean message(Message message) {
 
         ArrayList<Message> auction_messages = new ArrayList<>();
 
@@ -818,39 +818,28 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             }else{
 
                 try {
+                    Connection connection1 = null;
+                    ResultSet resultSet;
+                    connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+                    Statement statement = connection1.createStatement();
 
-                           Connection connection1 = null;
-                           ResultSet resultSet;
-                           connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
-                           Statement statement = connection1.createStatement();
+                    String message_offline = "INSERT INTO UNREADED(idUser,TEXT,idAuction,idUserFrom) VALUES(" + clientsToNotify.get(i) + ",'" + message.getText() + "'," + message.getIdAuction()+",'"+ message.getUsername()+"');";
 
-                               String message_offline = "INSERT INTO UNREADED(idUser,TEXT,idAuction,idUserFrom) VALUES(" + clientsToNotify.get(i) + ",'" + message.getText() + "'," + message.getIdAuction()+",'"+ message.getUsername()+"');";
-
-
-                               try {
-                                   statement.executeUpdate(message_offline);
-                                   commit();
-                                   connection1.close();
-                                   return true;
-                               } catch (SQLException e) {
-                                   e.printStackTrace();
-                                   rollback();
-                               }
-
-
-
-
-
+                    try {
+                        statement.executeUpdate(message_offline);
+                        commit();
+                        connection1.close();
+                        return true;
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        rollback();
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
+            }
         }
-
-
-
-
-    }
         return false;
     }
 
