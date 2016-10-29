@@ -794,7 +794,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
                 message.getReaded() + "', '" + message.getIdCient() + "', '" + message.getIdAuction() + "');";
 
         ArrayList<Integer> clientsToNotify = clientsToNotificate(message);
-        String writer = getUserName(message.getIdCient());
+        String writer = message.getUsername();
 
         try {
             statement.executeUpdate(add);
@@ -810,7 +810,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             if(checkClientOnline(clientsToNotify.get(i))==true) {
 
                 try {
-                    clientNotification.printOnClient(message,writer, clientsToNotify.get(i));
+                    clientNotification.printOnClient(message,writer,clientsToNotify.get(i));
                     return true;
                 } catch (RemoteException e) {
                     e.printStackTrace();
