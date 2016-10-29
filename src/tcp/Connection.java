@@ -45,7 +45,7 @@ class Connection extends Thread {
 
             outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            outToClient.println("Bem vindo ao iBEi\n");
+
 
             this.start();
 
@@ -101,11 +101,12 @@ class Connection extends Thread {
                                 rmi = invoqueRMI();
 
                                 //Get that cliente back online
-                                client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
+                                //client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
 
 
 
-                                if (rmi.doLogin(client)) {
+
+                                if (rmi.doLogin(messageParsed.get("username"), messageParsed.get("password"))) {
                                     outToClient.println("type: login, ok: true");
                                 } else {
                                     outToClient.println("type: login, ok: false");
@@ -117,7 +118,7 @@ class Connection extends Thread {
                             //TODO----> Working? Checa aqui JJ
                             case ("create_auction"): {
 
-                                int idAuction = Integer.parseInt(messageParsed.get("code"));
+                                String idItem = messageParsed.get("code");
                                 String title = messageParsed.get("title");
                                 String description = messageParsed.get("description");
                                 String data = messageParsed.get("deadline");
@@ -135,7 +136,7 @@ class Connection extends Thread {
 
                                 Timestamp newData = Timestamp.valueOf(data);
 
-                                auction = new Auction(idAuction, title, description, newData, amount, client.getIdUser());
+                                auction = new Auction(idItem, title, description, newData, amount, client.getIdUser());
 
                                 //Chamada ao RMI
 
@@ -153,7 +154,7 @@ class Connection extends Thread {
                             //TODO----> Working? Checa aqui JJ
                             case ("search_auction"): {
 
-                                int code = Integer.parseInt(messageParsed.get("code"));
+                                String code = (messageParsed.get("code"));
 
                                 rmi = invoqueRMI();
 
@@ -264,7 +265,7 @@ class Connection extends Thread {
 
                                 // Variables
 
-                                int code;
+                                String code;
                                 String title;
                                 String description;
                                 Timestamp deadline;
@@ -278,7 +279,7 @@ class Connection extends Thread {
                                 Auction old = rmi.detailAuction(idAuction);
 
                                 if (messageParsed.get("code")!=null){
-                                    code = Integer.parseInt(messageParsed.get("code"));
+                                    code = messageParsed.get("code");
                                 }else {
                                     System.out.println("here");
                                     code = old.getIdItem();

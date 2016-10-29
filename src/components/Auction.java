@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Auction implements Serializable{
 
     private int idAuction;
-    private int idItem;
+    private String idItem;
     private String title;
     private String description;
     private Timestamp deadline;
@@ -19,7 +19,7 @@ public class Auction implements Serializable{
     private ArrayList<Bid> bids;
 
 
-    public Auction(int idAuction, int idItem, String title, String description, Timestamp deadline, int amount, int idUser, ArrayList<Message> messages, ArrayList<Bid> bids) {
+    public Auction(int idAuction, String idItem, String title, String description, Timestamp deadline, int amount, int idUser, ArrayList<Message> messages, ArrayList<Bid> bids) {
         this.idAuction = idAuction;
         this.idItem = idItem;
         this.title = title;
@@ -31,7 +31,7 @@ public class Auction implements Serializable{
         this.setBids(bids);
     }
 
-    public Auction( int idItem, String title, String description, Timestamp deadline, int amount) {
+    public Auction( String idItem, String title, String description, Timestamp deadline, int amount) {
         this.idItem = idItem;
         this.title = title;
         this.description = description;
@@ -39,7 +39,7 @@ public class Auction implements Serializable{
         this.amount = amount;
     }
 
-    public Auction( int idItem, String title, String description, Timestamp deadline, int amount, int idUser) {
+    public Auction( String idItem, String title, String description, Timestamp deadline, int amount, int idUser) {
         this.idItem = idItem;
         this.title = title;
         this.description = description;
@@ -80,11 +80,11 @@ public class Auction implements Serializable{
         this.amount = amount;
     }
 
-    public int getIdItem() {
+    public String getIdItem() {
         return idItem;
     }
 
-    public void setIdItem(int idItem) {
+    public void setIdItem(String idItem) {
         this.idItem = idItem;
     }
 

@@ -81,24 +81,25 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     /**
      * Fazer grande Login
      *
-     * @param client
+     * @param
      * @return
      */
 
     //falta verificar quando o username e a password não estão certos. faz login na mesma
-    public boolean doLogin(Client client) {
-        String search = "SELECT * FROM USER WHERE userName = '" + String.valueOf(client.getUserName())
-                + "' AND password = '" + String.valueOf(client.getPassword()) + "';";
+    public boolean doLogin(String username, String password) {
+        String search = "SELECT * FROM USER WHERE userName = '" + username
+                + "' AND password = '" + password+"';";
 
         ResultSet resultSet;
         try {
             resultSet = statement.executeQuery(search);
             while (resultSet.next()) {
-                putOnline(client);
+               // putOnline(client);
                 return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
         return false;
     }
@@ -244,7 +245,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      * @return auctions
      */
 
-    public ArrayList<Auction> searchAuction(int code) {
+    public ArrayList<Auction> searchAuction(String code) {
 
         Auction auction;
 
