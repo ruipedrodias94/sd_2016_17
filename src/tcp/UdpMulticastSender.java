@@ -29,7 +29,7 @@ public class UdpMulticastSender extends Thread {
 
     public void run()
     {
-
+        InetAddress g = null;
         //Carrega Ficheiro de propriedades
         GetPropertiesValues gpv = new GetPropertiesValues();
         Properties prop = gpv.getProperties();
@@ -40,6 +40,11 @@ public class UdpMulticastSender extends Thread {
         int port = Integer.parseInt(prop.getProperty("multicastPort"));
         String group = prop.getProperty("multicastGroup");
         int ttl = Integer.parseInt(prop.getProperty("multicastTTL"));
+        try {
+             g = InetAddress.getByName(group);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
         while(true){
             try
@@ -47,12 +52,19 @@ public class UdpMulticastSender extends Thread {
                 //Criar Socket sem fazer bind porque é apenas para mandar info
                 socket = new MulticastSocket(port);
                 socket.setTimeToLive(2);
-
+                for(int i = 0; i< clients.size();i++)
+                {
+                    if(!clients.get(i).isAlive())
+                    {
+                        clients.get(i).invoqueRMI().putOffline(clients.get(i).client);
+                        clients.remove(i);
+                    }
+                }
                 String numberClientsMessage = " servidor: "+host+" no porto: "+porto+" Número de clientes --> "+clients.size();
                 byte[] buf = numberClientsMessage.getBytes();
-                DatagramPacket msgOut = new DatagramPacket(buf,buf.length,InetAddress.getByName(group),port);
+                DatagramPacket msgOut = new DatagramPacket(buf,buf.length,g,port);
                 socket.send(msgOut);
-                this.sleep(Integer.parseInt(prop.getProperty("multicastRefreshTime")));
+                sleep(Integer.parseInt(prop.getProperty("multicastRefreshTime")));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {

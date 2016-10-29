@@ -95,12 +95,9 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             resultSet = statement.executeQuery(search);
             while (resultSet.next()) {
                 putOnline(client);
-                clientNotification.printOnClient("Cliente fez login");
                 return true;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
             e.printStackTrace();
         }
         return false;

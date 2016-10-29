@@ -53,7 +53,7 @@ public class TcpServerOne {
 
         //Dados Server TCP
         ArrayList <Connection> ClientConnections = new ArrayList <Connection>() ;
-        int porto = Integer.parseInt(prop.getProperty("server1TcpPort"));
+        int porto = Integer.parseInt(prop.getProperty("server2TcpPort"));
         //String host = prop.getProperty("server1TcpHost");
 
         //Socket de ligação ao Cliente
@@ -78,8 +78,8 @@ public class TcpServerOne {
             System.out.println("[Ligacao TCP à escuta no host:  no porto :" + porto + "]");
 
             //Threads de balanceamento de carga
-            //new UdpMulticastReceiver();
-            //new UdpMulticastSender(ClientConnections, "localhost" ,porto);
+            new UdpMulticastReceiver();
+            new UdpMulticastSender(ClientConnections, "localhost" ,porto);
 
             //Thread de ligação ao cliente TCP
             //noinspection InfiniteLoopStatement

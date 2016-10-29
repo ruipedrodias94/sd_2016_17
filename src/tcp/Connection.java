@@ -394,7 +394,15 @@ class Connection extends Thread {
                 outToClient.println("string null repeat please");
                 e.printStackTrace();
             }
-            clients.remove(this);
+
+
+            try {
+                clients.remove(this);
+                invoqueRMI().putOffline(client);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            break;
         }
     }
 
