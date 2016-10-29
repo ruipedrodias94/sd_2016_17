@@ -35,6 +35,6 @@ public interface RmiInterface extends Remote{
     void putOffline(Client client) throws RemoteException;
     ArrayList<Auction> myAuctions(Client client) throws RemoteException;
     public ArrayList<Message> getMUnreadedMessages(int idUser) throws RemoteException;
-
+    public void deleteUnreadedMessages(int idmessage) throws RemoteException;
     ArrayList<Bid> getBids(int idAuction) throws RemoteException;
 }

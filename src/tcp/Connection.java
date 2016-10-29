@@ -122,6 +122,7 @@ class Connection extends Thread {
                                     {
                                         String notification = "type: notification_message, id:"+unreaded.get(i).getIdAuction()+", user: "+unreaded.get(i).getUsername()+", text: "+unreaded.get(i).getText();
                                         outToClient.println(notification);
+                                        rmi.deleteUnreadedMessages(unreaded.get(i).getIdMessage());
                                     }
 
 
@@ -383,7 +384,6 @@ class Connection extends Thread {
 
                                 int idAuction = Integer.parseInt(messageParsed.get("id"));
                                 String text = messageParsed.get("text");
-                                System.out.println("USERID: "+client.getIdUser());
                                 Message message = new Message(text, 0, client.getIdUser(), idAuction);
                                 message.setUsername(client.getUserName());
 
@@ -394,7 +394,6 @@ class Connection extends Thread {
                                     outToClient.println(init);
                                 }
                                 else {
-
                                     init = "type: message, ok: false";
                                     outToClient.println(init);
                                 }

@@ -485,7 +485,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         Message message;
         ArrayList<Message> messages = new ArrayList<>();
 
-        String search = "DELETE FROM UNREADED. WHERE IdUNREADED=" + idmessage+";";
+        String search = "DELETE FROM UNREADED WHERE IdUNREADED='"+idmessage+"';";
 
         ResultSet resultSet;
         Connection connection1 = null;
@@ -493,7 +493,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         try {
             connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
             Statement statement = connection1.createStatement();
-            resultSet = statement.executeQuery(search);
+            statement.executeUpdate(search);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -726,8 +726,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         ArrayList<Message> auctionMessages = new ArrayList<>();
 
         //id do criador do leilão
-        System.out.println("CRIADOR: "+detailAuction(m.getIdAuction()).getIdUser());
-        clientsToNotify.add(detailAuction(m.getIdAuction()).getIdUser());
+        clientsToNotify.add(detailAuction(String.valueOf(m.getIdAuction())).getIdUser());
+        clientsToNotify.add(detailAuction(String.valueOf(m.getIdAuction())).getIdUser());
 
         //Mensagens do leilão
         auctionMessages = getMessages(m.getIdAuction());
@@ -811,6 +811,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
                 try {
                     clientNotification.printOnClient(message,writer, clientsToNotify.get(i));
+                    return true;
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
