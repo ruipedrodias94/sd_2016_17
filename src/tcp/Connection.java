@@ -83,9 +83,6 @@ class Connection extends Thread {
 
                                 rmi = invoqueRMI();
 
-                                if (rmi!=null){
-                                    System.out.println("Epah que qualidade, criaste uma interface com sucesso.");
-                                }
                                 if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"))) {
                                     outToClient.println("type: register, ok: true");
                                 } else {
@@ -201,11 +198,19 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            // TODO Aqui tb
+
                             case ("my_auctions"): {
+                                ArrayList<Auction> auctions ;
+                                rmi = invoqueRMI();
+                                auctions = rmi.myAuctions(client);
 
+                                init = "type: my_auctions, items_count: "+auctions.size();
+                                for (int i = 0; i < auctions.size(); i++) {
+                                    aux += ", items_"+ i +"_id: "+auctions.get(i).getIdAuction()+", items_"+ i +"_code: "+auctions.get(i).getIdItem()+", items_"+ i +"_title:"+auctions.get(i).getTitle();
+                                }
 
-
+                                init += aux;
+                                outToClient.println(init);
                                 break;
                             }
 
@@ -214,7 +219,7 @@ class Connection extends Thread {
                             case ("bid"): {
                                 rmi = invoqueRMI();
 
-                                int id = Integer.parseInt(messageParsed.get("code"));
+                                int id = Integer.parseInt(messageParsed.get("id"));
                                 int amount = Integer.parseInt(messageParsed.get("amount"));
 
                                 Bid bid = new Bid(amount, client.getIdUser(), id);

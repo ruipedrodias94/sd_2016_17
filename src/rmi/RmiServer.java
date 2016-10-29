@@ -276,6 +276,145 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
 
     /**
+     * Get auctions that the client have created
+     * @param client
+     * @return
+     */
+
+    public ArrayList<Auction> searchAuctionsCreated(Client client) {
+
+        Auction auction;
+
+        ArrayList<Auction> auctions = new ArrayList<>();
+
+        String search = "SELECT * FROM AUCTION WHERE USER_idUSER = " + client.getIdUser() + ";";
+
+        ResultSet resultSet;
+        Connection connection1 = null;
+
+        try {
+            connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+            Statement statement = connection1.createStatement();
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()) {
+
+
+                int idAuction = resultSet.getInt(1);
+                String title = resultSet.getString(3);
+                String description = resultSet.getString(4);
+                Timestamp timestamp = resultSet.getTimestamp(5);
+                int amount = resultSet.getInt(6);
+
+                auction = new Auction(idAuction, title, description, timestamp, amount);
+
+                auctions.add(auction);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            connection1.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return auctions;
+    }
+
+
+
+
+
+    /**
+     * Get bids that the client have created
+     * @param client
+     * @return
+     */
+
+    public ArrayList<Bid> searchBids(Client client) {
+
+
+        ArrayList<Bid> bids = new ArrayList<>();
+        Bid bid;
+
+        String search = "SELECT * FROM BID WHERE USER_idUSER = " + client.getIdUser() + ";";
+
+        ResultSet resultSet;
+        Connection connection1 = null;
+
+        try {
+            connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+            Statement statement = connection1.createStatement();
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()) {
+
+
+                int idBID = resultSet.getInt(1);
+                int amount = resultSet.getInt(2);
+                int idAuction = resultSet.getInt(4);
+
+                bid = new Bid(idBID,amount,client.getIdUser(),idAuction);
+
+                bids.add(bid);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            connection1.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bids;
+    }
+
+
+    public ArrayList<Auction> myAuctions(Client client) {
+
+        ArrayList <Auction> auctions ;
+        ArrayList <Bid> bids ;
+        Auction auction ;
+        int idAuction;
+        boolean contains;
+
+        //bids que o cliente fez
+        bids = searchBids(client);
+
+        //leiloes que o cliente criou
+        auctions = searchAuctionsCreated(client);
+
+
+
+
+        //todos os leiloes que tenha feito bid e nao esteja nos que criou adiciona
+        for(int i = 0;  i < bids.size(); i++)
+        {
+            idAuction = bids.get(i).getIdAuction();
+            contains = false;
+            for(int j=0;j< auctions.size();j++)
+            {
+                if(auctions.get(j).getIdAuction() == idAuction)
+                {
+                    contains = true;
+                }
+
+            }
+            if(contains == false)
+            {
+                auction = detailAuction(idAuction);
+                auctions.add(auction);
+            }
+        }
+
+        return auctions;
+
+    }
+
+
+    /**
      * Get messages with the idAuction
      * @param idAuction
      * @return
