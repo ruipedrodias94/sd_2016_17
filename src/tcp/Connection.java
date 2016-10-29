@@ -203,7 +203,11 @@ class Connection extends Thread {
                                         ", deadline: " + auction.getDeadline() + ", messages_count: " + auction.getMessages().size();
 
                                 for (int i = 0; i < auction.getMessages().size(); i++) {
-                                    aux += ", message_" + i + "_user: " + auction.getMessages().get(i).getIdCient()+ ", messages_" + i +
+                                    // Aqui esta ele
+
+                                    String userName = rmi.getUserName(auction.getMessages().get(i).getIdCient());
+
+                                    aux += ", message_" + i + "_user: " + userName + ", messages_" + i +
                                             "_text: " + auction.getMessages().get(i).getText();
 
                                 }
@@ -332,10 +336,10 @@ class Connection extends Thread {
                             //TODO WORKING
                             case ("message") :{
 
-                                int id = Integer.parseInt(messageParsed.get("id"));
+                                int idAuction = Integer.parseInt(messageParsed.get("id"));
                                 String text = messageParsed.get("text");
 
-                                Message message = new Message(text, 0, client.getIdUser(), id);
+                                Message message = new Message(text, 0, client.getIdUser(), idAuction);
 
                                 rmi = invoqueRMI();
 

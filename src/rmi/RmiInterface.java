@@ -22,6 +22,8 @@ public interface RmiInterface extends Remote{
     // Put the methods here!
 
     boolean registerClient(String username, String passwordt) throws RemoteException;
+    boolean doLogin(Client client) throws RemoteException;
+    String getUserName(int id) throws RemoteException;
     boolean doLogin(String username, String password) throws RemoteException;
     ArrayList<Client> searchOnlineUsers() throws RemoteException;
     boolean createAuction(Auction auction) throws RemoteException;
@@ -32,7 +34,6 @@ public interface RmiInterface extends Remote{
     Client getClient(String username, String password) throws RemoteException;
     boolean message(Message message) throws RemoteException;
     void putOffline(Client client) throws RemoteException;
-    public ArrayList<Auction> myAuctions(Client client) throws RemoteException;
-
+    ArrayList<Auction> myAuctions(Client client) throws RemoteException;
 
 }
