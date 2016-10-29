@@ -281,7 +281,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             while (resultSet.next()) {
 
 
-                int idAuction = resultSet.getInt(1);
+                String idAuction = resultSet.getString(1);
                 String title = resultSet.getString(3);
                 String description = resultSet.getString(4);
                 Timestamp timestamp = resultSet.getTimestamp(5);
@@ -323,7 +323,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             while (resultSet.next()) {
 
 
-                int idAuction = resultSet.getInt(1);
+                String idAuction = resultSet.getString(1);
                 String title = resultSet.getString(3);
                 String description = resultSet.getString(4);
                 Timestamp timestamp = resultSet.getTimestamp(5);
@@ -555,7 +555,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
                 messages = getMessages(code);
                 getBids(code);
-                auction = new Auction(resultSet.getInt(1),resultSet.getInt(2),
+                auction = new Auction(resultSet.getInt(1),resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4),
                         resultSet.getTimestamp(5), resultSet.getInt(6),resultSet.getInt(7), messages, bids);
 
