@@ -82,7 +82,7 @@ class Connection extends Thread {
 
                         switch (type) {
 
-                            //TODO----> Working? Checa aqui JJ
+
                             case ("register"): {
 
                                 rmi = invoqueRMI();
@@ -95,18 +95,17 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            //TODO----> Working? Checa aqui JJ
+
                             case ("login"): {
 
                                 rmi = invoqueRMI();
 
                                 //Get that cliente back online
-                                //client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
-
-
+                                client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
 
 
                                 if (rmi.doLogin(messageParsed.get("username"), messageParsed.get("password"))) {
+
                                     outToClient.println("type: login, ok: true");
                                 } else {
                                     outToClient.println("type: login, ok: false");
@@ -115,7 +114,7 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            //TODO----> Working? Checa aqui JJ
+
                             case ("create_auction"): {
 
                                 String idItem = messageParsed.get("code");
@@ -151,7 +150,7 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            //TODO----> Working? Checa aqui JJ
+
                             case ("search_auction"): {
 
                                 String code = (messageParsed.get("code"));
@@ -172,15 +171,9 @@ class Connection extends Thread {
                                     init = "type: search_auction, items_count: " + auctions.size();
 
                                     for (int i = 0; i < auctions.size(); i++) {
-                                        aux += ", items_" + i +"_id: " + auctions.get(i).getIdItem() + ", items_"+i+"_code: "+ auctions.get(i).getIdAuction() +
-                                                " items_"+i+"_title: "+ auctions.get(i).getTitle()+ " ";
+                                        aux += ", items_" + i +"_id: " + auctions.get(i).getIdAuction() + ", items_"+i+"_code: "+ auctions.get(i).getIdItem() +
+                                                ", items_"+i+"_title: "+ auctions.get(i).getTitle();
 
-
-                                        if (now.after(auctions.get(i).getDeadline())){
-                                            aux += ", bid_over: true";
-                                        }else{
-                                            aux += ", bid_over: false";
-                                        }
                                     }
 
                                     init += aux;
@@ -190,14 +183,14 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            // TODO Fazer a porcaria de um método para ir buscar o nome do user atraves do id
                             case ("detail_auction"): {
 
                                 rmi = invoqueRMI();
 
-                                int id = Integer.parseInt(messageParsed.get("id"));
+                                String id = messageParsed.get("id");
 
                                 auction = rmi.detailAuction(id);
+
 
                                 init = "type: detail_auction, title: " + auction.getTitle() + ", description: " + auction.getDescription() +
                                         ", deadline: " + auction.getDeadline() + ", messages_count: " + auction.getMessages().size();
@@ -217,15 +210,16 @@ class Connection extends Thread {
                                 Date date = new Date();
                                 Timestamp now = new Timestamp(date.getTime());
 
-                                if (now.after(auction.getDeadline())){
+                                /*if (now.after(auction.getDeadline())){
                                     init += ", bid_over: true";
                                 }else{
                                     init += ", bid_over: false";
-                                }
+                                }*/
 
                                 outToClient.println(init);
 
                                 break;
+
                             }
 
 
@@ -245,26 +239,57 @@ class Connection extends Thread {
                             }
 
                             case ("bid"): {
+
                                 rmi = invoqueRMI();
 
-                                int id = Integer.parseInt(messageParsed.get("id"));
-                                int amount = Integer.parseInt(messageParsed.get("amount"));
+                                String idAuction = messageParsed.get("id");
 
-                                Bid bid = new Bid(amount, client.getIdUser(), id);
+                                float amount = Float.parseFloat(messageParsed.get("amount"));
 
-                                if (rmi.bid(bid)){
-                                    init = "type: bid, ok: true";
-                                    outToClient.println(init);
+                                auction = rmi.detailAuction(idAuction);
+
+                                Date date = new Date();
+                                Timestamp now = new Timestamp(date.getTime());
+
+                                ArrayList<Bid> bids = auction.getBids();
+
+                                float best;
+
+                                if (bids.size() == 0){
+                                    best = auction.getAmount();
+                                } else {
+                                    best = bids.get(0).getAmount();
                                 }
-                                else{
+
+                                if (!now.after(auction.getDeadline())) {
+
+                                    if (amount < best){
+
+                                        Bid bid = new Bid(amount, client.getIdUser(), Integer.parseInt(idAuction));
+
+                                        if (rmi.bid(bid)){
+                                            init = "type: bid, ok: true";
+                                            outToClient.println(init);
+                                        }
+                                        else{
+                                            init = "type: bid, ok: false";
+                                            outToClient.println(init);
+                                        }
+                                    } else {
+                                        init = "type: bid, ok: false";
+                                        outToClient.println(init);
+                                    }
+
+                                } else {
                                     init = "type: bid, ok: false";
                                     outToClient.println(init);
                                 }
+
                                 break;
                             }
 
 
-                            // TODO FOR TEST - NOT WORKING YET
+
                             case ("edit_auction"): {
 
                                 // Variables
@@ -273,12 +298,12 @@ class Connection extends Thread {
                                 String title;
                                 String description;
                                 Timestamp deadline;
-                                int amount;
+                                float amount;
                                 String data = "";
 
                                 rmi = invoqueRMI();
 
-                                int idAuction = Integer.parseInt(messageParsed.get("id"));
+                                String idAuction = messageParsed.get("id");
 
                                 Auction old = rmi.detailAuction(idAuction);
 
@@ -317,7 +342,7 @@ class Connection extends Thread {
                                     deadline = old.getDeadline();
                                 }
                                 if (messageParsed.get("amount")!=null){
-                                    amount = Integer.parseInt(messageParsed.get("amount"));
+                                    amount = Float.parseFloat(messageParsed.get("amount"));
                                 }else{
                                     amount = old.getAmount();
                                 }
@@ -333,7 +358,7 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            //TODO WORKING
+
                             case ("message") :{
 
                                 int idAuction = Integer.parseInt(messageParsed.get("id"));
@@ -355,7 +380,7 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            // TODO WORKING
+
                             case ("online_users"): {
                                 rmi = invoqueRMI();
 
@@ -376,7 +401,7 @@ class Connection extends Thread {
                                 break;
                             }
 
-                            //TODO WORKING
+
                             case ("logout"): {
 
                                 rmi = invoqueRMI();
@@ -410,6 +435,7 @@ class Connection extends Thread {
             break;
         }
     }
+
 
 
     public RmiInterface invoqueRMI(){

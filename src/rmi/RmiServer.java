@@ -94,7 +94,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         try {
             resultSet = statement.executeQuery(search);
             while (resultSet.next()) {
-               // putOnline(client);
+                putOnline(username, password);
                 return true;
             }
         } catch (SQLException e) {
@@ -158,13 +158,13 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     }
 
     /**
-     * Método para colocar os utilizadores online a partir do momento em que é feito o login
      *
-     * @param client
+     * @param username
+     * @param password
      */
 
-    public void putOnline(Client client) {
-        String update = "UPDATE USER SET online = " + 1 + " WHERE idUSER = " + client.getIdUser();
+    public void putOnline(String username, String password) {
+        String update = "UPDATE USER SET online = " + 1 + " WHERE userName = '" + username +" 'AND password = '" + password +"' ;";
 
         ResultSet resultSet;
 
@@ -281,13 +281,14 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             while (resultSet.next()) {
 
 
-                String idAuction = resultSet.getString(1);
+                int idAuction = resultSet.getInt(1);
+                String idItem = resultSet.getString(2);
                 String title = resultSet.getString(3);
                 String description = resultSet.getString(4);
                 Timestamp timestamp = resultSet.getTimestamp(5);
                 int amount = resultSet.getInt(6);
 
-                auction = new Auction(idAuction, title, description, timestamp, amount);
+                auction = new Auction(idAuction, idItem, title, description, timestamp, amount);
 
                 auctions.add(auction);
             }
@@ -322,14 +323,14 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             resultSet = statement.executeQuery(search);
             while (resultSet.next()) {
 
-
-                String idAuction = resultSet.getString(1);
+                int idAuction = resultSet.getInt(1);
+                String idItem = resultSet.getString(2);
                 String title = resultSet.getString(3);
                 String description = resultSet.getString(4);
                 Timestamp timestamp = resultSet.getTimestamp(5);
                 int amount = resultSet.getInt(6);
 
-                auction = new Auction(idAuction, title, description, timestamp, amount);
+                auction = new Auction(idAuction, idItem, title, description, timestamp, amount);
 
                 auctions.add(auction);
             }
@@ -377,7 +378,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
                 int amount = resultSet.getInt(2);
                 int idAuction = resultSet.getInt(4);
 
-                bid = new Bid(idBID,amount,client.getIdUser(),idAuction);
+                bid = new Bid(idBID,amount,client.getIdUser(), idAuction);
 
                 bids.add(bid);
             }
@@ -414,9 +415,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         //leiloes que o cliente criou
         auctions = searchAuctionsCreated(client);
 
-
-
-
         //todos os leiloes que tenha feito bid e nao esteja nos que criou adiciona
         for(int i = 0;  i < bids.size(); i++)
         {
@@ -432,7 +430,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             }
             if(contains == false)
             {
-                auction = detailAuction(idAuction);
+                auction = detailAuction(String.valueOf(idAuction));
                 auctions.add(auction);
             }
         }
@@ -490,11 +488,9 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     public ArrayList<Bid> getBids(int idAuction)  {
 
         Bid bid;
-        String search = " SELECT BID.* FROM BID WHERE AUCTION_idAUCTION = "+idAuction+";";
+        String search = " SELECT BID.* FROM BID WHERE AUCTION_idAUCTION = "+idAuction+" ORDER BY amount ASC;";
         ArrayList<Bid> bids = new ArrayList<>();
         ResultSet resultSet;
-
-
 
         Connection connection1 = null;
 
@@ -514,6 +510,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
                 bids.add(bid);
             }
+            connection1.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -533,7 +530,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      * @return
      */
 
-    public Auction detailAuction(int code) {
+    public Auction detailAuction(String code) {
 
         Auction auction = null;
         Bid bid;
@@ -542,25 +539,27 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         ArrayList<Bid> bids = new ArrayList<>();
         ArrayList<Message> messages = new ArrayList<>();
 
-        String search = "select * from AUCTION where idAUCTION = " + code +";";
+        String search = "select * from AUCTION where idAUCTION = '" + code +"';";
+
+        Connection connection1 = null;
 
         ResultSet resultSet;
         try {
+            connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+            Statement statement = connection1.createStatement();
             resultSet = statement.executeQuery(search);
-            //if (!resultSet.next()) {
 
-              //  return null;
-            //}
+
             while (resultSet.next()) {
 
-                messages = getMessages(code);
-                getBids(code);
+                messages = getMessages(Integer.parseInt(code));
+                getBids(Integer.parseInt(code));
                 auction = new Auction(resultSet.getInt(1),resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4),
                         resultSet.getTimestamp(5), resultSet.getInt(6),resultSet.getInt(7), messages, bids);
 
             }
-
+            connection1.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -568,8 +567,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     }
 
 
-
-    //TODO MY AUCTIONS
 
     /**
      * Fazer uma licitacao. Recebe um argumento do tipo BID
@@ -579,19 +576,20 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      */
 
     public synchronized boolean bid(Bid bid) {
+
         String add = "INSERT INTO BID(idBID, amount, USER_idUSER, AUCTION_idAUCTION) VALUES('" + bid.getIdBid() + "','" +
                 bid.getAmount() + "', '" + bid.getIdUser() + "', '" + bid.getIdAuction() + "');";
         try {
 
             statement.executeUpdate(add);
             commit();
+            System.out.println("Faz grande bid");
             return true;
 
         } catch (SQLException e) {
-
+            System.out.println("Nao faz grande bid");
             e.printStackTrace();
             rollback();
-
             return false;
         }
     }
@@ -621,13 +619,13 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         try {
 
 
-                connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
-                Statement statement = connection1.createStatement();
-                statement.executeUpdate(anterior);
+            connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+            Statement statement = connection1.createStatement();
+            statement.executeUpdate(anterior);
 
-                connection2 = DriverManager.getConnection(DB_URL,USER,PASS);
-                statement = connection1.createStatement();
-                statement.executeUpdate(update);
+            connection2 = DriverManager.getConnection(DB_URL,USER,PASS);
+            statement = connection2.createStatement();
+            statement.executeUpdate(update);
 
 
             commit();

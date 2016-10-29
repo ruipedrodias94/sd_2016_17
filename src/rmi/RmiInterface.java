@@ -27,12 +27,12 @@ public interface RmiInterface extends Remote{
     ArrayList<Client> searchOnlineUsers() throws RemoteException;
     boolean createAuction(Auction auction) throws RemoteException;
     ArrayList<Auction> searchAuction(String code) throws RemoteException;
-    Auction detailAuction(int code) throws RemoteException;
+    Auction detailAuction(String code) throws RemoteException;
     boolean bid(Bid bid) throws RemoteException;
     boolean editAuction(Auction antigo, Auction novo, Client client) throws RemoteException;
     Client getClient(String username, String password) throws RemoteException;
     boolean message(Message message) throws RemoteException;
     void putOffline(Client client) throws RemoteException;
     ArrayList<Auction> myAuctions(Client client) throws RemoteException;
-
+    ArrayList<Bid> getBids(int idAuction) throws RemoteException;
 }

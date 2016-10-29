@@ -6,20 +6,20 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-public class Auction implements Serializable{
+public class Auction implements Serializable {
 
     private int idAuction;
     private String idItem;
     private String title;
     private String description;
     private Timestamp deadline;
-    private int amount;
+    private float amount;
     private int idUser;
     private ArrayList<Message> messages;
     private ArrayList<Bid> bids;
 
 
-    public Auction(int idAuction, String idItem, String title, String description, Timestamp deadline, int amount, int idUser, ArrayList<Message> messages, ArrayList<Bid> bids) {
+    public Auction(int idAuction, String idItem, String title, String description, Timestamp deadline, float amount, int idUser, ArrayList<Message> messages, ArrayList<Bid> bids) {
         this.idAuction = idAuction;
         this.idItem = idItem;
         this.title = title;
@@ -31,7 +31,8 @@ public class Auction implements Serializable{
         this.setBids(bids);
     }
 
-    public Auction( String idItem, String title, String description, Timestamp deadline, int amount) {
+    public Auction(int idAuction, String idItem, String title, String description, Timestamp deadline, float amount) {
+        this.idAuction = idAuction;
         this.idItem = idItem;
         this.title = title;
         this.description = description;
@@ -39,7 +40,7 @@ public class Auction implements Serializable{
         this.amount = amount;
     }
 
-    public Auction( String idItem, String title, String description, Timestamp deadline, int amount, int idUser) {
+    public Auction(String idItem, String title, String description, Timestamp deadline, float amount, int idUser) {
         this.idItem = idItem;
         this.title = title;
         this.description = description;
@@ -72,11 +73,11 @@ public class Auction implements Serializable{
         this.deadline = deadline;
     }
 
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 

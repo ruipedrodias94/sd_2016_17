@@ -5,18 +5,18 @@ import java.io.Serializable;
 public class Bid implements Serializable {
 
     private int idBid;
-    private int amount;
+    private float amount;
     private int idUser;
     private int idAuction;
 
-    public Bid(int idBid, int amount, int idUser, int idAuction) {
+    public Bid(int idBid, float amount, int idUser, int idAuction) {
         this.setIdBid(idBid);
         this.setAmount(amount);
         this.setIdUser(idUser);
         this.setIdAuction(idAuction);
     }
 
-    public Bid(int amount, int idUser, int idAuction) {
+    public Bid(float amount, int idUser, int idAuction) {
         this.setAmount(amount);
         this.setIdUser(idUser);
         this.setIdAuction(idAuction);
@@ -30,11 +30,11 @@ public class Bid implements Serializable {
         this.idBid = idBid;
     }
 
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
