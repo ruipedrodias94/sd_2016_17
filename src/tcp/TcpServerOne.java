@@ -1,5 +1,6 @@
 package tcp;
 
+import components.Message;
 import resources.GetPropertiesValues;
 import rmi.ServerCallbackInterface;
 
@@ -27,10 +28,14 @@ import java.util.Properties;
     }
 
 
-    public void printOnClient(String s) throws RemoteException {
+    public void printOnClient(Message m,String writer, int idUser) throws RemoteException {
         for(int i = 0;i<clientsToNotificate.size();i++)
         {
-            clientsToNotificate.get(i).outToClient.println("Notificação: "+s);
+            String notification;
+            notification = "type: notification_message, id: "+m.getIdAuction()+", user: "+writer+", text: "+m.getText();
+            if(clientsToNotificate.get(i).client.getIdUser() == idUser) {
+                clientsToNotificate.get(i).outToClient.println(notification);
+            }
         }
 
     }

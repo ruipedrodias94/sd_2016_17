@@ -52,14 +52,14 @@ public class UdpMulticastSender extends Thread {
                 //Criar Socket sem fazer bind porque é apenas para mandar info
                 socket = new MulticastSocket(port);
                 socket.setTimeToLive(2);
-                for(int i = 0; i< clients.size();i++)
+                /*for(int i = 0; i< clients.size();i++)
                 {
                     if(!clients.get(i).isAlive())
                     {
                         clients.get(i).invoqueRMI().putOffline(clients.get(i).client);
                         clients.remove(i);
                     }
-                }
+                }*/
                 String numberClientsMessage = " servidor: "+host+" no porto: "+porto+" Número de clientes --> "+clients.size();
                 byte[] buf = numberClientsMessage.getBytes();
                 DatagramPacket msgOut = new DatagramPacket(buf,buf.length,g,port);

@@ -94,7 +94,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         try {
             resultSet = statement.executeQuery(search);
             while (resultSet.next()) {
-               // putOnline(client);
+                putOnline(username,password);
                 return true;
             }
         } catch (SQLException e) {
@@ -160,11 +160,11 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     /**
      * Método para colocar os utilizadores online a partir do momento em que é feito o login
      *
-     * @param client
+     *
      */
 
-    public void putOnline(Client client) {
-        String update = "UPDATE USER SET online = " + 1 + " WHERE idUSER = " + client.getIdUser();
+    public void putOnline(String username, String password) {
+        String update = "UPDATE USER SET online = " + 1 + " WHERE userName = '"+username+"' AND password = '"+password+"';";
 
         ResultSet resultSet;
 
@@ -297,6 +297,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         }
         return auctions;
     }
+
+
 
 
     /**
@@ -441,7 +443,75 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
     }
 
+    public ArrayList<Message> getMUnreadedMessages(int idUser){
 
+        Message message;
+        ArrayList<Message> messages = new ArrayList<>();
+
+        String search = "SELECT * FROM UNREADED WHERE IdUSER=" + idUser+";";
+
+        ResultSet resultSet;
+        Connection connection1 = null;
+
+        try {
+            connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+            Statement statement = connection1.createStatement();
+            resultSet = statement.executeQuery(search);
+
+            while (resultSet.next()){
+                int idMessage = resultSet.getInt(1);
+                String text = resultSet.getString(3);
+                idUser = resultSet.getInt(2);
+                int idAuction = resultSet.getInt(4);
+                String idUserfrom = resultSet.getString(5);
+                System.out.println(idUserfrom);
+
+                message = new Message(idMessage, idUser,text,idAuction,idUserfrom);
+
+                messages.add(message);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            connection1.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return  messages;
+    }
+
+
+    public void deleteUnreadedMessages(int idmessage){
+
+        Message message;
+        ArrayList<Message> messages = new ArrayList<>();
+
+        String search = "DELETE FROM UNREADED. WHERE IdUNREADED=" + idmessage+";";
+
+        ResultSet resultSet;
+        Connection connection1 = null;
+
+        try {
+            connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+            Statement statement = connection1.createStatement();
+            resultSet = statement.executeQuery(search);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            connection1.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            connection1.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
     /**
@@ -644,6 +714,74 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
 
     /**
+     * Clients to notify when a message is written
+     *
+     * @param m
+     * @return
+     */
+
+    public ArrayList<Integer> clientsToNotificate(Message m)
+    {
+
+
+        ArrayList<Integer> clientsToNotify = new ArrayList<>();
+        ArrayList<Message> auctionMessages = new ArrayList<>();
+
+        //id do criador do leilão
+        System.out.println("CRIADOR: "+detailAuction(m.getIdAuction()).getIdUser());
+        clientsToNotify.add(detailAuction(m.getIdAuction()).getIdUser());
+
+        //Mensagens do leilão
+        auctionMessages = getMessages(m.getIdAuction());
+
+        for(int i = 0; i<auctionMessages.size();i++)
+        {
+            if(!clientsToNotify.contains(auctionMessages.get(i).getIdCient()))
+            {
+                clientsToNotify.add(auctionMessages.get(i).getIdCient());
+            }
+        }
+
+        return  clientsToNotify;
+
+
+    }
+
+
+    /**
+     * Check if user is online by idUSER
+     *
+     * @param idUser
+     * @return
+     */
+
+    public boolean checkClientOnline(int idUser)
+    {
+        String search = "SELECT * FROM USER WHERE idUSER = '" + idUser +"';";
+
+        ResultSet resultSet;
+
+        int onlineFlag;
+        try {
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()) {
+                onlineFlag = resultSet.getInt(4);
+                if(onlineFlag==1){
+                return true;
+                }
+                else
+                    {
+                        return false;
+                    }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
+    /**
      * Send a message to a auction
      *
      * @param message
@@ -651,17 +789,69 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      */
 
     public boolean message(Message message) {
+
+        ArrayList<Message> auction_messages = new ArrayList<>();
+
         String add = "INSERT INTO MESSAGE (text, readed, USER_idUSER, AUCTION_idAUCTION) VALUES ('" + message.getText() + "', '" +
                 message.getReaded() + "', '" + message.getIdCient() + "', '" + message.getIdAuction() + "');";
+
+        ArrayList<Integer> clientsToNotify = clientsToNotificate(message);
+        String writer = getUserName(message.getIdCient());
 
         try {
             statement.executeUpdate(add);
             commit();
-            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             rollback();
         }
+
+
+        for (int i = 0;i < clientsToNotify.size();i++)
+        {
+            if(checkClientOnline(clientsToNotify.get(i))==true) {
+
+                try {
+                    clientNotification.printOnClient(message,writer, clientsToNotify.get(i));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }else{
+
+                try {
+
+                           Connection connection1 = null;
+                           ResultSet resultSet;
+                           connection1 = DriverManager.getConnection(DB_URL,USER,PASS);
+                           Statement statement = connection1.createStatement();
+
+                               String message_offline = "INSERT INTO UNREADED(idUser,TEXT,idAuction,idUserFrom) VALUES(" + clientsToNotify.get(i) + ",'" + message.getText() + "'," + message.getIdAuction()+",'"+ message.getUsername()+"');";
+
+
+                               try {
+                                   statement.executeUpdate(message_offline);
+                                   commit();
+                                   connection1.close();
+                                   return true;
+                               } catch (SQLException e) {
+                                   e.printStackTrace();
+                                   rollback();
+                               }
+
+
+
+
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+        }
+
+
+
+
+    }
         return false;
     }
 

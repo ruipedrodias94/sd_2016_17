@@ -85,6 +85,7 @@ class Connection extends Thread {
                             //TODO----> Working? Checa aqui JJ
                             case ("register"): {
 
+
                                 rmi = invoqueRMI();
 
                                 if (rmi.registerClient(messageParsed.get("username"), messageParsed.get("password"))) {
@@ -98,16 +99,33 @@ class Connection extends Thread {
                             //TODO----> Working? Checa aqui JJ
                             case ("login"): {
 
+
+                                ArrayList<Message> unreaded = new ArrayList<>();
+
                                 rmi = invoqueRMI();
 
                                 //Get that cliente back online
-                                //client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
+                                client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
 
 
 
 
                                 if (rmi.doLogin(messageParsed.get("username"), messageParsed.get("password"))) {
+                                    client.setUserName(messageParsed.get("username"));
                                     outToClient.println("type: login, ok: true");
+
+
+                                    unreaded = rmi.getMUnreadedMessages(client.getIdUser());
+
+                                    for(int i = 0;i<unreaded.size();i++)
+                                    {
+                                        String notification = "type: notification_message, id:"+unreaded.get(i).getIdAuction()+", user: "+unreaded.get(i).getUsername()+", text: "+unreaded.get(i).getText();
+                                        outToClient.println(notification);
+                                    }
+
+
+
+
                                 } else {
                                     outToClient.println("type: login, ok: false");
                                 }
@@ -338,8 +356,9 @@ class Connection extends Thread {
 
                                 int idAuction = Integer.parseInt(messageParsed.get("id"));
                                 String text = messageParsed.get("text");
-
+                                System.out.println("USERID: "+client.getIdUser());
                                 Message message = new Message(text, 0, client.getIdUser(), idAuction);
+                                message.setUsername(client.getUserName());
 
                                 rmi = invoqueRMI();
 
