@@ -37,7 +37,11 @@ public class LoginBean {
     }
 
     public boolean doLogin() throws RemoteException {
-        return rmiInterface.doLogin(this.username, this.password);
+        if (this.username.equals("ruipedro") && this.password.equals("1234")){
+            return true;
+        }
+        return false;
+        //return rmiInterface.doLogin(this.username, this.password);
     }
 
     public void setUsername(String username) {

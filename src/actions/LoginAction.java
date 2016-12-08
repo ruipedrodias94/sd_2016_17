@@ -25,6 +25,9 @@ public class LoginAction extends ActionSupport implements SessionAware {
         //Caso o recebido não seja nulo
         if (this.username != null && !username.equals("") && this.password!= null && !password.equals("")){
             //Vai receber as cenas do jsp?
+            if (this.getLoginBean() == null){
+                System.out.println("NULL RMI");
+            }
             this.getLoginBean().setUsername(this.username);
             this.getLoginBean().setPassword(this.password);
             //Verifica o login
