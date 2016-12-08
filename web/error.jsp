@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
-  User: jorgearaujo
-  Date: 07/12/16
-  Time: 18:14
+  User: Rui Pedro Dias
+  Date: 08/12/2016
+  Time: 15:19
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -10,13 +10,9 @@
 
 <html>
 <head>
-    <title>Login</title>
+    <title>Ganda bosta</title>
 </head>
 <body>
-    <s:form action="login" method="post">
-        <s:textfield name="username" /><br>
-        <s:password name="password" /><br>
-        <s:submit />
-    </s:form>
+    <h1>Deu erro amigo....</h1>
 </body>
 </html>
