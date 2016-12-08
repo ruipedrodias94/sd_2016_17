@@ -922,9 +922,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         Properties prop = gpv.getProperties();
 
 
-
-
-
         try {
             rmiServer = new RmiServer();
         } catch (RemoteException e) {

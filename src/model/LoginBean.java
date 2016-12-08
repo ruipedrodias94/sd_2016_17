@@ -5,7 +5,9 @@ import rmi.RmiInterface;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 
 /**
  * Created by Rui Pedro Dias on 08/12/2016.
@@ -24,10 +26,10 @@ public class LoginBean {
         try {
             //Se o rmi estiver a dar problemas vir aqui mudar esta merda
 
-            rmiInterface = (RmiInterface) Naming.lookup("rmi_server");
+            System.getProperties().put("java.security.policy", "security.policy");
+            System.setSecurityManager(new RMISecurityManager());
+            rmiInterface = (RmiInterface) LocateRegistry.getRegistry("localhost", 1098).lookup("rmi_server");
         } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (RemoteException e) {
             e.printStackTrace();

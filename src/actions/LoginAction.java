@@ -48,6 +48,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
     public void setLoginBean(LoginBean loginBean){
         this.session.put("loginBean", loginBean);
     }
+
     @Override
     public void setSession(Map<String, Object> map) {
         this.session = map;

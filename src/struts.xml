@@ -15,11 +15,20 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
 
     <package name="sd_2016_17" extends="struts-default">
 
-        <default-action-ref name=""/>
+        <default-action-ref name="index"/>
 
         <global-results>
-            <result name="error"></result>
+            <result name="error">/error.jsp</result>
         </global-results>
+
+        <action name="index">
+            <result>/index.jsp</result>
+        </action>
+
+        <action name="login" class="actions.LoginAction" method="execute">
+            <result name="success">/sucess.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
 
     </package>
 </struts>
