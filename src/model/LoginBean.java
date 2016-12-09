@@ -1,5 +1,6 @@
 package model;
 
+import org.apache.struts2.components.Debug;
 import rmi.RmiInterface;
 
 import java.net.MalformedURLException;
@@ -24,10 +25,9 @@ public class LoginBean {
 
     public LoginBean() {
 
-        /*try {
+        try {
 
             rmiInterface = (RmiInterface) Naming.lookup("rmi_server");
-
             System.out.println("O RMI é " + rmiInterface);
         } catch (NotBoundException e) {
             e.printStackTrace();
@@ -35,7 +35,7 @@ public class LoginBean {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public boolean doLogin() throws RemoteException {
