@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Rui Pedro Dias
@@ -13,5 +14,10 @@
 <body>
 
     <h1>Boa, fez login com sucesso</h1>
+    <c:choose>
+        <c:when test="${session.loggedin == true}">
+            <p>Bem vindo seu vaginas, ${session.username}</p>
+        </c:when>
+    </c:choose>
 </body>
 </html>

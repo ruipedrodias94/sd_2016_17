@@ -18,30 +18,34 @@ import java.rmi.registry.LocateRegistry;
 public class LoginBean {
 
     private RmiInterface rmiInterface;
+    //Things need to do the login
     private String username;
     private String password;
 
-    public LoginBean(){
+    public LoginBean() {
 
-        try {
-            //Se o rmi estiver a dar problemas vir aqui mudar esta merda
-            System.getProperties().put("java.security.policy", "security.policy");
-            System.setSecurityManager(new RMISecurityManager());
-            rmiInterface = (RmiInterface) LocateRegistry.getRegistry("localhost", 1098).lookup("rmi_server");
+        /*try {
 
+            rmiInterface = (RmiInterface) Naming.lookup("rmi_server");
+
+            System.out.println("O RMI é " + rmiInterface);
         } catch (NotBoundException e) {
             e.printStackTrace();
         } catch (RemoteException e) {
             e.printStackTrace();
-        }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }*/
     }
 
-    public boolean getLogin() throws RemoteException {
-        if (rmiInterface.userMatchesPass(this.username, this.password)){
+    public boolean doLogin() throws RemoteException {
+        if (this.username.equals("ruipedro") && this.password.equals("1234")){
             return true;
         }
+        //return rmiInterface.userMatchesPass(this.username, this.password);
         return false;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }

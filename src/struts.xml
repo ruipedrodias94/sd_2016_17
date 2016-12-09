@@ -17,14 +17,6 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
 
         <default-action-ref name="index"/>
 
-        <global-results>
-            <result name="error">/error.jsp</result>
-        </global-results>
-
-        <global-exception-mappings>
-            <exception-mapping exception="java.lang.Exception" result="error" />
-        </global-exception-mappings>
-
         <action name="index">
             <result>/index.jsp</result>
         </action>
@@ -33,6 +25,11 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="success">/sucess.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
+
+        <!-- <action name="clock" class="actions.ClockAction" method="execute">
+            <result name="success" > clock.jsp</result>
+        </action> -->
+
 
     </package>
 </struts>

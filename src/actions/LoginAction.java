@@ -17,31 +17,28 @@ public class LoginAction extends ActionSupport implements SessionAware {
 
     private static final long serialVersionUID = 4L;
     private Map<String, Object> session;
-    private String username = null, password = null;
+    private String username;
+    private String password;
 
     @Override
     public String execute() throws RemoteException{
-        if(this.username != null && !username.equals("")) {
+        if(this.username != null && !username.equals("") && this.password != null && !password.equals("")) {
+
             this.getLoginBean().setUsername(this.username);
             this.getLoginBean().setPassword(this.password);
-            if (this.getLoginBean().getLogin()){
+
+            if (this.getLoginBean().doLogin()){
                 session.put("username", username);
                 session.put("password", password);
+                session.put("loggedin", true);
+
                 //session.put("loggedin", true); // this marks the user as logged in
                 return SUCCESS;
             }
+            else return ERROR;
         }
         else
             return ERROR;
-        return ERROR;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public LoginBean getLoginBean(){
@@ -58,6 +55,14 @@ public class LoginAction extends ActionSupport implements SessionAware {
     @Override
     public void setSession(Map<String, Object> session) {
         this.session = session;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }
