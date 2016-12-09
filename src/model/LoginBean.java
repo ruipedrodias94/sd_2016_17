@@ -25,10 +25,10 @@ public class LoginBean {
 
         try {
             //Se o rmi estiver a dar problemas vir aqui mudar esta merda
-
             System.getProperties().put("java.security.policy", "security.policy");
             System.setSecurityManager(new RMISecurityManager());
             rmiInterface = (RmiInterface) LocateRegistry.getRegistry("localhost", 1098).lookup("rmi_server");
+
         } catch (NotBoundException e) {
             e.printStackTrace();
         } catch (RemoteException e) {
@@ -36,14 +36,12 @@ public class LoginBean {
         }
     }
 
-    public boolean doLogin() throws RemoteException {
-        if (this.username.equals("ruipedro") && this.password.equals("1234")){
+    public boolean getLogin() throws RemoteException {
+        if (rmiInterface.userMatchesPass(this.username, this.password)){
             return true;
         }
         return false;
-        //return rmiInterface.doLogin(this.username, this.password);
     }
-
     public void setUsername(String username) {
         this.username = username;
     }

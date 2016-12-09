@@ -14,7 +14,6 @@
 </head>
 <body>
     <s:form action="login" method="post">
-
         <s:textfield name="username" /><br>
         <s:password name="password" /><br>
         <s:submit />

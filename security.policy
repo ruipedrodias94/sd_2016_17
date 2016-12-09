@@ -1,5 +1,6 @@
 
 grant {
+    permission java.util.PropertyPermission "*", "read,write";
     permission java.security.AllPermission;
     permission java.net.SocketPermission "localhost:1099", "connect, resolve";
     permission java.net.SocketPermission "192.168.1.64:1099", "connect, resolve";

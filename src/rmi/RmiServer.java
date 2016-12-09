@@ -889,6 +889,13 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         }
     }
 
+    public boolean userMatchesPass(String username, String password) throws RemoteException{
+        if (username.equals("ruipedro") && password.equals("1234")){
+            return true;
+        }
+        return false;
+    }
+
     //----------------------------------------------------------------------------------
     //----------------------------------------------------------------------------------
     //Callback

@@ -15,30 +15,33 @@ import java.util.Map;
 
 public class LoginAction extends ActionSupport implements SessionAware {
 
-    private static final Long serialVersionUID = 4L;
+    private static final long serialVersionUID = 4L;
     private Map<String, Object> session;
-    private String username = null;
-    private String password = null;
+    private String username = null, password = null;
 
     @Override
     public String execute() throws RemoteException{
-        //Caso o recebido não seja nulo
-        if (this.username != null && !username.equals("") && this.password!= null && !password.equals("")){
-            //Vai receber as cenas do jsp?
-            if (this.getLoginBean() == null){
-                System.out.println("NULL RMI");
-            }
+        if(this.username != null && !username.equals("")) {
             this.getLoginBean().setUsername(this.username);
             this.getLoginBean().setPassword(this.password);
-            //Verifica o login
-            if (this.getLoginBean().doLogin()){
+            if (this.getLoginBean().getLogin()){
                 session.put("username", username);
-                session.put("loggedin", true);
+                session.put("password", password);
+                //session.put("loggedin", true); // this marks the user as logged in
                 return SUCCESS;
             }
-            return ERROR;
         }
+        else
+            return ERROR;
         return ERROR;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public LoginBean getLoginBean(){
@@ -53,23 +56,8 @@ public class LoginAction extends ActionSupport implements SessionAware {
     }
 
     @Override
-    public void setSession(Map<String, Object> map) {
-        this.session = map;
+    public void setSession(Map<String, Object> session) {
+        this.session = session;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

@@ -37,4 +37,5 @@ public interface RmiInterface extends Remote{
     public ArrayList<Message> getMUnreadedMessages(int idUser) throws RemoteException;
     public void deleteUnreadedMessages(int idmessage) throws RemoteException;
     ArrayList<Bid> getBids(int idAuction) throws RemoteException;
+    boolean userMatchesPass(String username, String password)throws RemoteException;
 }
