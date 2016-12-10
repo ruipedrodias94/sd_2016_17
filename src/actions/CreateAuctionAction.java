@@ -44,7 +44,9 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
 
         auction = new Auction(this.idItem, this.title, this.description, this.deadline, this.amount, this.idUser);
 
-        if (this.getCreateAuctionBean().createAuction(auction)){
+        this.getCreateAuctionBean().setAuction(auction);
+
+        if (this.getCreateAuctionBean().createAuction()){
             return SUCCESS;
         }
 
