@@ -7,17 +7,17 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 /**
  * Created by Rui Pedro Dias on 10/12/2016.
  */
-public class SearchAuctionBean {
+public class DetailAuctionBean {
 
     private RmiInterface rmiInterface;
+    private Auction auction = null;
     private String code;
 
-    public SearchAuctionBean(){
+    public DetailAuctionBean(){
         try {
             rmiInterface = (RmiInterface) Naming.lookup("rmi_server");
         } catch (NotBoundException e) {
@@ -29,11 +29,21 @@ public class SearchAuctionBean {
         }
     }
 
-    public ArrayList<Auction> searchAuction() throws RemoteException {
-        return rmiInterface.searchAuction(this.code);
+    public Auction detailAuction(){
+        try{
+            auction = rmiInterface.detailAuction(this.code);
+            return auction;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public void setCode(String code) {
+    public void setCode(String code){
         this.code = code;
+    }
+
+    public void setAuction(Auction auction){
+        this.auction = auction;
     }
 }
