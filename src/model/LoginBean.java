@@ -25,7 +25,7 @@ public class LoginBean {
 
     public LoginBean() {
 
-        try {
+        /*try {
 
             rmiInterface = (RmiInterface) Naming.lookup("rmi_server");
             System.out.println("O RMI é " + rmiInterface);
@@ -35,7 +35,7 @@ public class LoginBean {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public boolean doLogin() throws RemoteException {

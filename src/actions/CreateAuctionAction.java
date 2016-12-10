@@ -5,6 +5,7 @@ import components.Auction;
 import model.CreateAuctionBean;
 import org.apache.struts2.interceptor.SessionAware;
 
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.Map;
 
@@ -30,8 +31,23 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
     }
 
     @Override
-    public String execute(){
+    public String execute() throws RemoteException {
         //TODO mandar aqui grande tratamento da informação
+        this.getCreateAuctionBean().setTitle(this.title);
+        this.getCreateAuctionBean().setIdItem(this.idItem);
+        this.getCreateAuctionBean().setDescription(this.description);
+        this.getCreateAuctionBean().setDeadline(this.deadline);
+        this.getCreateAuctionBean().setAmount(this.amount);
+        //TODO Get a method to use user id
+        this.idUser = Integer.parseInt(String.valueOf(session.get("userId")));
+        this.getCreateAuctionBean().setIdUser(this.idUser);
+
+        auction = new Auction(this.idItem, this.title, this.description, this.deadline, this.amount, this.idUser);
+
+        if (this.getCreateAuctionBean().createAuction(auction)){
+            return SUCCESS;
+        }
+
         return ERROR;
     }
 
@@ -44,5 +60,33 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
 
     public void setCreateAuctionBean(CreateAuctionBean createAuctionBean){
         this.session.put("createAuctionBean", createAuctionBean);
+    }
+
+    public void setAuction(Auction auction) {
+        this.auction = auction;
+    }
+
+    public void setIdItem(String idItem) {
+        this.idItem = idItem;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDeadline(Timestamp deadline) {
+        this.deadline = deadline;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 }

@@ -7,6 +7,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import java.rmi.RemoteException;
 import java.util.Map;
 
+
 /**
  * Created by Rui Pedro Dias on 08/12/2016.
  */
@@ -22,6 +23,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
 
     @Override
     public String execute() throws RemoteException{
+
         if(this.username != null && !username.equals("") && this.password != null && !password.equals("")) {
 
             this.getLoginBean().setUsername(this.username);

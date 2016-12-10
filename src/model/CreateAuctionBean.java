@@ -40,8 +40,8 @@ public class CreateAuctionBean {
     }
 
 
-    public boolean createAuction() throws RemoteException {
-        return this.rmiInterface.createAuction(this.auction);
+    public boolean createAuction(Auction auction) throws RemoteException {
+        return this.rmiInterface.createAuction(auction);
     }
 
     public void setAuction(Auction auction) {
