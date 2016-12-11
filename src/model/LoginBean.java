@@ -3,7 +3,9 @@ package model;
 import org.apache.struts2.components.Debug;
 import rmi.RmiInterface;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -27,13 +29,12 @@ public class LoginBean {
 
         try {
 
-            rmiInterface = (RmiInterface) Naming.lookup("rmi_server");
+
+            rmiInterface = (RmiInterface) LocateRegistry.getRegistry("localhost", 2080).lookup("rmi_server");
             System.out.println("O RMI é " + rmiInterface);
         } catch (NotBoundException e) {
             e.printStackTrace();
         } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }

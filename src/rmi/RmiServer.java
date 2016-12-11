@@ -2,11 +2,13 @@ package rmi;
 
 import java.io.Serializable;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
@@ -952,8 +954,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         System.getProperties().put("java.security.policy", "security.policy");
         System.setSecurityManager(new RMISecurityManager());
 
-        try {
-            LocateRegistry.createRegistry(1099);
+        /*try {
+            LocateRegistry.createRegistry(8000);
             HelloServer h = new HelloServer();
             Naming.rebind("hello", h);
             System.out.println("Notifications Server ready.");
@@ -962,7 +964,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         //----------------------------------------------------------------------------
@@ -974,11 +976,16 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
                 System.getProperties().put("java.security.policy", "security.policy");
                 System.setSecurityManager(new RMISecurityManager());
+                System.out.println(InetAddress.getLocalHost());
+                RmiServer r = new RmiServer();
+
+                Registry registry = LocateRegistry.createRegistry(2080);
+                registry.rebind("rmi_server",r);
 
                 System.out.println("RMI ligado como servidor primário com registo no porto: " + rmiPort);
                 System.out.println("HOST: " + rmiHost);
 
-                LocateRegistry.createRegistry(rmiPort).rebind("rmi_server", rmiServer);
+
 
                 break;
 
