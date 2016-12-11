@@ -15,7 +15,12 @@
 <h1>Here you can create an auction</h1>
 
 <s:form action="createAuction" method="POST">
-    <s:textfield name="idItem">Id Item</s:textfield>
+    <s:textfield name="title">Title </s:textfield><br>
+    <s:textfield name="idItem">Id Item </s:textfield><br>
+    <s:textfield name="description">Description </s:textfield><br>
+    <s:textfield name="deadline">DeadLine (DD-MM-YYYY) </s:textfield><br>
+    <s:textfield name="amount">Amount </s:textfield><br>
+    <s:submit>Just do it</s:submit>
 </s:form>
 
 </body>

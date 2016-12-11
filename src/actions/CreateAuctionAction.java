@@ -32,15 +32,17 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
 
     @Override
     public String execute() throws RemoteException {
-        //TODO mandar aqui grande tratamento da informação
+
         this.getCreateAuctionBean().setTitle(this.title);
         this.getCreateAuctionBean().setIdItem(this.idItem);
         this.getCreateAuctionBean().setDescription(this.description);
         this.getCreateAuctionBean().setDeadline(this.deadline);
         this.getCreateAuctionBean().setAmount(this.amount);
-        //TODO Get a method to use user id
-        this.idUser = Integer.parseInt(String.valueOf(session.get("userId")));
+
+        this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
         this.getCreateAuctionBean().setIdUser(this.idUser);
+
+        System.out.println("ID DO USER: " + idUser);
 
         auction = new Auction(this.idItem, this.title, this.description, this.deadline, this.amount, this.idUser);
 

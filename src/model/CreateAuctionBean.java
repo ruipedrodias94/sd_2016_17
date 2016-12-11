@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.sql.Timestamp;
 
 /**
@@ -29,12 +30,10 @@ public class CreateAuctionBean {
     public CreateAuctionBean(){
 
         try{
-            rmiInterface = (RmiInterface) Naming.lookup("rmi_server");
+            rmiInterface = (RmiInterface) LocateRegistry.getRegistry("localhost", 2080).lookup("rmi_server");
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
@@ -46,7 +45,7 @@ public class CreateAuctionBean {
 
     public void setAuction(Auction auction) {
         this.auction = auction;
-    }
+            }
 
     public void setIdItem(String idItem) {
         this.idItem = idItem;
