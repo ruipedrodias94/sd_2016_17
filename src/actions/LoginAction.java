@@ -32,7 +32,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
             if (this.getLoginBean().doLogin()){
                 session.put("username", username);
                 session.put("password", password);
-                session.put("userID", this.getLoginBean().userID());
+                //  session.put("userID", this.getLoginBean().userID());
                 session.put("loggedin", true);
 
                 //session.put("loggedin", true); // this marks the user as logged in

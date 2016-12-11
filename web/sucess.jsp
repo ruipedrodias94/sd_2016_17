@@ -22,5 +22,11 @@
     </c:choose>
     <a href="createAuction.jsp">Create Auction</a>
 
+    <s:form action="searchAuction" method="GET">
+        <s:textfield name="code">Código</s:textfield>
+        <s:submit />
+    </s:form>
+
+
 </body>
 </html>

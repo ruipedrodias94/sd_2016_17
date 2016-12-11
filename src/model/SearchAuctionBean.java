@@ -2,6 +2,7 @@ package model;
 
 import components.Auction;
 import rmi.RmiInterface;
+import rmi.rmiConnection;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -16,20 +17,16 @@ public class SearchAuctionBean {
 
     private RmiInterface rmiInterface;
     private String code;
+    private rmiConnection rmiC;
 
-    public SearchAuctionBean(){
-        try {
-            rmiInterface = (RmiInterface) Naming.lookup("rmi_server");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+
+    public SearchAuctionBean() {
+        rmiC = new rmiConnection();
+        rmiInterface = rmiC.getInterface();
     }
 
     public ArrayList<Auction> searchAuction() throws RemoteException {
+        rmiInterface = rmiC.getInterface();
         return rmiInterface.searchAuction(this.code);
     }
 

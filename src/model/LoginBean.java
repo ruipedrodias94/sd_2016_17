@@ -44,9 +44,9 @@ public class LoginBean {
     }
 
     //TODO método para obter o id do user
-    public int userID() throws RemoteException {
-        return rmiInterface.getUserId(this.username);
-    }
+   // public int userID() throws RemoteException {
+     //   return rmiInterface.getUserId(this.username);
+    //}
 
     public void setUsername(String username) {
         this.username = username;
