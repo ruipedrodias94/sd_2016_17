@@ -19,8 +19,8 @@
 <body>
 <h2>Faça o seu login</h2>
     <s:form action="login" method="POST">
-        <s:textfield label="Username " name="username"/>
-        <s:password label="Password " name="password"/>
+        <s:textfield name="username">Username </s:textfield>
+        <s:password name="password">Password </s:password>
         <s:submit />
     </s:form>
 </body>

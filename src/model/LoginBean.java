@@ -40,16 +40,12 @@ public class LoginBean {
     }
 
     public boolean doLogin() throws RemoteException {
-        if (this.username.equals("ruipedro") && this.password.equals("1234")){
-            return true;
-        }
-        //return rmiInterface.userMatchesPass(this.username, this.password);
-        return false;
+        return rmiInterface.doLogin(this.username, this.password);
     }
 
     //TODO método para obter o id do user
-    public int userID(){
-        return 1;
+    public int userID() throws RemoteException {
+        return rmiInterface.getUserId(this.username);
     }
 
     public void setUsername(String username) {

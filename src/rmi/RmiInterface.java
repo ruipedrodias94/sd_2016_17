@@ -23,6 +23,7 @@ public interface RmiInterface extends Remote{
 
     boolean registerClient(String username, String password) throws RemoteException;
     String getUserName(int id) throws RemoteException;
+    int getUserId(String username) throws RemoteException;
     boolean doLogin(String username, String password) throws RemoteException;
     ArrayList<Client> searchOnlineUsers() throws RemoteException;
     boolean createAuction(Auction auction) throws RemoteException;
@@ -34,8 +35,8 @@ public interface RmiInterface extends Remote{
     boolean message(Message message) throws RemoteException;
     void putOffline(Client client) throws RemoteException;
     ArrayList<Auction> myAuctions(Client client) throws RemoteException;
-    public ArrayList<Message> getMUnreadedMessages(int idUser) throws RemoteException;
-    public void deleteUnreadedMessages(int idmessage) throws RemoteException;
+    ArrayList<Message> getMUnreadedMessages(int idUser) throws RemoteException;
+    void deleteUnreadedMessages(int idmessage) throws RemoteException;
     ArrayList<Bid> getBids(int idAuction) throws RemoteException;
-    boolean userMatchesPass(String username, String password)throws RemoteException;
+
 }

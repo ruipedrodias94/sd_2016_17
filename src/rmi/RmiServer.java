@@ -159,6 +159,24 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         return userName;
     }
 
+    public int getUserId(String username){
+        String search = "SELECT idUSER FROM USER WHERE username ='" + username + "';";
+
+        ResultSet resultSet;
+
+        int userID = 0;
+
+        try{
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()){
+                userID = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userID;
+    }
+
     /**
      *
      * @param username
@@ -891,12 +909,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         }
     }
 
-    public boolean userMatchesPass(String username, String password) throws RemoteException{
-        if (username.equals("ruipedro") && password.equals("1234")){
-            return true;
-        }
-        return false;
-    }
 
     //----------------------------------------------------------------------------------
     //----------------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: Rui Pedro Dias
@@ -19,5 +20,7 @@
             <p>Bem vindo seu vaginas, ${session.username}</p>
         </c:when>
     </c:choose>
+    <a href="createAuction.jsp">Criar grande projecto</a>
+
 </body>
 </html>
