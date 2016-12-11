@@ -17,7 +17,7 @@
     <title>Login</title>
 </head>
 <body>
-<h2>Faça o seu login</h2>
+<h1>Do your login</h1>
     <s:form action="login" method="POST">
         <s:textfield name="username">Username </s:textfield>
         <s:password name="password">Password </s:password>

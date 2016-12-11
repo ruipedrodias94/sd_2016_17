@@ -14,13 +14,13 @@
 </head>
 <body>
 
-    <h1>Boa, fez login com sucesso</h1>
+    <h1>You made it!</h1>
     <c:choose>
         <c:when test="${session.loggedin == true}">
-            <p>Bem vindo seu vaginas, ${session.username} com o id: ${session.userID}</p>
+            <p>Welcome user ${session.username} with id: ${session.userID}</p>
         </c:when>
     </c:choose>
-    <a href="createAuction.jsp">Criar grande projecto</a>
+    <a href="createAuction.jsp">Create Auction</a>
 
 </body>
 </html>
