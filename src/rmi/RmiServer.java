@@ -624,8 +624,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         Bid bid;
         Message message;
 
-        ArrayList<Bid> bids = new ArrayList<>();
-        ArrayList<Message> messages = new ArrayList<>();
+        ArrayList<Bid> bids;
+        ArrayList<Message> messages;
 
         String search = "select * from AUCTION where idAUCTION = '" + code +"';";
 
@@ -641,7 +641,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             while (resultSet.next()) {
 
                 messages = getMessages(Integer.parseInt(code));
-                getBids(Integer.parseInt(code));
+                bids = getBids(Integer.parseInt(code));
                 auction = new Auction(resultSet.getInt(1),resultSet.getString(2),
                         resultSet.getString(3), resultSet.getString(4),
                         resultSet.getTimestamp(5), resultSet.getInt(6),resultSet.getInt(7), messages, bids);

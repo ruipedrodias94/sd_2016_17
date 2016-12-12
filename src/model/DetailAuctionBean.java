@@ -1,6 +1,8 @@
 package model;
 
 import components.Auction;
+import components.Bid;
+import components.Message;
 import rmi.RmiInterface;
 import rmi.rmiConnection;
 
@@ -9,6 +11,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
 
 /**
  * Created by Rui Pedro Dias on 10/12/2016.
@@ -18,16 +21,8 @@ public class DetailAuctionBean {
     private RmiInterface rmiInterface;
     private rmiConnection rmiC;
 
-    public Auction getAuction() {
-        return auction;
-    }
-
-    public String getId() {
-        return id;
-    }
-
     private Auction auction = null;
-    private String id;
+    private String idAuction;
 
     public DetailAuctionBean(){
         rmiC = new rmiConnection();
@@ -36,15 +31,23 @@ public class DetailAuctionBean {
 
     public Auction detailAuction() throws RemoteException {
         rmiInterface = rmiC.getInterface();
-        auction = rmiInterface.detailAuction(this.id);
+        this.auction = rmiInterface.detailAuction(this.idAuction);
         return auction;
     }
 
-    public void setId(String id){
-        this.id = id;
+    public void setIdAuction(String id){
+        this.idAuction = id;
     }
 
     public void setAuction(Auction auction){
         this.auction = auction;
+    }
+
+    public Auction getAuction() {
+        return auction;
+    }
+
+    public String getIdAuction() {
+        return idAuction;
     }
 }

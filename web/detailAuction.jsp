@@ -36,5 +36,10 @@
     <input type="submit" value="Submit Bid!">
 </form>
 
+<h3>Bids history </h3>
+<c:forEach items="${detailAuctionBean.auction.bids}" var="bids">
+    <p>Bid: ${bids.idBid} // Amount: ${bids.amount} // Feita por: ${bids.idUser}</p>
+</c:forEach>
+
 </body>
 </html>
