@@ -1,6 +1,6 @@
 package model;
 
-import components.Auction;
+import components.*;
 import rmi.RmiInterface;
 import rmi.rmiConnection;
 
@@ -19,6 +19,15 @@ public class SearchAuctionBean {
     private String code;
     private rmiConnection rmiC;
 
+    private ArrayList<Auction> auctions;
+
+    public void setAuctions(ArrayList<Auction> auctions) {
+        this.auctions = auctions;
+    }
+
+    public ArrayList<Auction> getAuctions() {
+        return auctions;
+    }
 
     public SearchAuctionBean() {
         rmiC = new rmiConnection();

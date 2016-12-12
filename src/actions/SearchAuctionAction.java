@@ -17,7 +17,12 @@ public class SearchAuctionAction extends ActionSupport implements SessionAware {
     private static final long serialVersionUID = 4L;
     private Map<String, Object> session;
     private String code;
-    private ArrayList <Auction> Auctions;
+
+    public ArrayList<Auction> getAuctions() {
+        return auctions;
+    }
+
+    private ArrayList <Auction> auctions;
 
 
     @Override
@@ -26,8 +31,7 @@ public class SearchAuctionAction extends ActionSupport implements SessionAware {
             this.getSearchAuctionBean().setCode(this.code);
             //Se existir alguma coisa no ArrayList
             if (this.getSearchAuctionBean().searchAuction()!=null){
-                Auctions = getSearchAuctionBean().searchAuction();
-                //Digo eu... Fodasse vamos ter de mudar tanta merda de certeza.
+                this.getSearchAuctionBean().setAuctions(this.getSearchAuctionBean().searchAuction());
                 return SUCCESS;
             }
         }

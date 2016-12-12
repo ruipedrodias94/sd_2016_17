@@ -24,7 +24,7 @@
     <a href="createAuction.jsp">Create Auction</a>
 
     <br>
-    <s:form action="searchAuction">
+    <s:form action="searchAuction" method="POST">
         <s:textfield name="code" >Auction code </s:textfield><br>
         <s:submit/>
     </s:form>

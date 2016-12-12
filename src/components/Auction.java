@@ -2,7 +2,6 @@ package components;
 
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -20,33 +19,33 @@ public class Auction implements Serializable {
 
 
     public Auction(int idAuction, String idItem, String title, String description, Timestamp deadline, float amount, int idUser, ArrayList<Message> messages, ArrayList<Bid> bids) {
-        this.idAuction = idAuction;
-        this.idItem = idItem;
-        this.title = title;
-        this.description = description;
-        this.deadline = deadline;
-        this.amount = amount;
-        this.idUser = idUser;
-        this.messages = messages;
+        this.setIdAuction(idAuction);
+        this.setIdItem(idItem);
+        this.setTitle(title);
+        this.setDescription(description);
+        this.setDeadline(deadline);
+        this.setAmount(amount);
+        this.setIdUser(idUser);
+        this.setMessages(messages);
         this.setBids(bids);
     }
 
     public Auction(int idAuction, String idItem, String title, String description, Timestamp deadline, float amount) {
-        this.idAuction = idAuction;
-        this.idItem = idItem;
-        this.title = title;
-        this.description = description;
-        this.deadline = deadline;
-        this.amount = amount;
+        this.setIdAuction(idAuction);
+        this.setIdItem(idItem);
+        this.setTitle(title);
+        this.setDescription(description);
+        this.setDeadline(deadline);
+        this.setAmount(amount);
     }
 
     public Auction(String idItem, String title, String description, Timestamp deadline, float amount, int idUser) {
-        this.idItem = idItem;
-        this.title = title;
-        this.description = description;
-        this.deadline = deadline;
-        this.amount = amount;
-        this.idUser = idUser;
+        this.setIdItem(idItem);
+        this.setTitle(title);
+        this.setDescription(description);
+        this.setDeadline(deadline);
+        this.setAmount(amount);
+        this.setIdUser(idUser);
     }
 
     public String getTitle() {
