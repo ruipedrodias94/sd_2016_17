@@ -16,6 +16,6 @@
     <title>Search Auction</title>
 </head>
 <body>
-aaaa
+Ratedo
 </body>
 </html>

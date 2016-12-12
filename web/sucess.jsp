@@ -20,13 +20,13 @@
             <p>Welcome user ${session.username} with id: ${session.userID}</p>
         </c:when>
     </c:choose>
+
     <a href="createAuction.jsp">Create Auction</a>
 
-    <s:form action="searchAuction" method="GET">
-        <s:textfield name="code">Código</s:textfield>
-        <s:submit />
+    <br>
+    <s:form action="searchAuction">
+        <s:textfield name="code" >Auction code </s:textfield><br>
+        <s:submit/>
     </s:form>
-
-
 </body>
 </html>
