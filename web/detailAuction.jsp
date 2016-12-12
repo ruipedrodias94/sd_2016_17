@@ -9,6 +9,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<jsp:useBean id="DetailAuctionBean" class="model.DetailAuctionBean" scope="session"></jsp:useBean>
+
 <html>
 <head>
     <title>Details</title>
@@ -17,9 +20,17 @@
 
 <!-- NEEEED TO TEST THIS SHIT -->
 
-<s:property value="%{#parameters.auctionId}" />
+<h1>Details of auction ${DetailAuctionBean.detailAuction().idAuction}</h1>
 
-<h1>Details of auction </h1>
+<br> Description: ${DetailAuctionBean.detailAuction().description} </br>
+
+<br> Title: ${DetailAuctionBean.detailAuction().title} </br>
+
+<br> Amount: ${DetailAuctionBean.detailAuction().amount} </br>
+
+<br> Deadline: ${DetailAuctionBean.detailAuction().deadline} </br>
+
+<br> Owner: ${DetailAuctionBean.detailAuction().idUser} </br>
 
 </body>
 </html>

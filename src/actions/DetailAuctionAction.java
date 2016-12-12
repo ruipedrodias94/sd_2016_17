@@ -1,10 +1,13 @@
 package actions;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import components.Auction;
 import model.DetailAuctionBean;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -16,17 +19,20 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
     private String code;
     private Auction auction = null;
+    private String auctionId;
+
 
     @Override
     public String execute(){
-        if (this.code!=null && !this.code.equals("")){
+
+            HttpServletRequest request = ServletActionContext.getRequest();
+            this.code = request.getParameter("auctionId");
             this.getDetailAuctionBean().setCode(this.code);
-            auction = this.getDetailAuctionBean().detailAuction();
+            auction = getDetailAuctionBean().detailAuction();
             if (auction != null) {
                 this.getDetailAuctionBean().setAuction(this.auction);
                 return SUCCESS;
             }
-        }
         return ERROR;
     }
 
@@ -53,4 +59,15 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
     public void setAuction(Auction auction) {
         this.auction = auction;
     }
+
+    public String getAuctionId() {
+        return auctionId;
+    }
+
+    public void setAuctionId(String auctionId) {
+        this.auctionId = auctionId;
+    }
+
+
+
 }

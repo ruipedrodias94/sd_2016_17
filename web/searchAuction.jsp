@@ -21,7 +21,7 @@
 <body>
 <h1>AUCTIONS ONLINE</h1>
 <c:forEach items="${searchAuctionBean.auctions}" var="auction">
-    <a href="/detailAuction.jsp?auctionId=${auction.idAuction}"> ${auction.title} </a>
+    <a href="/detailAuction.action?auctionId=${auction.idAuction}"> ${auction.title} </a>
 </c:forEach>
 </body>
 </html>
