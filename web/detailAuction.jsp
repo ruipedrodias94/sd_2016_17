@@ -1,4 +1,6 @@
-<%@ taglib prefix="c" uri="/struts-tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: Rui Pedro Dias
@@ -15,9 +17,9 @@
 
 <!-- NEEEED TO TEST THIS SHIT -->
 
-<c:set var="object" value="${auction}"/>
+<s:property value="%{#parameters.auctionId}" />
 
-<h1>Details of auction "${object.title}"</h1>
+<h1>Details of auction </h1>
 
 </body>
 </html>
