@@ -17,7 +17,7 @@
     <h1>You made it!</h1>
     <c:choose>
         <c:when test="${session.loggedin == true}">
-            <p>Welcome user ${session.username} with id: ${session.userID}</p>
+            <p>Welcome user ${session.username} with id ${session.userID}</p>
         </c:when>
     </c:choose>
 

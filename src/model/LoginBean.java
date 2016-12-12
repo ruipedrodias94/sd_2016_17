@@ -28,8 +28,6 @@ public class LoginBean {
     public LoginBean() {
 
         try {
-
-
             rmiInterface = (RmiInterface) LocateRegistry.getRegistry("localhost", 2080).lookup("rmi_server");
             System.out.println("O RMI é " + rmiInterface);
         } catch (NotBoundException e) {
@@ -43,10 +41,10 @@ public class LoginBean {
         return rmiInterface.doLogin(this.username, this.password);
     }
 
-    //TODO método para obter o id do user
-   // public int userID() throws RemoteException {
-     //   return rmiInterface.getUserId(this.username);
-    //}
+
+   public int userID() throws RemoteException {
+        return rmiInterface.getUserId(this.username);
+   }
 
     public void setUsername(String username) {
         this.username = username;
