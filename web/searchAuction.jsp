@@ -20,8 +20,8 @@
 </head>
 <body>
 <h1>AUCTIONS ONLINE</h1>
-<c:forEach items="${searchAuctionBean.auctions}}" var="auction">
-    ${auction.title} <br>
+<c:forEach items="${searchAuctionBean.auctions}" var="auction">
+    <a href="/detailAuction.jsp"> ${auction.title} </a>
 </c:forEach>
 </body>
 </html>
