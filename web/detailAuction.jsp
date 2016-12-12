@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<!-- NEEEED TO TEST THIS SHIT -->
+
 
 <h1>Details of auction ${DetailAuctionBean.detailAuction().idAuction}</h1>
 
