@@ -18,22 +18,14 @@ public class SearchAuctionAction extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
     private String code;
 
-    public ArrayList<Auction> getAuctions() {
-        return auctions;
-    }
-
-    private ArrayList <Auction> auctions;
-
 
     @Override
     public String execute() throws RemoteException {
         if (this.code != null && !this.code.equals("")){
             this.getSearchAuctionBean().setCode(this.code);
             //Se existir alguma coisa no ArrayList
-            if (this.getSearchAuctionBean().searchAuction()!=null){
-                this.getSearchAuctionBean().setAuctions(this.getSearchAuctionBean().searchAuction());
-                return SUCCESS;
-            }
+            this.getSearchAuctionBean().setAuctions(this.getSearchAuctionBean().searchAuction());
+            return SUCCESS;
         }
         return ERROR;
     }
@@ -59,7 +51,4 @@ public class SearchAuctionAction extends ActionSupport implements SessionAware {
         this.code = code;
     }
 
-    public String getCode() {
-        return code;
-    }
 }

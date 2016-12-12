@@ -10,7 +10,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<jsp:useBean id="DetailAuctionBean" class="model.DetailAuctionBean" scope="session"></jsp:useBean>
+<jsp:useBean id="detailAuctionBean" class="model.DetailAuctionBean" scope="session"></jsp:useBean>
 
 <html>
 <head>
@@ -18,19 +18,23 @@
 </head>
 <body>
 
+<!-- NEEEED TO TEST THIS SHIT -->
+<h1>Details of project ${detailAuctionBean.auction.title}</h1>
+<c:out value="${detailAuctionBean.auction.idAuction}"> Details of auction </c:out> <br>
+<c:out value="${detailAuctionBean.auction.title}"> Title </c:out><br>
+<c:out value="${detailAuctionBean.auction.description}"> Description </c:out><br>
+<c:out value="${detailAuctionBean.auction.amount}"> Amount </c:out><br>
+<c:out value="${detailAuctionBean.auction.deadline}"> Deadline </c:out><br>
+<c:out value="${detailAuctionBean.auction.idUser}"> Id User </c:out><br>
 
+<br>
 
-<h1>Details of auction ${DetailAuctionBean.detailAuction().idAuction}</h1>
-
-<br> Description: ${DetailAuctionBean.detailAuction().description} </br>
-
-<br> Title: ${DetailAuctionBean.detailAuction().title} </br>
-
-<br> Amount: ${DetailAuctionBean.detailAuction().amount} </br>
-
-<br> Deadline: ${DetailAuctionBean.detailAuction().deadline} </br>
-
-<br> Owner: ${DetailAuctionBean.detailAuction().idUser} </br>
+<h2>Make a bid to this auction!</h2>
+<form action="/bidAuction" method="post">
+    <input type="hidden" name="idAuction" value="${detailAuctionBean.auction.idAuction}">
+    <input type="number" name="amount">
+    <input type="submit" value="Submit Bid!">
+</form>
 
 </body>
 </html>

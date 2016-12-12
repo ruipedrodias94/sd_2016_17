@@ -1,13 +1,13 @@
 package actions;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import components.Auction;
 import model.DetailAuctionBean;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 
 import javax.servlet.http.HttpServletRequest;
+import java.rmi.RemoteException;
 import java.util.Map;
 
 /**
@@ -23,11 +23,11 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
 
 
     @Override
-    public String execute(){
+    public String execute() throws RemoteException {
 
             HttpServletRequest request = ServletActionContext.getRequest();
             this.code = request.getParameter("auctionId");
-            this.getDetailAuctionBean().setCode(this.code);
+            this.getDetailAuctionBean().setId(this.code);
             auction = getDetailAuctionBean().detailAuction();
             if (auction != null) {
                 this.getDetailAuctionBean().setAuction(this.auction);

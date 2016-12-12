@@ -614,12 +614,10 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
     }
 
     /**
-     * Retorna apenas um projecto, para poder-mos aceder ao detalhe do projecto
-     *
-     * //@param code
+     * This detail is the PROJECT ID
+     * @param code
      * @return
      */
-
     public Auction detailAuction(String code) {
 
         Auction auction = null;

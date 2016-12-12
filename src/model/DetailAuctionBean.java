@@ -2,6 +2,7 @@ package model;
 
 import components.Auction;
 import rmi.RmiInterface;
+import rmi.rmiConnection;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -15,31 +16,32 @@ import java.rmi.registry.LocateRegistry;
 public class DetailAuctionBean {
 
     private RmiInterface rmiInterface;
+    private rmiConnection rmiC;
+
+    public Auction getAuction() {
+        return auction;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     private Auction auction = null;
-    private String code;
+    private String id;
 
     public DetailAuctionBean(){
-        try {
-            rmiInterface = (RmiInterface) LocateRegistry.getRegistry("localhost", 2080).lookup("rmi_server");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        rmiC = new rmiConnection();
+        rmiInterface = rmiC.getInterface();
     }
 
-    public Auction detailAuction(){
-        try{
-            auction = rmiInterface.detailAuction(this.code);
-            return auction;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public Auction detailAuction() throws RemoteException {
+        rmiInterface = rmiC.getInterface();
+        auction = rmiInterface.detailAuction(this.id);
+        return auction;
     }
 
-    public void setCode(String code){
-        this.code = code;
+    public void setId(String id){
+        this.id = id;
     }
 
     public void setAuction(Auction auction){
