@@ -21,6 +21,7 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
     private Map<String, Object> session;
     private String code;
     private Auction auction = null;
+    private String auctionId;
 
 
     @Override
@@ -28,8 +29,8 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
 
             HttpServletRequest request = ServletActionContext.getRequest();
             this.code = request.getParameter("auctionId");
-
-            this.getDetailAuctionBean().setIdAuction(this.code);
+            this.session.put("auctionId",this.code);
+            this.getDetailAuctionBean().setAuctionId(this.code);
             auction = getDetailAuctionBean().detailAuction();
             if (auction != null) {
                 this.getDetailAuctionBean().setAuction(this.auction);
@@ -63,4 +64,11 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
     }
 
 
+    public String getAuctionId() {
+        return auctionId;
+    }
+
+    public void setAuctionId(String auctionId) {
+        this.auctionId = auctionId;
+    }
 }

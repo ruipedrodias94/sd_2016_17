@@ -6,7 +6,6 @@ import model.EditAuctionBean;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;

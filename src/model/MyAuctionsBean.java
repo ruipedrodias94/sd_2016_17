@@ -57,10 +57,7 @@ public class MyAuctionsBean {
     }
 
     public void getClient(String user, String pass) throws RemoteException {
-
-
             this.client = rmiInterface.getClient(user,pass);
-        System.out.println("User:"+client.getUserName()+" pass: "+client.getPassword());
 
     }
 

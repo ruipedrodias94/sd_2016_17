@@ -22,7 +22,7 @@ public class DetailAuctionBean {
     private rmiConnection rmiC;
 
     private Auction auction = null;
-    private String idAuction;
+    private String auctionId;
 
     public DetailAuctionBean(){
         rmiC = new rmiConnection();
@@ -31,13 +31,10 @@ public class DetailAuctionBean {
 
     public Auction detailAuction() throws RemoteException {
         rmiInterface = rmiC.getInterface();
-        this.auction = rmiInterface.detailAuction(this.idAuction);
+        this.auction = rmiInterface.detailAuction(this.auctionId);
         return auction;
     }
 
-    public void setIdAuction(String id){
-        this.idAuction = id;
-    }
 
     public void setAuction(Auction auction){
         this.auction = auction;
@@ -47,7 +44,12 @@ public class DetailAuctionBean {
         return auction;
     }
 
-    public String getIdAuction() {
-        return idAuction;
+
+    public String getAuctionId() {
+        return auctionId;
+    }
+
+    public void setAuctionId(String auctionId) {
+        this.auctionId = auctionId;
     }
 }
