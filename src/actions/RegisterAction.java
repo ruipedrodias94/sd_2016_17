@@ -19,7 +19,7 @@ public class RegisterAction extends ActionSupport implements SessionAware {
     @Override
     public String execute() throws RemoteException{
 
-        if(this.username != null && !username.equals("") && this.password != null && !password.equals("")) {
+
 
         this.getRegisterBean().setUsername(this.username);
         this.getRegisterBean().setPassword(this.password);
@@ -32,9 +32,6 @@ public class RegisterAction extends ActionSupport implements SessionAware {
             return SUCCESS;
         }
         else return ERROR;
-    }
-        else
-                return ERROR;
     }
 
 
