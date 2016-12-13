@@ -396,8 +396,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             Statement statement = connection1.createStatement();
             resultSet = statement.executeQuery(search);
             while (resultSet.next()) {
-
-
                 int idBID = resultSet.getInt(1);
                 int amount = resultSet.getInt(2);
                 int idAuction = resultSet.getInt(4);
@@ -450,7 +448,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
                 {
                     contains = true;
                 }
-
             }
             if(contains == false)
             {
@@ -458,9 +455,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
                 auctions.add(auction);
             }
         }
-
         return auctions;
-
     }
 
     public ArrayList<Message> getMUnreadedMessages(int idUser){

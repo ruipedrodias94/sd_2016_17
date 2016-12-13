@@ -41,5 +41,11 @@
     <p>Bid: ${bids.idBid} // Amount: ${bids.amount} // Feita por: ${bids.idUser}</p>
 </c:forEach>
 
+<h3>Edit Section</h3>
+<c:if test="${detailAuctionBean.auction.idUser == userID}" >
+    <a href="/editAuction.jsp?auctionId=${detailAuctionBean.auction.idAuction}">EDIT THIS ACTION</a>
+</c:if>
+
+
 </body>
 </html>

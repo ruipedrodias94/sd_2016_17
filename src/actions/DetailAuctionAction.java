@@ -28,6 +28,7 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
 
             HttpServletRequest request = ServletActionContext.getRequest();
             this.code = request.getParameter("auctionId");
+
             this.getDetailAuctionBean().setIdAuction(this.code);
             auction = getDetailAuctionBean().detailAuction();
             if (auction != null) {
