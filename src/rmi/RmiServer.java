@@ -384,6 +384,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         ArrayList<Bid> bids = new ArrayList<>();
         Bid bid;
 
+        System.out.println("ID USER:"+client.getIdUser());
+
         String search = "SELECT * FROM BID WHERE USER_idUSER = " + client.getIdUser() + ";";
 
         ResultSet resultSet;

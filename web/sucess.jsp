@@ -28,5 +28,7 @@
         <s:textfield name="code" >Auction code </s:textfield><br>
         <s:submit/>
     </s:form>
+
+    <a href="myAuctions.action">My Auctions</a>
 </body>
 </html>
