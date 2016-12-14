@@ -15,25 +15,44 @@ public class MessageWallAction extends ActionSupport implements SessionAware {
     private static final long serialVersionUID = 4L;
     private Map<String, Object> session;
     private int auctionId;
+    private String messageText;
 
     @Override
     public String execute() throws RemoteException
     {
-        if(session.containsKey("auctionId")){
+        postMessage();
+        if(session.containsKey("auctionId") && session.containsKey("userID")){
             this.getMessageWallBean().setAuctionId(Integer.parseInt((String)session.get("auctionId")));
             this.getMessageWallBean().getMessagesAuction();
-            return SUCCESS;
+            this.getMessageWallBean().setUserID((int)(session.get("userID")));
+
+
+
         }
+
         else{
             System.out.println("nao contem");
             return ERROR;
         }
+        return SUCCESS;
     }
 
 
     public Map<String, Object> getSession() {
         return session;
     }
+
+    public String postMessage()
+    {
+        if(messageText!=null) {
+            if(!messageText.equals("")){
+                this.getMessageWallBean().setMessageText(this.messageText);
+                this.getMessageWallBean().postMessage();
+                return SUCCESS;
+            }
+        }
+        return ERROR;
+        }
 
     @Override
     public void setSession(Map<String, Object> session) {
@@ -57,5 +76,13 @@ public class MessageWallAction extends ActionSupport implements SessionAware {
 
     public void setAuctionId(int auctionId) {
         this.auctionId = auctionId;
+    }
+
+    public String getMessageText() {
+        return messageText;
+    }
+
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
     }
 }

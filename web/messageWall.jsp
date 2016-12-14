@@ -17,8 +17,18 @@
     <title>Message Wall</title>
 </head>
 <body>
+
+<h1>Messages History</h1>
+
 <c:forEach items="${messageWallBean.messages}" var="message">
       <br>${message.text} </br>
 </c:forEach>
+<h4>Post in this message Wall</h4>
+
+<s:form action="messageWall" method="POST">
+    <s:textfield name="messageText">Your Message: </s:textfield>
+    <s:submit />
+</s:form>
+
 </body>
 </html>

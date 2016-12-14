@@ -15,7 +15,8 @@ public class MessageWallBean {
     RmiInterface rmiInterface;
     int auctionId;
     ArrayList<Message> messages = new ArrayList<Message>();
-
+    String messageText;
+    int userID;
     public MessageWallBean(){
         try {
             rmiInterface = (RmiInterface) LocateRegistry.getRegistry("localhost", 2080).lookup("rmi_server");
@@ -25,6 +26,8 @@ public class MessageWallBean {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+
 
     }
 
@@ -51,12 +54,37 @@ public class MessageWallBean {
         try {
 
             messages = rmiInterface.getMessages(auctionId);
-            for(int i=0; i<messages.size();i++)
-            {
-                System.out.println(messages.get(i).getText());
-            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getMessageText() {
+        return messageText;
+    }
+
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
+
+    public boolean postMessage()
+    {
+        Message m = new Message(this.getMessageText(),0,this.getUserID(),this.auctionId);
+        try {
+            rmiInterface.message(m);
+            return true;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 }
