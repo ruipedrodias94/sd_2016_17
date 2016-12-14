@@ -1,4 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <%--
@@ -43,10 +43,23 @@
 </c:forEach>
 
 <a href="/messageWall.action">See Auction Message Wall</a>
-<h3>Edit Section</h3>
+<h2>Edit Section</h2>
 
 <c:if test="${detailAuctionBean.auction.idUser == userID}" >
-    <a href="editAuction.jsp?auctionId=${detailAuctionBean.auctionId}">Edit auction!</a>
+
+    <h3>Here you can edit an auction</h3>
+    <h3>Edit ${detailAuctionBean.auction.title} auction</h3>
+
+    <form action="/editAuction.action"  method="post">
+        <input type="hidden" name="auctionId" value="${detailAuctionBean.auction.idAuction}">
+        Title <input type="text" name="title" value="${detailAuctionBean.auction.title}"><br>
+        Id Item <input type="text" name="idItem" value="${detailAuctionBean.auction.idItem}"><br>
+        Description <input type="text" name="description" value="${detailAuctionBean.auction.description}"><br>
+        Deadline (DD-MM-YYYY) <input type="text" name="deadline" value="${detailAuctionBean.auction.deadline}"><br>
+        Amount<input type="number" name="amount" value="${detailAuctionBean.auction.amount}"><br>
+        <input type="submit" value="Submit edition">
+    </form>
+
 </c:if>
 
 

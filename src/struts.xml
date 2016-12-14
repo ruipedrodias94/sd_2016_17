@@ -51,11 +51,6 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="error">/error.jsp</result>
         </action>
 
-        <action name="editAuction" class="actions.EditAuctionAction" method="execute">
-            <result name="success">/editAuction.jsp</result>
-            <result name="error">/error.jsp</result>
-        </action>
-
         <action name="myAuctions" class="actions.MyAuctionsAction" method="execute">
             <result name="success">/myAuctions.jsp</result>
             <result name="error">/error.jsp</result>
@@ -70,8 +65,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="success" type="redirectAction">messageWall</result>
         </action>
 
-
-
+        <action name="editAuction" class="actions.EditAuctionAction" method="execute">
+            <result name="success">/detailAuction.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
 
     </package>
 </struts>

@@ -2,6 +2,7 @@ package actions;
 
 import com.opensymphony.xwork2.ActionSupport;
 import components.Auction;
+import components.Client;
 import model.EditAuctionBean;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
@@ -12,48 +13,41 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 /**
- * Created by Rui Pedro Dias on 13/12/2016.
+ * Created by Rui Pedro Dias on 14/12/2016.
  */
-public class EditAuctionAction extends ActionSupport implements SessionAware {
+public class EditAuctionAction extends ActionSupport implements SessionAware{
 
     private static final long serialVersionUID = 4L;
     private Map<String, Object> session;
-
-    private Auction novo = null;
-    private String auctionID;
-
-    private int idUser;
     private String title;
     private String idItem;
     private String description;
     private Timestamp deadline;
     private float amount;
+    private int idUser;
+    private String username;
+    private String password;
+    private Client client;
+    private String auctionId;
 
 
     @Override
-    public String execute() throws RemoteException{
-        //Get auction ID
+    public String execute() throws RemoteException {
+
         HttpServletRequest request = ServletActionContext.getRequest();
-        this.auctionID = request.getParameter("auctionId");
+        this.auctionId = request.getParameter("auctionId");
+        //this.auctionId = String.valueOf(session.get("auctionId"));
+        this.getEditAuctionBean().setIdAntigo(this.auctionId);
+        this.getEditAuctionBean().setAuctionAntigo();
 
-        //Para criação do antigo
-        this.getEditAuctionBean().setIdAuction(this.auctionID);
-        this.getEditAuctionBean().detailAuction();
-
-        //Para criacão do cliente
-        this.getEditAuctionBean().setUsername(String.valueOf(session.get("username")));
-        this.getEditAuctionBean().setPassword(String.valueOf(session.get("password")));
-
+        this.username = String.valueOf(session.get("username"));
+        this.password = String.valueOf(session.get("password"));
         this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
 
-        this.getEditAuctionBean().setTitle(this.title);
-        this.getEditAuctionBean().setIdItem(this.idItem);
-        this.getEditAuctionBean().setDescription(this.description);
-        this.getEditAuctionBean().setDeadline(this.deadline);
-        this.getEditAuctionBean().setAmount(this.amount);
+        client = new Client(this.idUser, this.username, this.password);
+        this.getEditAuctionBean().setClient(client);
 
-        novo = new Auction(this.idItem, this.title, this.description, this.deadline, this.amount, this.idUser);
-
+        Auction novo = new Auction(this.idItem, this.title, this.description, this.deadline, this.amount, this.idUser);
         this.getEditAuctionBean().setNovo(novo);
 
         if (this.getEditAuctionBean().editAuction()){
@@ -61,11 +55,17 @@ public class EditAuctionAction extends ActionSupport implements SessionAware {
         }
 
         return ERROR;
+
     }
+
 
     @Override
     public void setSession(Map<String, Object> map) {
         this.session = map;
+    }
+
+    public void setEditAuctionBean(EditAuctionBean editAuctionBean){
+        this.session.put("editAuctionBean", editAuctionBean);
     }
 
     public EditAuctionBean getEditAuctionBean(){
@@ -75,47 +75,85 @@ public class EditAuctionAction extends ActionSupport implements SessionAware {
         return (EditAuctionBean) session.get("editAuctionBean");
     }
 
-    public void setEditAuctionBean(EditAuctionBean editAuctionBean){
-        this.session.put("editAuctionBean", editAuctionBean);
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getTitle() {
-        return title;
+    public String getIdItem() {
+        return idItem;
     }
 
     public void setIdItem(String idItem) {
         this.idItem = idItem;
     }
 
-    public String getIdItem() {
-        return idItem;
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
+    public Timestamp getDeadline() {
+        return deadline;
     }
 
     public void setDeadline(Timestamp deadline) {
         this.deadline = deadline;
     }
 
-    public Timestamp getDeadline() {
-        return deadline;
+    public float getAmount() {
+        return amount;
     }
 
     public void setAmount(float amount) {
         this.amount = amount;
     }
 
-    public float getAmount() {
-        return amount;
+    public int getIdUser() {
+        return idUser;
     }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public String getAuctionId(){
+        return auctionId;
+    }
+
+    public void setAuctionId(String auctionId){
+        this.auctionId = auctionId;
+    }
+
 }
