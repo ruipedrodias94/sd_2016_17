@@ -43,8 +43,9 @@
 
 <a href="/messageWall.action">See Auction Message Wall</a>
 <h3>Edit Section</h3>
+
 <c:if test="${detailAuctionBean.auction.idUser == userID}" >
-    <a href="/editAuction.action?auctionId=${detailAuctionBean.auction.idAuction}">EDIT THIS ACTION</a>
+    <a href="editAuction.jsp?auctionId=${detailAuctionBean.auctionId}">Edit auction!</a>
 </c:if>
 
 

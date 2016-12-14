@@ -822,7 +822,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
         for (int i = 0;i < clientsToNotify.size();i++)
         {
-            if(checkClientOnline(clientsToNotify.get(i))==true) {
+            /*if(checkClientOnline(clientsToNotify.get(i))==true) {
 
                 try {
                     clientNotification.printOnClient(message,writer,clientsToNotify.get(i));
@@ -830,7 +830,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            }else{
+            }else{*/
 
                 try {
                     Connection connection1 = null;
@@ -854,7 +854,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
                 }
 
             }
-        }
+        //}
         return false;
     }
 
