@@ -22,7 +22,7 @@ public class EditAuctionAction extends ActionSupport implements SessionAware{
     private String title;
     private String idItem;
     private String description;
-    private Timestamp deadline;
+    private String deadline;
     private float amount;
     private int idUser;
     private String username;
@@ -47,7 +47,7 @@ public class EditAuctionAction extends ActionSupport implements SessionAware{
         client = new Client(this.idUser, this.username, this.password);
         this.getEditAuctionBean().setClient(client);
 
-        Auction novo = new Auction(this.idItem, this.title, this.description, this.deadline, this.amount, this.idUser);
+        Auction novo = new Auction(this.idItem, this.title, this.description, Timestamp.valueOf(this.deadline), this.amount, this.idUser);
         this.getEditAuctionBean().setNovo(novo);
 
         if (this.getEditAuctionBean().editAuction()){
@@ -100,11 +100,11 @@ public class EditAuctionAction extends ActionSupport implements SessionAware{
         this.description = description;
     }
 
-    public Timestamp getDeadline() {
+    public String getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Timestamp deadline) {
+    public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
 

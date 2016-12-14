@@ -62,7 +62,9 @@ public class EditAuctionBean {
     public boolean editAuction() throws RemoteException {
         rmiConnection = new rmiConnection();
         rmiInterface = rmiConnection.getInterface();
-        return rmiInterface.editAuction(this.antigo, this.novo, this.client);
+        this.novo.setIdAuction(this.antigo.getIdAuction());
+        boolean ratedo = rmiInterface.editAuction(this.antigo, this.novo, this.client);
+        return ratedo;
     }
 
     public void setAuctionAntigo() throws RemoteException {
