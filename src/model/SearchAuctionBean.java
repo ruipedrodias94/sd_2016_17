@@ -38,6 +38,7 @@ public class SearchAuctionBean {
     public ArrayList<Auction> searchAuction() throws RemoteException {
         rmiInterface = rmiC.getInterface();
         Auctions = rmiInterface.searchAuction(this.code);
+
         return rmiInterface.searchAuction(this.code);
     }
 

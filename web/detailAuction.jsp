@@ -18,8 +18,8 @@
 </head>
 <body>
 
-<!-- NEEEED TO TEST THIS SHIT -->
-<h1>Details of project ${detailAuctionBean.auction.title}</h1>
+
+<h1>Details of Auction ${detailAuctionBean.auction.title}</h1>
 <c:out value="${detailAuctionBean.auction.idAuction}"> Details of auction </c:out> <br>
 <c:out value="${detailAuctionBean.auction.title}"> Title </c:out><br>
 <c:out value="${detailAuctionBean.auction.description}"> Description </c:out><br>
