@@ -23,6 +23,7 @@ public class DetailAuctionBean {
 
     private Auction auction = null;
     private String auctionId;
+    private boolean isActive;
 
     public DetailAuctionBean(){
         rmiC = new rmiConnection();
@@ -47,6 +48,14 @@ public class DetailAuctionBean {
 
     public String getAuctionId() {
         return auctionId;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public void setAuctionId(String auctionId) {

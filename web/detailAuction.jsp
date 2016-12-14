@@ -28,13 +28,14 @@
 <c:out value="${detailAuctionBean.auction.idUser}"> Id User </c:out><br>
 
 <br>
-
+<c:if test="${detailAuctionBean.active == true}" >
 <h2>Make a bid to this auction!</h2>
 <form action="/bidAuction" method="post">
     <input type="hidden" name="idAuction" value="${detailAuctionBean.auction.idAuction}">
     <input type="number" name="amount">
     <input type="submit" value="Submit Bid!">
 </form>
+</c:if>
 
 <h3>Bids history </h3>
 <c:forEach items="${detailAuctionBean.auction.bids}" var="bids">

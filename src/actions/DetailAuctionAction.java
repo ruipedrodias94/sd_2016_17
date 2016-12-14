@@ -9,8 +9,11 @@ import org.apache.struts2.interceptor.SessionAware;
 
 import javax.servlet.http.HttpServletRequest;
 import java.rmi.RemoteException;
+import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
+
 
 /**
  * Created by Rui Pedro Dias on 10/12/2016.
@@ -22,7 +25,7 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
     private String code;
     private Auction auction = null;
     private String auctionId;
-
+    private boolean isActive;
 
     @Override
     public String execute() throws RemoteException {
@@ -34,6 +37,19 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
             auction = getDetailAuctionBean().detailAuction();
             if (auction != null) {
                 this.getDetailAuctionBean().setAuction(this.auction);
+                Date date = new Date();
+                java.sql.Timestamp now = new java.sql.Timestamp(date.getTime());
+
+                if(auction.getDeadline().before(now))
+                {
+                    getDetailAuctionBean().setActive(false);
+                    System.out.println("LIELÃO FECHADO");
+                }
+                else
+                {
+                    getDetailAuctionBean().setActive(true);
+                    System.out.println("LIELÃO Aberto");
+                }
                 return SUCCESS;
             }
         return ERROR;
@@ -70,5 +86,13 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
 
     public void setAuctionId(String auctionId) {
         this.auctionId = auctionId;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
