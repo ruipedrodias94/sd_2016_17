@@ -25,5 +25,7 @@
     </s:form>
 
 <a href="/register.jsp">Not registered yet?</a>
+
+
 </body>
 </html>

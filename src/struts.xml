@@ -66,7 +66,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         </action>
 
         <action name="editAuction" class="actions.EditAuctionAction" method="execute">
-            <result name="success" type="redirect">detailAuction.jsp</result>
+            <result name="success" type="redirectAction">detailAuction</result>
             <result name="error">/error.jsp</result>
         </action>
 

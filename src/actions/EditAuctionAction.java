@@ -36,6 +36,7 @@ public class EditAuctionAction extends ActionSupport implements SessionAware{
 
         HttpServletRequest request = ServletActionContext.getRequest();
         this.auctionId = request.getParameter("auctionId");
+        this.session.put("auctionId",this.auctionId);
         //this.auctionId = String.valueOf(session.get("auctionId"));
         this.getEditAuctionBean().setIdAntigo(this.auctionId);
         this.getEditAuctionBean().setAuctionAntigo();
