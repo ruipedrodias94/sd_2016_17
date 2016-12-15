@@ -32,7 +32,13 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
 
             HttpServletRequest request = ServletActionContext.getRequest();
             this.code = request.getParameter("auctionId");
-            this.session.put("auctionId",this.code);
+
+            System.out.println("CODE1: "+this.code);
+
+
+            if(session.containsKey("auctionId")){
+            this.code = (String) this.session.get("auctionId");
+            }
             this.getDetailAuctionBean().setAuctionId(this.code);
             auction = getDetailAuctionBean().detailAuction();
             if (auction != null) {
@@ -43,12 +49,10 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
                 if(auction.getDeadline().before(now))
                 {
                     getDetailAuctionBean().setActive(false);
-                    System.out.println("LIELÃO FECHADO");
                 }
                 else
                 {
                     getDetailAuctionBean().setActive(true);
-                    System.out.println("LIELÃO Aberto");
                 }
                 return SUCCESS;
             }
