@@ -31,7 +31,7 @@ public class FacebookTest {
                 .apiKey(clientId)
                 .apiSecret(clientSecret)
                 .state(secretState)
-                .callback("http://www.example.com/oauth_callback/")
+                .callback("http://localhost:8080/oauth_callback/")
                 .build(FacebookApi.instance());
 
         final Scanner in = new Scanner(System.in, "UTF-8");
