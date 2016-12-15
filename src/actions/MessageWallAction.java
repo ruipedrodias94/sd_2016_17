@@ -25,9 +25,6 @@ public class MessageWallAction extends ActionSupport implements SessionAware {
             this.getMessageWallBean().setAuctionId(Integer.parseInt((String)session.get("auctionId")));
             this.getMessageWallBean().getMessagesAuction();
             this.getMessageWallBean().setUserID((int)(session.get("userID")));
-
-
-
         }
 
         else{
