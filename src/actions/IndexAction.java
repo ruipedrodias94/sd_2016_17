@@ -22,6 +22,10 @@ public class IndexAction extends ActionSupport implements SessionAware {
     private static final String NETWORK_NAME = "Facebook";
     private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me    ";
 
+    private String state;
+    private String code;
+
+
 
     @Override
     public String execute(){
@@ -33,7 +37,7 @@ public class IndexAction extends ActionSupport implements SessionAware {
                 .apiKey(clientId)
                 .apiSecret(clientSecret)
                 .state(secretState)
-                .callback("http://localhost:8080/login.action/")
+                .callback("http://localhost:8080/loginFBAction.action")
                 .build(FacebookApi.instance());
 
         this.authURL = service.getAuthorizationUrl();
@@ -45,7 +49,7 @@ public class IndexAction extends ActionSupport implements SessionAware {
         if (!session.containsKey("indexBean")){
             this.setIndexBean(new IndexBean());
         }
-        return (IndexBean) session.get("FBloginBean");
+        return (IndexBean) session.get("indexBean");
     }
 
     public void setIndexBean(IndexBean indexBean){
@@ -55,5 +59,21 @@ public class IndexAction extends ActionSupport implements SessionAware {
     @Override
     public void setSession(Map<String, Object> map) {
         this.session = map;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

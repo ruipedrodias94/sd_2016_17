@@ -8,6 +8,9 @@ import rmi.rmiConnection;
  */
 public class IndexBean {
 
+    String state;
+    String code;
+
     public String getAuthUrl() {
         return authUrl;
     }
@@ -27,4 +30,19 @@ public class IndexBean {
         rmiInterface = rmiConnection.getInterface();
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

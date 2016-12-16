@@ -36,6 +36,7 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
     private String secret;
     private OAuth2AccessToken oAuth2AccessToken;
     private OAuthRequest oAuthRequest;
+    private String state;
 
     private static final String NETWORK_NAME = "Facebook";
     private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me    ";
@@ -50,13 +51,14 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
                 .apiKey(clientId)
                 .apiSecret(clientSecret)
                 .state(secretState)
-                .callback("http://localhost:8080/loginFBAction.action/")
+                .callback("http://localhost:8080/loginFBAction.action")
                 .build(FacebookApi.instance());
 
 
         HttpServletRequest r = ServletActionContext.getRequest();
-        code = r.getParameter("code");
+        this.code = r.getParameter("code");
         secret = r.getParameter("secret");
+
 
 
         this.getLoginFBBean().setCode(this.code);
@@ -100,15 +102,22 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
 
 
     public LoginFacebookBean getLoginFBBean(){
-        if (!session.containsKey("FBloginBean")){
+        if (!session.containsKey("loginFBBean")){
             this.setLoginBean(new LoginFacebookBean());
         }
-        return (LoginFacebookBean) session.get("FBloginBean");
+        return (LoginFacebookBean) session.get("loginFBBean");
     }
 
     public void setLoginBean(LoginFacebookBean loginFBBean){
         this.session.put("loginFBBean", loginFBBean);
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 }
 

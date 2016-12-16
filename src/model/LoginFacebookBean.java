@@ -15,6 +15,8 @@ public class LoginFacebookBean {
     private String code;
     private String secret;
     private OAuth2AccessToken oAuth2AccessToken;
+    private String state;
+
 
     private OAuth20Service oAuth20Service;
 
@@ -26,6 +28,8 @@ public class LoginFacebookBean {
     public LoginFacebookBean(){
         rmiConnection = new rmiConnection();
         rmiInterface = rmiConnection.getInterface();
+
+
     }
 
 
@@ -78,5 +82,11 @@ public class LoginFacebookBean {
         this.oAuth20Service = oAuth20Service;
     }
 
+    public String getState() {
+        return state;
+    }
 
+    public void setState(String state) {
+        this.state = state;
+    }
 }
