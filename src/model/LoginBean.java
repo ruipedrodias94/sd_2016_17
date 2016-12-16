@@ -1,5 +1,8 @@
 package model;
 
+import com.github.scribejava.apis.FacebookApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.apache.struts2.components.Debug;
 import rmi.RmiInterface;
 
@@ -11,6 +14,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.Random;
 
 /**
  * Created by Rui Pedro Dias on 08/12/2016.
@@ -24,6 +28,10 @@ public class LoginBean {
     //Things need to do the login
     private String username;
     private String password;
+    private String authUrl;
+    private String code;
+
+
 
     public LoginBean() {
 
@@ -35,6 +43,9 @@ public class LoginBean {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+
+
     }
 
     public boolean doLogin() throws RemoteException {
@@ -52,5 +63,22 @@ public class LoginBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    public String getAuthUrl() {
+        return authUrl;
+    }
+
+    public void setAuthUrl(String authUrl) {
+        this.authUrl = authUrl;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

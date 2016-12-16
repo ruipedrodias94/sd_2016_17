@@ -70,5 +70,11 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="error">/error.jsp</result>
         </action>
 
+
+        <action name="loginFBAction" class="actions.LoginFacebookAction" method="execute">
+            <result name="success" type="redirect">/index.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
     </package>
 </struts>

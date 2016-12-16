@@ -4,11 +4,11 @@ import java.util.Random;
 import java.util.Scanner;
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Response;
-import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.apache.struts2.ServletActionContext;
+
+
 import java.io.IOException;
 
 
@@ -17,10 +17,8 @@ import java.io.IOException;
  */
 public class FacebookTest {
     private static final String NETWORK_NAME = "Facebook";
-    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me";
+    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me    ";
 
-    private FacebookTest() {
-    }
 
     public static void main(String... args) throws IOException {
         // Replace these with your client id and secret
@@ -31,8 +29,9 @@ public class FacebookTest {
                 .apiKey(clientId)
                 .apiSecret(clientSecret)
                 .state(secretState)
-                .callback("http://localhost:8080/oauth_callback/")
+                .callback("http://localhost:8080/login.action")
                 .build(FacebookApi.instance());
+
 
         final Scanner in = new Scanner(System.in, "UTF-8");
 
@@ -47,8 +46,9 @@ public class FacebookTest {
         System.out.println(authorizationUrl);
         System.out.println("And paste the authorization code here");
         System.out.print(">>");
-        final String code = in.nextLine();
+        String code = in.nextLine();
         System.out.println();
+
 
         System.out.println("And paste the state from server here. We have set 'secretState'='" + secretState + "'.");
         System.out.print(">>");
