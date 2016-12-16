@@ -38,15 +38,10 @@ public class LoginAction extends ActionSupport implements SessionAware {
     @Override
     public String execute() throws RemoteException{
 
-        HttpServletRequest r = ServletActionContext.getRequest();
-        System.out.println("CODE: "+r.getParameter("code"));
         if(this.username != null && !username.equals("") && this.password != null && !password.equals("")) {
 
             this.getLoginBean().setUsername(this.username);
             this.getLoginBean().setPassword(this.password);
-
-
-
 
             if (this.getLoginBean().doLogin()){
                 session.put("username", username);

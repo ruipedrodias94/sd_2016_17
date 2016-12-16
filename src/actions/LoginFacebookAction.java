@@ -2,14 +2,20 @@ package actions;
 
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.opensymphony.xwork2.ActionSupport;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.interceptor.SessionAware;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.View;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 import model.LoginFacebookBean;
@@ -26,10 +32,17 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
     private HttpServletRequest httpServletRequest;
     private HttpServletResponse httpServletResponse;
     private String authUrl;
+    private String code;
+    private String secret;
+    private OAuth2AccessToken oAuth2AccessToken;
+    private OAuthRequest oAuthRequest;
+
+    private static final String NETWORK_NAME = "Facebook";
+    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me    ";
 
     @Override
-    public String execute()
-    {
+    public String execute() throws IOException {
+
         final String clientId = "1692489987709601";
         final String clientSecret = "d3b58f3dfa1180d96dc4e41453d313c6";
         final String secretState = "secret" + new Random().nextInt(999_999);
@@ -37,12 +50,27 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
                 .apiKey(clientId)
                 .apiSecret(clientSecret)
                 .state(secretState)
-                .callback("http://localhost:8080/login.action/  ")
+                .callback("http://localhost:8080/login.action/")
                 .build(FacebookApi.instance());
 
-        this.authUrl = service.getAuthorizationUrl();
+
+        HttpServletRequest r = ServletActionContext.getRequest();
+        code = r.getParameter("code");
+        secret = r.getParameter("secret");
 
         this.getLoginFBBean().setAuthUrl(this.authUrl);
+
+        this.getLoginFBBean().setCode(this.code);
+        this.getLoginFBBean().setSecret(this.secret);
+
+        this.oAuth2AccessToken = service.getAccessToken(this.code);
+
+        this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
+
+        this.oAuthRequest = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL, service.getConfig());
+
+        this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
+
         return SUCCESS;
 
     }
