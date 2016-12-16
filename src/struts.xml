@@ -18,7 +18,7 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
         <default-action-ref name="index"/>
 
         <action name="index">
-            <result>/index.jsp</result>
+            <result name="success">/index.jsp</result>
         </action>
 
         <action name="login" class="actions.LoginAction" method="execute">

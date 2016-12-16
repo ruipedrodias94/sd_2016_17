@@ -50,7 +50,7 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
                 .apiKey(clientId)
                 .apiSecret(clientSecret)
                 .state(secretState)
-                .callback("http://localhost:8080/login.action/")
+                .callback("http://localhost:8080/loginFBAction.action/")
                 .build(FacebookApi.instance());
 
 
@@ -58,7 +58,6 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
         code = r.getParameter("code");
         secret = r.getParameter("secret");
 
-        this.getLoginFBBean().setAuthUrl(this.authUrl);
 
         this.getLoginFBBean().setCode(this.code);
         this.getLoginFBBean().setSecret(this.secret);

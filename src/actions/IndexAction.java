@@ -1,0 +1,59 @@
+package actions;
+
+import com.github.scribejava.apis.FacebookApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.oauth.OAuth20Service;
+import com.opensymphony.xwork2.ActionSupport;
+import model.IndexBean;
+import org.apache.struts2.interceptor.SessionAware;
+
+import java.util.Map;
+import java.util.Random;
+
+/**
+ * Created by Rui Pedro Dias on 16/12/2016.
+ */
+public class IndexAction extends ActionSupport implements SessionAware {
+
+    private static final long serialVersionUID = 4L;
+    private Map<String, Object> session;
+    private String authURL;
+
+    private static final String NETWORK_NAME = "Facebook";
+    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me    ";
+
+
+    @Override
+    public String execute(){
+
+        final String clientId = "1692489987709601";
+        final String clientSecret = "d3b58f3dfa1180d96dc4e41453d313c6";
+        final String secretState = "secret" + new Random().nextInt(999_999);
+        final OAuth20Service service = new ServiceBuilder()
+                .apiKey(clientId)
+                .apiSecret(clientSecret)
+                .state(secretState)
+                .callback("http://localhost:8080/login.action/")
+                .build(FacebookApi.instance());
+
+        this.authURL = service.getAuthorizationUrl();
+        this.getIndexBean().setAuthUrl(this.authURL);
+        return SUCCESS;
+    }
+
+    public IndexBean getIndexBean(){
+        if (!session.containsKey("indexBean")){
+            this.setIndexBean(new IndexBean());
+        }
+        return (IndexBean) session.get("FBloginBean");
+    }
+
+    public void setIndexBean(IndexBean indexBean){
+        this.session.put("indexBean", indexBean);
+    }
+
+    @Override
+    public void setSession(Map<String, Object> map) {
+        this.session = map;
+    }
+}
