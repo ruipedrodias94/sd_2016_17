@@ -71,6 +71,8 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
 
         this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
 
+        this.getLoginFBBean().setoAuth20Service(service);
+
         return SUCCESS;
 
     }

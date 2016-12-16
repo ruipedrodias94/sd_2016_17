@@ -2,6 +2,7 @@ package model;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import rmi.RmiInterface;
 import rmi.rmiConnection;
 
@@ -15,6 +16,8 @@ public class LoginFacebookBean {
     private String secret;
     private OAuth2AccessToken oAuth2AccessToken;
 
+    private OAuth20Service oAuth20Service;
+
     private OAuthRequest oAuthRequest;
 
     private RmiInterface rmiInterface;
@@ -24,6 +27,8 @@ public class LoginFacebookBean {
         rmiConnection = new rmiConnection();
         rmiInterface = rmiConnection.getInterface();
     }
+
+
 
     public String getAuthUrl() {
         return authUrl;
@@ -65,6 +70,13 @@ public class LoginFacebookBean {
         this.oAuthRequest = oAuthRequest;
     }
 
+    public OAuth20Service getoAuth20Service() {
+        return oAuth20Service;
+    }
+
+    public void setoAuth20Service(OAuth20Service oAuth20Service) {
+        this.oAuth20Service = oAuth20Service;
+    }
 
 
 }
