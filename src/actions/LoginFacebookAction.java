@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Random;
 import model.LoginFacebookBean;
 
-import java.net.HttpURLConnection;
+
 
 /**
  * Created by Rui Pedro Dias on 15/12/2016.
@@ -43,7 +43,8 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
     private String state;
 
     private static final String NETWORK_NAME = "Facebook";
-    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me";
+    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.4/me";
+    private static final String PROTECTED_RESOURCE_URL2 = "https://graph.facebook.com/v2.4/1432086836832191";
 
     @Override
     public String execute() throws IOException {
@@ -64,17 +65,19 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
         secret = r.getParameter("secret");
 
 
-        /*this.getLoginFBBean().setCode(this.code);
-        this.getLoginFBBean().setSecret(this.secret);*/
+
+        this.getLoginFBBean().setCode(this.code);
+        this.getLoginFBBean().setSecret(this.secret);
 
         this.oAuth2AccessToken = service.getAccessToken(this.code);
 
-        //this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
+        this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
 
         this.oAuthRequest = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL, service.getConfig());
 
-        //this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
-        //this.getLoginFBBean().setoAuth20Service(service);
+        this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
+
+        this.getLoginFBBean().setoAuth20Service(service);
 
         service.signRequest(this.oAuth2AccessToken, oAuthRequest);
 
@@ -83,6 +86,18 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
         String user = getUsername(response);
 
         this.session.put("username", user);
+
+        System.out.println(response.getBody());
+
+        this.oAuthRequest = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL2, service.getConfig());
+
+        this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
+
+        service.signRequest(this.oAuth2AccessToken, oAuthRequest);
+
+        response = oAuthRequest.send();
+
+        System.out.println(response.getBody());
 
         return SUCCESS;
 
@@ -136,6 +151,14 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         JsonNode idNode = jsonNode.get("name");
         return idNode.asText();
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
 

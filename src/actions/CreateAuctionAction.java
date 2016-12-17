@@ -1,13 +1,19 @@
 package actions;
 
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.Verb;
 import com.opensymphony.xwork2.ActionSupport;
 import components.Auction;
 import model.CreateAuctionBean;
 import org.apache.struts2.interceptor.SessionAware;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.Map;
+import model.LoginFacebookBean;
 
 /**
  * Created by Rui Pedro Dias on 09/12/2016.
@@ -24,6 +30,9 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
     private Timestamp deadline;
     private float amount;
     private int idUser;
+    private OAuthRequest oAuthRequest;
+    private String PROTECTED_RESOURCE_URL2;
+    private OAuth2AccessToken oAuth2AccessToken;
 
     @Override
     public void setSession(Map<String, Object> map) {
@@ -39,8 +48,9 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
         this.getCreateAuctionBean().setDeadline(this.deadline);
         this.getCreateAuctionBean().setAmount(this.amount);
 
-        this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
-        this.getCreateAuctionBean().setIdUser(this.idUser);
+        //this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
+        this.getCreateAuctionBean().setIdUser(34);
+        this.idUser=34;
 
         System.out.println("ID DO USER: " + idUser);
 
@@ -49,10 +59,25 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
         this.getCreateAuctionBean().setAuction(auction);
 
         if (this.getCreateAuctionBean().createAuction()){
+            System.out.println(this.title);
+            PROTECTED_RESOURCE_URL2 = "https://graph.facebook.com/v2.8/me/feed?message="+this.title;
+           this.oAuth2AccessToken=this.getLoginFBBean().getoAuth2AccessToken();
+
+            this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
+            oAuthRequest = new OAuthRequest(Verb.POST,PROTECTED_RESOURCE_URL2,this.getLoginFBBean().getoAuth20Service().getConfig());
+            this.getLoginFBBean().setoAuthRequest(oAuthRequest);
+            this.getLoginFBBean().getoAuth20Service().signRequest(this.getLoginFBBean().getoAuth2AccessToken(),oAuthRequest);
+            Response response = this.getLoginFBBean().getoAuthRequest().send();
+            try {
+                System.out.println(response.getBody());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return SUCCESS;
         }
+        else
+            return ERROR;
 
-        return ERROR;
     }
 
     public CreateAuctionBean getCreateAuctionBean(){
@@ -92,5 +117,16 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
 
     public void setIdUser(int idUser) {
         this.idUser = idUser;
+    }
+
+    public LoginFacebookBean getLoginFBBean(){
+        if (!session.containsKey("loginFBBean")){
+            this.setLoginBean(new LoginFacebookBean());
+        }
+        return (LoginFacebookBean) session.get("loginFBBean");
+    }
+
+    public void setLoginBean(LoginFacebookBean loginFBBean){
+        this.session.put("loginFBBean", loginFBBean);
     }
 }

@@ -39,7 +39,6 @@ public class IndexAction extends ActionSupport implements SessionAware {
                 .state(secretState)
                 .callback("http://localhost:8080/loginFBAction.action")
                 .build(FacebookApi.instance());
-
         this.authURL = service.getAuthorizationUrl();
         this.getIndexBean().setAuthUrl(this.authURL);
         return SUCCESS;
