@@ -80,6 +80,7 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
 
         Response response = oAuthRequest.send();
 
+        System.out.println(response.getBody());
         String user = getUsername(response);
 
         this.session.put("username", user);
