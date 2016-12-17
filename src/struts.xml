@@ -76,5 +76,10 @@ and should reside on the classpath of the webapp (generally /WEB-INF/classes). -
             <result name="error">/error.jsp</result>
         </action>
 
+        <action name="associateAcount" class="actions.AssociateAcountAction" method="execute">
+            <result name="success" type="redirect">/sucess.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
     </package>
 </struts>

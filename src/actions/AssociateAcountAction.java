@@ -1,6 +1,5 @@
 package actions;
 
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.apis.FacebookApi;
@@ -11,6 +10,7 @@ import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.opensymphony.xwork2.ActionSupport;
+import model.AssociateAcountBean;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
@@ -18,36 +18,43 @@ import org.apache.struts2.interceptor.SessionAware;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.View;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
-import model.LoginFacebookBean;
-
-import java.net.HttpURLConnection;
 
 /**
- * Created by Rui Pedro Dias on 15/12/2016.
+ * Created by Rui Pedro Dias on 17/12/2016.
  */
-public class LoginFacebookAction extends ActionSupport implements SessionAware, ServletRequestAware, ServletResponseAware{
+public class AssociateAcountAction extends ActionSupport implements SessionAware, ServletRequestAware, ServletResponseAware {
 
     private static final long serialVersionUID = 4L;
     private Map<String, Object> session;
+
     private HttpServletRequest httpServletRequest;
     private HttpServletResponse httpServletResponse;
-    private String authUrl;
+
+
     private String code;
-    private String secret;
+
     private OAuth2AccessToken oAuth2AccessToken;
     private OAuthRequest oAuthRequest;
-    private String state;
 
-    private static final String NETWORK_NAME = "Facebook";
+    public String getIdFacebook() {
+        return idFacebook;
+    }
+
+    public void setIdFacebook(String idFacebook) {
+        this.idFacebook = idFacebook;
+    }
+
+    private String idFacebook;
+
     private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me";
+
 
     @Override
     public String execute() throws IOException {
-
         final String clientId = "1692489987709601";
         final String clientSecret = "d3b58f3dfa1180d96dc4e41453d313c6";
         final String secretState = "secret" + new Random().nextInt(999_999);
@@ -61,31 +68,51 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
 
         HttpServletRequest r = ServletActionContext.getRequest();
         this.code = r.getParameter("code");
-        secret = r.getParameter("secret");
 
         this.oAuth2AccessToken = service.getAccessToken(this.code);
 
-        this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
-
         this.oAuthRequest = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL, service.getConfig());
 
-        this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
-        this.getLoginFBBean().setoAuth20Service(service);
+        service.signRequest(this.oAuth2AccessToken, oAuthRequest);
 
-        //service.signRequest(this.oAuth2AccessToken, oAuthRequest);
+        Response response = oAuthRequest.send();
 
-        //Response response = oAuthRequest.send();
+        this.idFacebook = getId(response);
 
-        if (this.getLoginFBBean().doLoginFacebook()){
-            this.session.put("username", this.getLoginFBBean().getUsername());
-            this.session.put("loggedin", true);
-            this.session.put("userID", this.getLoginFBBean().userID());
+        this.getAssociateAcountBean().setIdFacebook(this.idFacebook);
+        this.getAssociateAcountBean().setIdUser((Integer) this.session.get("userID"));
+
+        if (this.getAssociateAcountBean().associateAcount()){
             return SUCCESS;
         }
-
         return ERROR;
-
     }
+
+    public AssociateAcountBean getAssociateAcountBean(){
+        if (!session.containsKey("associateBean")){
+            this.setAssociateAcountBean(new AssociateAcountBean());
+        }
+        return (AssociateAcountBean) session.get("loginFBBean");
+    }
+
+    public void setAssociateAcountBean(AssociateAcountBean associateAcountBean){
+        this.session.put("associateBean", associateAcountBean);
+    }
+
+
+    public String getId(Response response) throws IOException {
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        JsonNode idNode = jsonNode.get("id");
+        return idNode.asText();
+    }
+
+    @Override
+    public void setSession(Map<String, Object> map) {
+        this.session = map;
+    }
+
     @Override
     public void setServletRequest(HttpServletRequest httpServletRequest) {
         this.httpServletRequest = httpServletRequest;
@@ -95,38 +122,4 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
     public void setServletResponse(HttpServletResponse httpServletResponse) {
         this.httpServletResponse = httpServletResponse;
     }
-
-    @Override
-    public void setSession(Map<String, Object> map) {
-        this.session = map;
-    }
-
-    public String getAuthUrl() {
-        return authUrl;
-    }
-
-    public void setAuthUrl(String authUrl) {
-        this.authUrl = authUrl;
-    }
-
-
-    public LoginFacebookBean getLoginFBBean(){
-        if (!session.containsKey("loginFBBean")){
-            this.setLoginBean(new LoginFacebookBean());
-        }
-        return (LoginFacebookBean) session.get("loginFBBean");
-    }
-
-    public void setLoginBean(LoginFacebookBean loginFBBean){
-        this.session.put("loginFBBean", loginFBBean);
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
 }
-

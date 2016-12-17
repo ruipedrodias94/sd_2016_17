@@ -8,6 +8,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<jsp:useBean id="indexBean" class="model.IndexBean" scope="session"></jsp:useBean>
+
+
 <html>
 <head>
     <title>Sucess</title>
@@ -30,5 +33,8 @@
     </s:form>
 
     <a href="myAuctions.action">My Auctions</a>
+
+    <br>
+        <a href="${indexBean.authUrl}">Associa a tua conta!</a>
 </body>
 </html>
