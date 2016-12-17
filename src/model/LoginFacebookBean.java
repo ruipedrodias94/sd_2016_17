@@ -17,7 +17,6 @@ public class LoginFacebookBean {
     private OAuth2AccessToken oAuth2AccessToken;
     private String state;
 
-
     private OAuth20Service oAuth20Service;
 
     private OAuthRequest oAuthRequest;
@@ -31,8 +30,6 @@ public class LoginFacebookBean {
 
 
     }
-
-
 
     public String getAuthUrl() {
         return authUrl;

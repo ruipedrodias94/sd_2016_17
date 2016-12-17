@@ -14,7 +14,7 @@
 </head>
 <body>
 
-    <h1>You made it!</h1>
+    <h1>You made it! ${username}</h1>
     <c:choose>
         <c:when test="${session.loggedin == true}">
             <p>Welcome user ${session.username} with id ${session.userID}</p>

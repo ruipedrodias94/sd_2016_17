@@ -1,9 +1,13 @@
 package actions;
 
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.opensymphony.xwork2.ActionSupport;
@@ -39,7 +43,7 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
     private String state;
 
     private static final String NETWORK_NAME = "Facebook";
-    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me    ";
+    private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v2.8/me";
 
     @Override
     public String execute() throws IOException {
@@ -60,19 +64,25 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
         secret = r.getParameter("secret");
 
 
-
-        this.getLoginFBBean().setCode(this.code);
-        this.getLoginFBBean().setSecret(this.secret);
+        /*this.getLoginFBBean().setCode(this.code);
+        this.getLoginFBBean().setSecret(this.secret);*/
 
         this.oAuth2AccessToken = service.getAccessToken(this.code);
 
-        this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
+        //this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
 
         this.oAuthRequest = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL, service.getConfig());
 
-        this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
+        //this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
+        //this.getLoginFBBean().setoAuth20Service(service);
 
-        this.getLoginFBBean().setoAuth20Service(service);
+        service.signRequest(this.oAuth2AccessToken, oAuthRequest);
+
+        Response response = oAuthRequest.send();
+
+        String user = getUsername(response);
+
+        this.session.put("username", user);
 
         return SUCCESS;
 
@@ -118,6 +128,14 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getUsername(Response response) throws IOException{
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        JsonNode idNode = jsonNode.get("name");
+        return idNode.asText();
     }
 }
 
