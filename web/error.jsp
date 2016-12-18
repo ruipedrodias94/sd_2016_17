@@ -10,7 +10,7 @@
 
 <html>
 <head>
-    <title>ERROR</title>
+    <title>Error</title>
 </head>
 <body>
     <h1>You got an error...</h1>
