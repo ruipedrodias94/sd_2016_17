@@ -43,9 +43,6 @@ public class LoginBean {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     public boolean doLogin() throws RemoteException {

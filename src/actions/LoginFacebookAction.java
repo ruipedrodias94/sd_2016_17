@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Random;
 import model.LoginFacebookBean;
 
-
+import java.net.HttpURLConnection;
 
 /**
  * Created by Rui Pedro Dias on 15/12/2016.
@@ -64,42 +64,27 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
         this.code = r.getParameter("code");
         secret = r.getParameter("secret");
 
-
-
-        this.getLoginFBBean().setCode(this.code);
-        this.getLoginFBBean().setSecret(this.secret);
-
         this.oAuth2AccessToken = service.getAccessToken(this.code);
 
-        this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
+        //this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
 
         this.oAuthRequest = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL, service.getConfig());
 
         this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
-
         this.getLoginFBBean().setoAuth20Service(service);
 
-        service.signRequest(this.oAuth2AccessToken, oAuthRequest);
+        //service.signRequest(this.oAuth2AccessToken, oAuthRequest);
 
-        Response response = oAuthRequest.send();
+        //Response response = oAuthRequest.send();
 
-        String user = getUsername(response);
+        if (this.getLoginFBBean().doLoginFacebook()){
+            this.session.put("username", this.getLoginFBBean().getUsername());
+            this.session.put("loggedin", true);
+            this.session.put("userID", this.getLoginFBBean().userID());
+            return SUCCESS;
+        }
 
-        this.session.put("username", user);
-
-        System.out.println(response.getBody());
-
-        this.oAuthRequest = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL2, service.getConfig());
-
-        this.getLoginFBBean().setoAuthRequest(this.oAuthRequest);
-
-        service.signRequest(this.oAuth2AccessToken, oAuthRequest);
-
-        response = oAuthRequest.send();
-
-        System.out.println(response.getBody());
-
-        return SUCCESS;
+        return ERROR;
 
     }
     @Override

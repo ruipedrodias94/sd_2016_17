@@ -63,7 +63,8 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      */
     public synchronized boolean registerClient(String username, String password) {
 
-        String add = "INSERT INTO USER (userName, password, online) VALUES ('" + username + "', '" + password + "', " + 0 + ");";
+        String add = "INSERT INTO USER (userName, password, online, idFacebook) VALUES ('" + username + "', '" + password + "', " + 0 + ","+""+");";
+
 
         System.out.println("Recebeu o registo clinete");
 
@@ -858,6 +859,80 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         return false;
     }
 
+    /**
+     * Verifica se o facebook já está associado à sua conta
+     * @param idFacebook
+     * @return
+     */
+    public synchronized boolean verifyIfExist(String idFacebook){
+
+        String search = "SELECT * FROM USER WHERE idFacebook ='" + idFacebook+ "';";
+
+        ResultSet resultSet;
+
+
+        try{
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Se não estiver associado à conta, ele vai mandar grande update na sua BD
+     * @param idUser
+     * @param idFacebook
+     * @return
+     */
+    public synchronized boolean associateFacebook(int idUser, String idFacebook){
+        String update = "UPDATE user SET idFacebook = '" + idFacebook + "' WHERE idUSER = '" + idUser +"';";
+
+        Connection connection2;
+        ResultSet resultSet;
+
+        try {
+
+            connection2 = DriverManager.getConnection(DB_URL,USER,PASS);
+            statement = connection2.createStatement();
+            statement.executeUpdate(update);
+
+            commit();
+            connection2.close();
+            return true;
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+            rollback();
+        }
+        return false;
+    }
+
+    /**
+     * Do Facebook Login
+     * @param username
+     * @param idFacebook
+     * @return
+     */
+    public synchronized boolean loginFacebook(String username, String idFacebook) {
+
+        String add = "INSERT INTO USER (userName, password, online, idFacebook) VALUES ('" + username + "', '"+ " " + "', "+ 0 +"," + "'"+idFacebook+"');";
+
+        System.out.println("Recebeu o registo clinete");
+
+        try {
+            statement.executeUpdate(add);
+            commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            rollback();
+            return false;
+        }
+    }
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
 
