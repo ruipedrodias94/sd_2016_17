@@ -36,12 +36,9 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
             System.out.println("CODE1: "+this.code);
 
 
-            if(session.containsKey("auctionId")){
-            this.code = (String) this.session.get("auctionId");
-            }
-            else{
+
                 this.session.put("auctionId",this.code);
-            }
+
             this.getDetailAuctionBean().setAuctionId(this.code);
             auction = getDetailAuctionBean().detailAuction();
             if (auction != null) {
