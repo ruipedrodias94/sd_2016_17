@@ -10,10 +10,10 @@
 
 <html>
 <head>
-    <title>Ganda bosta</title>
+    <title>ERROR</title>
 </head>
 <body>
-    <h1>Deu erro amigo....</h1>
+    <h1>You got an error...</h1>
     <h4>You got an exception. Please <i>throw</i> it to someone who can handle it.</h4>
     <p><s:property value="exceptionStack" /></p>
 </body>
