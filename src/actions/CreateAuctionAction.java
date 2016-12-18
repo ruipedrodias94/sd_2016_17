@@ -51,7 +51,7 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
         System.out.println("ID do cliente: "+this.session.get("userID"));
         if(this.session.get("idFacebook")!=null)
         {
-            this.idUser = Integer.parseInt(String.valueOf(session.get("idFacebook")));
+            this.idUser = Integer.parseInt(this.getLoginFBBean().getUserID());
         }
         else{
             this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
