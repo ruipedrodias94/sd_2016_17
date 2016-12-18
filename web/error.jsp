@@ -10,7 +10,7 @@
 
 <html>
 <head>
-    <title>Ganda bosta</title>
+    <title>Página de Erro</title>
 </head>
 <body>
     <h1>Deu erro amigo....</h1>

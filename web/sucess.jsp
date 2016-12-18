@@ -28,7 +28,7 @@
 
     <br>
     <s:form action="searchAuction" method="POST">
-        <s:textfield name="code" >Auction code </s:textfield><br>
+        <s:textfield name="code" >Search Item </s:textfield><br>
         <s:submit/>
     </s:form>
 
