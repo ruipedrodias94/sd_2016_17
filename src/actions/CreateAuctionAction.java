@@ -31,7 +31,7 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
     private float amount;
     private int idUser;
     private OAuthRequest oAuthRequest;
-    private String PROTECTED_RESOURCE_URL2;
+    private     String PROTECTED_RESOURCE_URL2;
     private OAuth2AccessToken oAuth2AccessToken;
 
     @Override
@@ -48,7 +48,14 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
         this.getCreateAuctionBean().setDeadline(this.deadline);
         this.getCreateAuctionBean().setAmount(this.amount);
 
-        this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
+        System.out.println("ID do cliente: "+this.session.get("userID"));
+        if(this.session.get("idFacebook")!=null)
+        {
+            this.idUser = Integer.parseInt(String.valueOf(session.get("idFacebook")));
+        }
+        else{
+            this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
+        }
         this.getCreateAuctionBean().setIdUser(idUser);
 
         System.out.println("ID DO USER: " + idUser);
@@ -58,7 +65,8 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
         this.getCreateAuctionBean().setAuction(auction);
 
         if (this.getCreateAuctionBean().createAuction()){
-            System.out.println(this.title);
+
+            if(this.session.get("idFacebook")!=null){
             PROTECTED_RESOURCE_URL2 = "https://graph.facebook.com/v2.8/me/feed?message="+this.title;
            this.oAuth2AccessToken=this.getLoginFBBean().getoAuth2AccessToken();
 
@@ -72,11 +80,11 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            }
             return SUCCESS;
         }
         else
             return ERROR;
-
     }
 
     public CreateAuctionBean getCreateAuctionBean(){

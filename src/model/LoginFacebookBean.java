@@ -55,10 +55,11 @@ public class LoginFacebookBean {
 
         this.oAuth20Service.signRequest(this.oAuth2AccessToken, this.oAuthRequest);
         Response response = oAuthRequest.send();
+        System.out.println(response.getBody());
         //this.setUsername(getUsername(response));
         this.setIdFacebook(getId(response));
         if (rmiInterface.verifyIfExist(this.idFacebook)) {
-            this.setUsername(rmiInterface.getUserNameFacebook(this.idFacebook));
+            this.setUsername(getUsername(response));
             this.setUserID(String.valueOf(userID()));
 
         } else {

@@ -65,6 +65,7 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
         secret = r.getParameter("secret");
 
         this.oAuth2AccessToken = service.getAccessToken(this.code);
+        this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
 
         //this.getLoginFBBean().setoAuth2AccessToken(this.oAuth2AccessToken);
 
