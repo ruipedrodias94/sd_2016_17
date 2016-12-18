@@ -33,11 +33,7 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
             HttpServletRequest request = ServletActionContext.getRequest();
             this.code = request.getParameter("auctionId");
 
-            System.out.println("CODE1: "+this.code);
-
-
-
-                this.session.put("auctionId",this.code);
+            this.session.put("auctionId",this.code);
 
             this.getDetailAuctionBean().setAuctionId(this.code);
             auction = getDetailAuctionBean().detailAuction();
@@ -99,4 +95,5 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
     public void setActive(boolean active) {
         isActive = active;
     }
+
 }

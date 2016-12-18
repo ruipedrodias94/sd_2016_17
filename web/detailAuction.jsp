@@ -62,6 +62,37 @@
 
 </c:if>
 
+<div id="results"></div>
+<script>
+    var itemNumber = ${detailAuctionBean.auction.idItem};
+    var url = "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByProduct&SERVICE-VERSION=1.12.0&SECURITY-APPNAME=JorgeAra-iBei-PRD-145f0c74d-be9688e0&RESPONSE-DATA-FORMAT=JSON&callback=_cb_findItemsByKeywords&REST-PAYLOAD&paginationInput.entriesPerPage=1&productId.@type=ISBN&productId="+itemNumber+"&sortOrder=PricePlusShippingLowest";
+    // Parse the response and build an HTML table to display search results
+    function _cb_findItemsByKeywords(root) {
+        var items = root.findItemsByProductResponse[0].searchResult[0].item || [];
+        var html = [];
+        html.push('<table width="100%" border="0" cellspacing="0" cellpadding="3"><tbody>');
+        for (var i = 0; i < items.length; ++i) {
+            var item = items[i];
+            var title = item.title;
+            var pic = item.galleryURL;
+            var viewitem = item.viewItemURL;
+            var itemPrice = item.sellingStatus[0].currentPrice[0].__value__;
+            if (null != title && null != viewitem) {
+                html.push('<tr><td>' + '<img src="' + pic + '" border="0">' + '</td>' +
+                    '<td><a href="' + viewitem + '" target="_blank">' + title + '</a></td><td>' + 'Current Lowest Price on Ebay: ' + itemPrice + '</td></tr>');
+            }
+
+
+            html.push('</tbody></table>');
+            document.getElementById("results").innerHTML = html.join("");
+        }  // End _cb_findItemsByKeywords() function
+    }
+    s=document.createElement('script'); // create script element
+    s.src= url;
+    document.body.appendChild(s);
+
+    //document.write("<a href=\"" + url + "\">" + url + "</a>");
+</script>
 
 </body>
 </html>
