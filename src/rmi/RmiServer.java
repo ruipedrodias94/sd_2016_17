@@ -25,6 +25,7 @@ import components.Message;
 import resources.GetPropertiesValues;
 import tcp.CallbackInterface;
 
+import static java.sql.JDBCType.NULL;
 
 
 public class RmiServer extends UnicastRemoteObject implements RmiInterface, Serializable{
@@ -63,7 +64,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      */
     public synchronized boolean registerClient(String username, String password) {
 
-        String add = "INSERT INTO USER (userName, password, online, idFacebook) VALUES ('" + username + "', '" + password + "', " + 0 + ","+""+");";
+        String add = "INSERT INTO USER (userName, password, online, idFacebook) VALUES ('" + username + "', '" + password + "', " + 0 + ","+"NULL);";
 
 
         System.out.println("Recebeu o registo clinete");
@@ -115,12 +116,11 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      * @return
      */
 
-    public Client getClient(String username, String password) {
+    public Client getClient(String username) {
 
         Client client = null;
 
-        String search = "SELECT * FROM USER WHERE userName ='" + username
-                + "'AND password='" + password + "';";
+        String search = "SELECT * FROM USER WHERE userName ='" + username + "';";
 
         ResultSet resultSet;
 
@@ -157,6 +157,30 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return userName;
+    }
+
+    /**
+     * Get username by facebook id!
+     * @param idFacebook
+     * @return
+     */
+    public String getUserNameFacebook(String idFacebook){
+        String search = "SELECT * FROM USER WHERE idFacebook ='" + idFacebook + "';";
+
+        ResultSet resultSet;
+
+        String userName = "";
+
+        try{
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()){
+                userName = resultSet.getString(2);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(userName);
         return userName;
     }
 
@@ -870,7 +894,6 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
 
         ResultSet resultSet;
 
-
         try{
             resultSet = statement.executeQuery(search);
             while (resultSet.next()){
@@ -919,7 +942,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      */
     public synchronized boolean loginFacebook(String username, String idFacebook) {
 
-        String add = "INSERT INTO USER (userName, password, online, idFacebook) VALUES ('" + username + "', '"+ " " + "', "+ 0 +"," + "'"+idFacebook+"');";
+        String add = "INSERT INTO USER (userName, password, online, idFacebook) VALUES ('" + username + "', '"+ " " + "', "+ 1 +"," + "'"+idFacebook+"');";
 
         System.out.println("Recebeu o registo clinete");
 

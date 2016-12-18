@@ -24,7 +24,7 @@ public class MessageWallAction extends ActionSupport implements SessionAware {
         if(session.containsKey("auctionId") && session.containsKey("userID")){
             this.getMessageWallBean().setAuctionId(Integer.parseInt((String)session.get("auctionId")));
             this.getMessageWallBean().getMessagesAuction();
-            this.getMessageWallBean().setUserID((int)(session.get("userID")));
+            this.getMessageWallBean().setUserID(Integer.parseInt(String.valueOf(session.get("userID"))));
         }
 
         else{

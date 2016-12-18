@@ -51,14 +51,12 @@ public class MyAuctionsBean {
         this.password = password;
     }
 
-
     public void setMyAuctions(ArrayList myAuctions) {
         this.myAuctions = myAuctions;
     }
 
-    public void getClient(String user, String pass) throws RemoteException {
-            this.client = rmiInterface.getClient(user,pass);
-
+    public void getClient(String user) throws RemoteException {
+        this.client = rmiInterface.getClient(user);
     }
 
     public ArrayList getMyAuctions() throws RemoteException {

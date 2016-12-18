@@ -31,7 +31,7 @@ public interface RmiInterface extends Remote{
     Auction detailAuction(String code) throws RemoteException;
     boolean bid(Bid bid) throws RemoteException;
     boolean editAuction(Auction antigo, Auction novo, Client client) throws RemoteException;
-    Client getClient(String username, String password) throws RemoteException;
+    Client getClient(String username) throws RemoteException;
     boolean message(Message message) throws RemoteException;
     void putOffline(Client client) throws RemoteException;
     ArrayList<Auction> myAuctions(Client client) throws RemoteException;
@@ -42,4 +42,5 @@ public interface RmiInterface extends Remote{
     boolean verifyIfExist(String idFacebook) throws RemoteException;
     boolean associateFacebook(int idUser, String idFacebook) throws RemoteException;
     boolean loginFacebook(String username, String idFacebook) throws RemoteException;
+    String getUserNameFacebook(String idFacebook) throws RemoteException;
 }

@@ -80,7 +80,8 @@ public class LoginFacebookAction extends ActionSupport implements SessionAware, 
         if (this.getLoginFBBean().doLoginFacebook()){
             this.session.put("username", this.getLoginFBBean().getUsername());
             this.session.put("loggedin", true);
-            this.session.put("userID", this.getLoginFBBean().userID());
+            this.session.put("userID", this.getLoginFBBean().getUserID());
+            this.session.put("password", this.getLoginFBBean().getIdFacebook());
             return SUCCESS;
         }
 

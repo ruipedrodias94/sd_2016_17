@@ -21,6 +21,35 @@ public class CreateAuctionBean {
     private Auction auction;
     //Tipo isto?
     private String idItem;
+
+    public Auction getAuction() {
+        return auction;
+    }
+
+    public String getIdItem() {
+        return idItem;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Timestamp getDeadline() {
+        return deadline;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
     private String title;
     private String description;
     private Timestamp deadline;

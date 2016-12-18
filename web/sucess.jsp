@@ -35,6 +35,6 @@
     <a href="myAuctions.action">My Auctions</a>
 
     <br>
-        <a href="${indexBean.authUrl}">Associa a tua conta!</a>
+    <a href="${indexBean.authURL2}">Associa a tua conta!</a>
 </body>
 </html>

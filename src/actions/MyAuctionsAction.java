@@ -28,7 +28,7 @@ public class MyAuctionsAction extends ActionSupport implements SessionAware{
             System.out.println("PASS: "+this.password);
             this.getMyAuctionsBean().setUsername(this.username);
             this.getMyAuctionsBean().setPassword(this.password);
-            this.getMyAuctionsBean().getClient(this.username,this.password);
+            this.getMyAuctionsBean().getClient(this.username);
             this.getMyAuctionsBean().getMyAuctions();
             //this.getMyAuctionsBean().getMyAuctions();
 

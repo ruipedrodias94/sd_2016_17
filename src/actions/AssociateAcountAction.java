@@ -62,7 +62,7 @@ public class AssociateAcountAction extends ActionSupport implements SessionAware
                 .apiKey(clientId)
                 .apiSecret(clientSecret)
                 .state(secretState)
-                .callback("http://localhost:8080/loginFBAction.action")
+                .callback("http://localhost:8080/associateAcount.action")
                 .build(FacebookApi.instance());
 
 
@@ -80,7 +80,10 @@ public class AssociateAcountAction extends ActionSupport implements SessionAware
         this.idFacebook = getId(response);
 
         this.getAssociateAcountBean().setIdFacebook(this.idFacebook);
-        this.getAssociateAcountBean().setIdUser((Integer) this.session.get("userID"));
+
+        String idUser = String.valueOf(this.session.get("userID"));
+
+        this.getAssociateAcountBean().setIdUser(Integer.parseInt(idUser));
 
         if (this.getAssociateAcountBean().associateAcount()){
             return SUCCESS;
@@ -92,7 +95,7 @@ public class AssociateAcountAction extends ActionSupport implements SessionAware
         if (!session.containsKey("associateBean")){
             this.setAssociateAcountBean(new AssociateAcountBean());
         }
-        return (AssociateAcountBean) session.get("loginFBBean");
+        return (AssociateAcountBean) session.get("associateBean");
     }
 
     public void setAssociateAcountBean(AssociateAcountBean associateAcountBean){

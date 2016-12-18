@@ -30,18 +30,18 @@ public class LoginFacebookBean {
     private RmiInterface rmiInterface;
     private rmiConnection rmiConnection;
 
-    public int getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
-    }
-
-    private int idUser;
-
     private String idFacebook;
     private String username;
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    private String userID;
 
     public LoginFacebookBean(){
         rmiConnection = new rmiConnection();
@@ -55,13 +55,17 @@ public class LoginFacebookBean {
 
         this.oAuth20Service.signRequest(this.oAuth2AccessToken, this.oAuthRequest);
         Response response = oAuthRequest.send();
-        this.setUsername(getUsername(response));
+        //this.setUsername(getUsername(response));
         this.setIdFacebook(getId(response));
-        rmiInterface.loginFacebook(this.username, this.idFacebook);
+        if (rmiInterface.verifyIfExist(this.idFacebook)) {
+            this.setUsername(rmiInterface.getUserNameFacebook(this.idFacebook));
+            this.setUserID(String.valueOf(userID()));
+
+        } else {
+            rmiInterface.loginFacebook(this.username, this.idFacebook);
+        }
         return true;
     }
-
-
 
     public int userID() throws RemoteException {
         return rmiInterface.getUserId(this.username);

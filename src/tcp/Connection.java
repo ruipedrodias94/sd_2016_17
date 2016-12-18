@@ -102,7 +102,7 @@ class Connection extends Thread {
                                 rmi = invoqueRMI();
 
                                 //Get that cliente back online
-                                client = rmi.getClient(messageParsed.get("username"), messageParsed.get("password"));
+                                client = rmi.getClient(messageParsed.get("username"));
 
 
 

@@ -21,6 +21,16 @@ public class IndexBean {
 
     private String authUrl;
 
+    public String getAuthURL2() {
+        return authURL2;
+    }
+
+    public void setAuthURL2(String authURL2) {
+        this.authURL2 = authURL2;
+    }
+
+    private String authURL2;
+
     private RmiInterface rmiInterface;
     private rmiConnection rmiConnection;
 

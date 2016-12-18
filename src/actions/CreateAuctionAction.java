@@ -48,9 +48,8 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
         this.getCreateAuctionBean().setDeadline(this.deadline);
         this.getCreateAuctionBean().setAmount(this.amount);
 
-        //this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
-        this.getCreateAuctionBean().setIdUser(34);
-        this.idUser=34;
+        this.idUser = Integer.parseInt(String.valueOf(session.get("userID")));
+        this.getCreateAuctionBean().setIdUser(idUser);
 
         System.out.println("ID DO USER: " + idUser);
 
