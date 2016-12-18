@@ -112,7 +112,7 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
      * Método que nos retorna o cliente para guardar na conexão. Mais fácil para depois associar sempre o cliente à operação
      *
      * @param username
-     * @param password
+
      * @return
      */
 
@@ -903,6 +903,30 @@ public class RmiServer extends UnicastRemoteObject implements RmiInterface, Seri
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * Verifica se o facebook já está associado à sua conta
+     * @param idUser
+     * @return
+     */
+    public synchronized String verifyIfExistFacebookToPost(int idUser){
+
+        String search = "SELECT * FROM USER WHERE idUser ='" + idUser+ "';";
+
+        ResultSet resultSet;
+        String idFacebook=null;
+
+        try{
+            resultSet = statement.executeQuery(search);
+            while (resultSet.next()){
+                idFacebook = resultSet.getString(5);
+                return idFacebook;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idFacebook;
     }
 
     /**

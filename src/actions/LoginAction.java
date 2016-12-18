@@ -37,7 +37,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
 
     @Override
     public String execute() throws RemoteException{
-
+        session.clear();
         if(this.username != null && !username.equals("") && this.password != null && !password.equals("")) {
 
             this.getLoginBean().setUsername(this.username);

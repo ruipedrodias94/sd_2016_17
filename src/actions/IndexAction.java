@@ -40,6 +40,8 @@ public class IndexAction extends ActionSupport implements SessionAware {
     @Override
     public String execute(){
 
+        session.clear();
+
         final String clientId = "1692489987709601";
         final String clientSecret = "d3b58f3dfa1180d96dc4e41453d313c6";
         final String secretState = "secret" + new Random().nextInt(999_999);

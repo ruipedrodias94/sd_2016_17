@@ -70,6 +70,23 @@ public class LoginFacebookBean {
         return true;
     }
 
+    public boolean verifyFacebookToPost(int idUser)
+    {
+        try {
+            if(rmiInterface.verifyIfExistFacebookToPost(idUser)!=null)
+            {
+                System.out.println(rmiInterface.verifyIfExistFacebookToPost(idUser));
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public int userID() throws RemoteException {
         return rmiInterface.getUserId(this.username);
     }

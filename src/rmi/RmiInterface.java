@@ -43,4 +43,5 @@ public interface RmiInterface extends Remote{
     boolean associateFacebook(int idUser, String idFacebook) throws RemoteException;
     boolean loginFacebook(String username, String idFacebook) throws RemoteException;
     String getUserNameFacebook(String idFacebook) throws RemoteException;
+    String verifyIfExistFacebookToPost(int idUser) throws RemoteException;
 }

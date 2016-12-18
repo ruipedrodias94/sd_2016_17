@@ -66,7 +66,7 @@ public class CreateAuctionAction extends ActionSupport implements SessionAware{
 
         if (this.getCreateAuctionBean().createAuction()){
 
-            if(this.getLoginFBBean().getIdFacebook()!=null){
+            if(this.getLoginFBBean().verifyFacebookToPost(this.idUser)){
             PROTECTED_RESOURCE_URL2 = "https://graph.facebook.com/v2.8/me/feed?message="+this.title;
            this.oAuth2AccessToken=this.getLoginFBBean().getoAuth2AccessToken();
 
