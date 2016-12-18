@@ -17,10 +17,11 @@ import java.sql.Timestamp;
 public class CreateAuctionBean {
 
     private RmiInterface rmiInterface;
-    //Faz sentido aqui meter todas as merdas?
     private Auction auction;
     //Tipo isto?
     private String idItem;
+
+    private int idAuction;
 
     public Auction getAuction() {
         return auction;
@@ -98,5 +99,13 @@ public class CreateAuctionBean {
 
     public void setIdUser(int idUser) {
         this.idUser = idUser;
+    }
+
+    public int getIdAuction() {
+        return idAuction;
+    }
+
+    public void setIdAuction(int idAuction) {
+        this.idAuction = idAuction;
     }
 }
