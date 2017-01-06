@@ -52,6 +52,7 @@ public class EditAuctionAction extends ActionSupport implements SessionAware{
         this.getEditAuctionBean().setNovo(novo);
 
         if (this.getEditAuctionBean().editAuction()){
+            this.session.put("auctionId",getEditAuctionBean().getNovo().getIdAuction());
             return SUCCESS;
         }
 

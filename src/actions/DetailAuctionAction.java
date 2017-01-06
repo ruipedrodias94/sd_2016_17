@@ -31,7 +31,17 @@ public class DetailAuctionAction extends ActionSupport implements SessionAware {
     public String execute() throws RemoteException {
 
             HttpServletRequest request = ServletActionContext.getRequest();
-            this.code = request.getParameter("auctionId");
+
+                if( request.getParameter("auctionId")!=null)
+                {
+                    this.code = request.getParameter("auctionId");
+                }else
+                    {
+                        this.code = String.valueOf(this.session.get("auctionId"));
+                    }
+
+
+        System.out.println("Auct ID: "+this.code);
 
             this.session.put("auctionId",this.code);
 

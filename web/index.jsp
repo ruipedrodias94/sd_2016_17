@@ -28,7 +28,7 @@
 
 <a href="/register.jsp">Not registered yet?</a>
 
-<a href="${indexBean.authUrl}">loga no fêbÊ</a>
+<a href="${indexBean.authUrl}">login no facebook</a>
 
 </body>
 </html>
